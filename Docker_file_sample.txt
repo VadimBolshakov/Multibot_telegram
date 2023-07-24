@@ -1,0 +1,15 @@
+FROM python:3.10
+
+WORKDIR /home
+
+ENV TOKEN_API="12345"
+
+RUN pip install -U pip aiogram && apt-get update && apt-get install sqlite3
+
+COPY *.py ./
+COPY *.sql ./
+COPY app ./app
+
+RUN sqlite3 finance.db < createdb.sql
+
+ENTRYPOINT ['python", "server.py"]

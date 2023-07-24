@@ -1,0 +1,15 @@
+[postgresql]
+DB_NAME=telbotrel
+DB_USER=postgres
+DB_PASSWORD=bty987
+DB_HOST=localhost
+DB_PORT=5432
+
+/ubuntu/ProjectsPy/telbotrel
+service: telbotrel
+
+create container = sudo docker run --name postgres-0 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=bty987 -p 5432:5432 -d postgres
+run psql util into postgres-0 containers = sudo docker exec -it postgres-0 psql -U postgres
+
+CREATE DATABASE telbotrel OWNER postgres;
+
