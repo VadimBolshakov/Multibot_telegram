@@ -1,6 +1,4 @@
 from aiogram import types
-import string
-import json
 from admin.logsetting import logger
 from databases import database
 from create import ADMIN_ID
@@ -13,7 +11,7 @@ def check_registration(fn):
         user_id = message.from_user.id
         if await database.get_user_db(message.from_user.id) is None:
             await message.answer('Вы не зарегистрированы. Введите команду /start')
-            #await message.answer(f'You are not registered. Enter the command /start')
+            # await message.answer(f'You are not registered. Enter the command /start')
             logger.warning(f'Fail the registration check user {user_first_name} (id:{user_id})')
             return
         
@@ -36,7 +34,7 @@ def check_admin(fn):
 
             if int(message.from_user.id) != int(ADMIN_ID):
                 await message.answer('У вас нет доступа к этой команде')
-                #await message.answer('permission denied')
+                # await message.answer('permission denied')
                 logger.warning(f'Fail the admin check user {user_first_name} (id:{user_id})')
                 return
             logger.info(f'Passed the admin check user {user_first_name} (id:{user_id})')
@@ -47,4 +45,3 @@ def check_admin(fn):
             return
         return await fn(message)
     return wrapper
-

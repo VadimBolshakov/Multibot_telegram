@@ -1,4 +1,3 @@
-import logging.handlers
 import logging.config
 import create
 
@@ -79,4 +78,3 @@ if __name__ == '__main__':
     # logger.error('ZeroDivisionError it is logger', exc_info=True)
     logger.exception('exception it is logger', exc_info=True)
     # logger.critical('critical it is logger')
-

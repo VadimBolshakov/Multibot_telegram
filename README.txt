@@ -13,3 +13,5 @@ command /help to get help.
 command /reset to reset bot. If bot waiting mode, you can use this command to reset bot.
 command /language to change language. You can use this command to change language at all times.
 
+в программе реаализованна парадигма MVC. the all input requests processing in handlers (handlers module) and seng to model (model module).
+in model module the all requests processing and send to view (view module).

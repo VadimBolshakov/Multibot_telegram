@@ -33,7 +33,11 @@ async def input_category(message: types.Message, state: FSMContext):
         msg = await message.answer('Wait a second, please', reply_markup=types.ReplyKeyboardRemove())
         category = data['category'][0]
         country = await database.get_user_lang_db(user_id=int(message.from_user.id))
-        answer = newsview.news_view(news_dictionary=news.news_dict(country=country, category=category))
+        # lang = await database.get_user_lang_db(user_id=int(message.from_user.id))
+        answer = newsview.news_view(news_dictionary=await news.news_dict(message.from_user.id,
+                                                                         message.from_user.first_name,
+                                                                         country=country,
+                                                                         category=category))
 
         if len(answer) > 4096:
             for x in range(0, len(answer), 4096):
@@ -43,18 +47,12 @@ async def input_category(message: types.Message, state: FSMContext):
 
         await msg.delete()
 
-        await database.add_request_db(user_id=message.from_user.id, type_request='news',
-                                      num_tokens=len(answer), status_request=True)
-        logger.info(
-            f'Exit from news handler user {message.from_user.first_name} (id:{message.from_user.id})')
-
     else:
         await message.answer('I don\'t understand you', reply_markup=types.ReplyKeyboardRemove())
         logger.info(
             f'Cancel news handler user {message.from_user.first_name} (id:{message.from_user.id})')
     await state.finish()
-    lang = await database.get_user_lang_db(user_id=int(message.from_user.id))
-    await message.answer(quoteview.quote_view(quote.quote_dict(lang=lang)), reply_markup=main_menu)
+    await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
 
 
 # @dp.message_handler(state=NewsFSM.query)

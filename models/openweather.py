@@ -5,6 +5,7 @@ from create import TOKEN_OPENWEATHER
 from json import JSONDecodeError
 from typing import Optional
 from util.weatherparse_ru import parse_daily, parse_hourly, parse_current, parse_alerts, parse_minutely
+from databases import database
 
 
 def get_excluded(period: str) -> str:
@@ -29,13 +30,13 @@ def get_weather(lat: float,
                 appid: str = TOKEN_OPENWEATHER) -> Optional[dict[str, str | int | float | list | dict]]:
     """Get weather from OpenWeatherMap API."""
     params_weather = {
-            'lat': lat,
-            'lon': lon,
-            'units': units,
-            'lang': lang,
-            # 'exclude': 'minutely, hourly',
-            'appid': appid
-        }
+        'lat': lat,
+        'lon': lon,
+        'units': units,
+        'lang': lang,
+        # 'exclude': 'minutely, hourly',
+        'appid': appid
+    }
 
     if exclude:
         params_weather['exclude'] = exclude
@@ -58,11 +59,13 @@ def get_weather(lat: float,
         return None
 
 
-def weather_dict(lat: float = 55.7522,
-                 lon: float = 37.6156,
-                 lang: str = 'en',
-                 period: str = '',
-                 volume: str = 'short') -> dict[str, list] | str:
+async def weather_dict(user_id: int,
+                       first_name: str,
+                       lat: float = 55.7522,
+                       lon: float = 37.6156,
+                       lang: str = 'en',
+                       period: str = '',
+                       volume: str = 'short') -> dict[str, list] | str:
     """Parse weather from JSON-file and return dict."""
     exclude = get_excluded(period)
 
@@ -71,6 +74,8 @@ def weather_dict(lat: float = 55.7522,
     data_weather = get_weather(lat=lat, lon=lon, lang=lang, exclude=exclude)
 
     if not data_weather:
+        logger.warning(f'WeatherError. User {first_name} (id:{user_id})')
+        await database.add_request_db(user_id=user_id, type_request='weather', num_tokens=0, status_request=False)
         return 'Sorry, but we have not information about actual weather.'
 
     weather: dict[str, list] = {}
@@ -103,11 +108,15 @@ def weather_dict(lat: float = 55.7522,
         for alerts_values in data_weather['alerts']:
             weather['alerts'].append(parse_alerts(alerts_values, timezone_offset, show_long))
 
+    await database.add_request_db(user_id=user_id, type_request='weather', num_tokens=0, status_request=True)
+    logger.info(
+        f'Exit from weather model user {first_name} (id:{user_id})')
+
     return weather
 
 
 if __name__ == '__main__':
-    weather_test = weather_dict()
+    weather_test = await weather_dict(user_id=10, first_name='test', volume='long')
     # print(weather_dict['minutely'])
     # print(weather_dict['hourly'])
     for key, value in weather_test.items():

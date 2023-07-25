@@ -207,5 +207,3 @@ if __name__ == '__main__':
     # print(asyncio.get_event_loop().run_until_complete(get_requests_count_db()))
     # print(asyncio.get_event_loop().run_until_complete(get_all_requests_db()))
     print(asyncio.get_event_loop().run_until_complete(get_user_db(777777777)).get('languageuser'))
-
-

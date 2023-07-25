@@ -4,8 +4,7 @@ from aiogram import types
 from create import dp
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from databases import database
-from util.keyboards import main_menu, category_menu
+from util.keyboards import main_menu
 from view import chatgptview, quoteview
 from models import chatgpt, quote
 from admin.logsetting import logger
@@ -31,21 +30,17 @@ async def input_question(message: types.Message, state: FSMContext):
     if data['question'] != 'q' and data['question'] != 'Q' and data['question'] != 'й' and data['question'] != 'Й':
         msg = await message.answer('Wait a second, please')
         question = data['question']
-        await message.answer(chatgptview.chatgpt_view(chatgpt.chatgpt_dict(prompt=question)))
+        await message.answer(chatgptview.chatgpt_view(await chatgpt.chatgpt_dict(message.from_user.id,
+                                                                                 message.from_user.first_name,
+                                                                                 prompt=question)))
         await msg.delete()
-
-        await database.add_request_db(user_id=message.from_user.id, type_request='news',
-                                      num_tokens=1, status_request=True)
-        logger.info(
-            f'Exit from chatgpt handler user {message.from_user.first_name} (id:{message.from_user.id})')
 
     else:
         await message.answer('I don\'t understand you')
         logger.info(
             f'Cancel chatgpt handler user {message.from_user.first_name} (id:{message.from_user.id})')
     await state.finish()
-    lang = await database.get_user_lang_db(user_id=int(message.from_user.id))
-    await message.answer(quoteview.quote_view(quote.quote_dict(lang=lang)), reply_markup=main_menu)
+    await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
 
 
 if __name__ == '__main__':

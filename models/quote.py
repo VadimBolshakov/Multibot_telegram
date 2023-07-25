@@ -4,6 +4,7 @@ from json import JSONDecodeError
 from admin.logsetting import logger
 from typing import Optional
 from admin import exeptions as ex
+from databases import database
 
 
 def get_quote(lang: str = 'en') -> Optional[dict[str, str | None]]:
@@ -32,8 +33,9 @@ def get_quote(lang: str = 'en') -> Optional[dict[str, str | None]]:
         return None
 
 
-def quote_dict(lang) -> dict[str, str | None] | str:
+async def quote_dict(user_id) -> dict[str, str | None] | str:
     """Return quote."""
+    lang = await database.get_user_lang_db(user_id=int(user_id))
     _quote = get_quote(lang)
     if _quote is None:
         return 'Error: quote not found'

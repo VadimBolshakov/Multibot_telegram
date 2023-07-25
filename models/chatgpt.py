@@ -1,11 +1,8 @@
 import requests
 from admin import exeptions as ex
-
 from admin.logsetting import logger
-from create import bot
 from databases import database
 from create import GPT_API_KEY
-from datetime import datetime
 from typing import Optional
 
 
@@ -42,17 +39,24 @@ def get_chatgpt(prompt: str) -> Optional[dict]:
         return None
 
 
-def chatgpt_dict(prompt: str) -> dict[str, str] | str:
+async def chatgpt_dict(user_id: int, first_name: str, prompt: str) -> dict[str, str] | str:
     """Return dict with answer from ChatGPT API."""
     data_chatgpt = get_chatgpt(prompt)
 
     if data_chatgpt is None:
+        logger.warning(f'ChatgptError. User {first_name} (id:{user_id})')
+        await database.add_request_db(user_id=user_id, type_request='chatgpt', num_tokens=0, status_request=False)
         return 'Error. Can\'t get answer from ChatGPT API.'
 
     _chatgpt = {'answer': data_chatgpt['choices'][0]['text']}
+
+    await database.add_request_db(user_id=user_id, type_request='chatgpt', num_tokens=data_chatgpt['usage']['total_tokens'], status_request=True)
+    logger.info(
+        f'Exit from chatgpt model user {first_name} (id:{user_id})')
 
     return _chatgpt
 
 
 if __name__ == '__main__':
-    print(chatgpt_dict('Hello, how are you?'))
+    print(chatgpt_dict(user_id=111, first_name='test', prompt='Hello, how are you?'))
+

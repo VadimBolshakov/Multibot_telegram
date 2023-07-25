@@ -1,6 +1,6 @@
 import requests
 from json import JSONDecodeError
-from json import dump
+from databases import database
 from admin.logsetting import logger
 from create import TOKEN_NEWSAPI
 from typing import Optional
@@ -45,10 +45,16 @@ def get_news(country: str = 'en',
         return None
 
 
-def news_dict(country: str = 'ru', category: str = 'general', query: str = '') -> dict[int | None, list[float | str | None]] | str:
+async def news_dict(user_id: int,
+                    first_name: str,
+                    country: str = 'ru',
+                    category: str = 'general',
+                    query: str = '') -> dict[int | None, list[float | str | None]] | str:
     """Return dictionary of news."""
     data_news = get_news(country=country, category=category, query=query)
     if not data_news:
+        logger.warning(f'NewsError. User {first_name} (id:{user_id})')
+        await database.add_request_db(user_id=user_id, type_request='news', num_tokens=0, status_request=False)
         return 'Error: can\'t get news'
 
     _news = {}
@@ -58,14 +64,17 @@ def news_dict(country: str = 'ru', category: str = 'general', query: str = '') -
                     data_news['articles'][i]['title'],
                     data_news['articles'][i]['description'],
                     data_news['articles'][i]['url']]
+    await database.add_request_db(user_id=user_id, type_request='news', num_tokens=0, status_request=True)
+    logger.info(
+        f'Exit from news model user {first_name} (id:{user_id})')
+
     return _news
 
 
 if __name__ == '__main__':
-    news_dict_test = news_dict()
+    news_dict_test = await news_dict(user_id=111, first_name='test', country='ru', category='general')
     if isinstance(news_dict_test, str):
         print(news_dict_test)
     else:
         for key, value in news_dict_test.items():
             print(f'\n'.join([f'    {i}' for i in value if i is not None]) + '\n')
-

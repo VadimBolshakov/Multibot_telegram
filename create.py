@@ -1,4 +1,5 @@
 """Create bot, dispatcher, storage and load environment variables."""
+import asyncio
 import os
 from dotenv import load_dotenv, find_dotenv
 from aiogram import Bot
@@ -26,7 +27,8 @@ TOKEN_NEWSAPI = os.getenv('TOKEN_NEWSAPI')
 TOKEN_GOOGLE_TRANSLATE = os.getenv('TOKEN_GOOGLE_TRANSLATE')
 LOG_FILE = os.getenv('LOG_FILE')
 
-bot = Bot(TOKEN_BOT)
+loop = asyncio.get_event_loop()
+bot = Bot(TOKEN_BOT, loop=loop)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 

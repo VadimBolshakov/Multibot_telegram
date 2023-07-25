@@ -70,8 +70,7 @@ async def select_period(message: types.Message, state: FSMContext):
         logger.info(
             f'Cancel map handler user {message.from_user.first_name} (id:{message.from_user.id})')
     await state.finish()
-    lang = await database.get_user_lang_db(user_id=int(message.from_user.id))
-    await message.answer(quoteview.quote_view(quote.quote_dict(lang=lang)), reply_markup=main_menu)
+    await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
 
     # await message.answer_photo(openweather.map_url(data['latitude'], data['longitude']))
 

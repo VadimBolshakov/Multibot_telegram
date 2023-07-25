@@ -5,7 +5,6 @@ from create import dp
 from aiogram.types import ReplyKeyboardRemove
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from databases import database
 from util.keyboards import main_menu, translate_menu
 from view import translateview, quoteview
 from models import translator, quote
@@ -53,8 +52,8 @@ async def input_target(message: types.Message, state: FSMContext):
         await state.finish()
         logger.info(
             f'Cancel translate handler user {message.from_user.first_name} (id:{message.from_user.id})')
-        lang = await database.get_user_lang_db(user_id=int(message.from_user.id))
-        await message.answer(quoteview.quote_view(quote.quote_dict(lang=lang)), reply_markup=main_menu)
+
+        await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
 
 
 @dp.message_handler(content_types=types.ContentType.TEXT, state=TranslateFSM.translator)
@@ -68,8 +67,8 @@ async def input_translator(message: types.Message, state: FSMContext):
 
     if text is not None:
         msg = await message.answer('Please, Wait a second.....')
-        await message.answer(translateview.translate_view(translator.translate_text(target, text)),
-                             reply_markup=ReplyKeyboardRemove())
+        translate_text = await translator.translate_dict(message.from_user.id, message.from_user.first_name, target, text)
+        await message.answer(translateview.translate_view(translate_text), reply_markup=ReplyKeyboardRemove())
         await msg.delete()
     else:
         await message.answer('I don\'t understand you', reply_markup=ReplyKeyboardRemove())
@@ -77,13 +76,7 @@ async def input_translator(message: types.Message, state: FSMContext):
             f'Cancel translate handler user {message.from_user.first_name} (id:{message.from_user.id})')
     # await state.reset_state(with_data=False)
     await state.finish()
-    lang = await database.get_user_lang_db(user_id=int(message.from_user.id))
-    await message.answer(quoteview.quote_view(quote.quote_dict(lang=lang)), reply_markup=main_menu)
-
-    await database.add_request_db(user_id=message.from_user.id, type_request='translate',
-                                  num_tokens=1, status_request=True)
-    logger.info(
-        f'Exit from translate handler user {message.from_user.first_name} (id:{message.from_user.id})')
+    await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
 
 
 if __name__ == '__main__':

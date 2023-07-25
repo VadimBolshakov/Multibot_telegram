@@ -1,9 +1,7 @@
-from admin.logsetting import logger
 
 
 def weather_view(weather_dict: dict[str, list] | str) -> str:
     if isinstance(weather_dict, str):
-        logger.warning(f'WeatherError: {weather_dict}')
         return weather_dict
     result: str = ''
     for key, value in weather_dict.items():

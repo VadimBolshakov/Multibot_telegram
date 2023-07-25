@@ -49,16 +49,14 @@ async def select_period(message: types.Message, state: FSMContext):
             await state.finish()
             logger.warning(f'Location by IP error. '
                            f'Exit weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
-            lang = await database.get_user_lang_db(user_id=int(message.from_user.id))
-            await message.answer(quoteview.quote_view(quote.quote_dict(lang=lang)), reply_markup=main_menu)
+            await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
             return
     else:
         await message.answer('I don\'t understand you', reply_markup=types.ReplyKeyboardRemove())
         await state.finish()
         logger.info(
             f'Cancel weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
-        lang = await database.get_user_lang_db(user_id=int(message.from_user.id))
-        await message.answer(quoteview.quote_view(quote.quote_dict(lang=lang)), reply_markup=main_menu)
+        await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
         return
     await message.answer('Your location is got:\n '
                          'latitude: ' + str(data['latitude']) + '\n '
@@ -85,8 +83,7 @@ async def input_period(message: types.Message, state: FSMContext):
         await state.finish()
         logger.info(
             f'Cancel weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
-        lang = await database.get_user_lang_db(user_id=int(message.from_user.id))
-        await message.answer(quoteview.quote_view(quote.quote_dict(lang=lang)), reply_markup=main_menu)
+        await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
 
 
 @dp.message_handler(content_types=types.ContentType.TEXT, state=WeatherFSM.volume)
@@ -105,11 +102,13 @@ async def input_volume(message: types.Message, state: FSMContext):
         volume = data['volume'][0]
         land = await database.get_user_lang_db(user_id=int(message.from_user.id))
         msg = await message.answer('Please, Wait a second.....', reply_markup=types.ReplyKeyboardRemove())
-        answer = weatherview.weather_view(openweather.weather_dict(lat=latitude,
-                                                                   lon=longitude,
-                                                                   lang=land,
-                                                                   period=period,
-                                                                   volume=volume))
+        answer = weatherview.weather_view(await openweather.weather_dict(message.from_user.id,
+                                                                         message.from_user.first_name,
+                                                                         lat=latitude,
+                                                                         lon=longitude,
+                                                                         lang=land,
+                                                                         period=period,
+                                                                         volume=volume))
         if len(answer) > 4096:
             for x in range(0, len(answer), 4096):
                 await message.answer(answer[x:x + 4096])
@@ -118,19 +117,13 @@ async def input_volume(message: types.Message, state: FSMContext):
 
         await msg.delete()
 
-        await database.add_request_db(user_id=message.from_user.id, type_request='weather',
-                                      num_tokens=len(answer), status_request=True)
-        logger.info(
-            f'Exit from weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
-
     else:
         await message.answer('I don\'t understand you', reply_markup=types.ReplyKeyboardRemove())
         logger.info(
             f'Cancel weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
     # await state.reset_state(with_data=False)
     await state.finish()
-    lang = await database.get_user_lang_db(user_id=int(message.from_user.id))
-    await message.answer(quoteview.quote_view(quote.quote_dict(lang=lang)), reply_markup=main_menu)
+    await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
 
 
 if __name__ == '__main__':
