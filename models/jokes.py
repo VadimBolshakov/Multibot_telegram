@@ -1,3 +1,5 @@
+import asyncio
+
 from admin.logsetting import logger
 from databases import database
 from json import load
@@ -30,4 +32,4 @@ async def jokes_dict(user_id: int, first_name: str, quantity: int = 10) -> dict[
 
 
 if __name__ == '__main__':
-    print(jokes_dict(user_id=111, first_name='test', quantity=10))
+    print(asyncio.run(jokes_dict(user_id=111, first_name='test', quantity=10)))

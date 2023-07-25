@@ -1,3 +1,5 @@
+import asyncio
+
 import requests
 from json import JSONDecodeError
 # from json import dump
@@ -45,4 +47,4 @@ async def quote_dict(user_id) -> dict[str, str | None] | str:
 
 
 if __name__ == '__main__':
-    print(quote_dict('ru'))
+    print(asyncio.run(quote_dict('ru')))

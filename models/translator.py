@@ -4,6 +4,8 @@ Used this snippet from https://cloud.google.com/translate/docs/basic/quickstart
 Target must be an ISO 639-1 language code.
 See https://g.co/cloud/translate/v2/translate-reference#supported_languages
 """
+import asyncio
+
 import requests
 from create import TOKEN_GOOGLE_TRANSLATE
 from admin import exeptions as ex
@@ -83,6 +85,6 @@ async def translate_dict(user_id: int, first_name: str, language_target: str, te
 
 
 if __name__ == '__main__':
-    text = translate_dict(user_id=111, first_name='test', language_target='ru', text_to_translate='Hello, world! I am here')
+    text = asyncio.run(translate_dict(user_id=111, first_name='test', language_target='ru', text_to_translate='Hello, world! I am here'))
     print(text)
     print(get_language(text_to_translate='Hello, world! I am here'))

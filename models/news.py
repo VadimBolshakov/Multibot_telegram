@@ -1,3 +1,5 @@
+import asyncio
+
 import requests
 from json import JSONDecodeError
 from databases import database
@@ -72,7 +74,7 @@ async def news_dict(user_id: int,
 
 
 if __name__ == '__main__':
-    news_dict_test = await news_dict(user_id=111, first_name='test', country='ru', category='general')
+    news_dict_test = asyncio.run(news_dict(user_id=111, first_name='test', country='ru', category='general'))
     if isinstance(news_dict_test, str):
         print(news_dict_test)
     else:

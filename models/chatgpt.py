@@ -1,3 +1,5 @@
+import asyncio
+
 import requests
 from admin import exeptions as ex
 from admin.logsetting import logger
@@ -58,5 +60,5 @@ async def chatgpt_dict(user_id: int, first_name: str, prompt: str) -> dict[str, 
 
 
 if __name__ == '__main__':
-    print(chatgpt_dict(user_id=111, first_name='test', prompt='Hello, how are you?'))
+    print(asyncio.run(chatgpt_dict(user_id=111, first_name='test', prompt='Hello, how are you?')))
 

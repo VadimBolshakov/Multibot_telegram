@@ -1,3 +1,4 @@
+import asyncio
 import requests
 import admin.exeptions as ex
 from admin.logsetting import logger
@@ -116,7 +117,7 @@ async def weather_dict(user_id: int,
 
 
 if __name__ == '__main__':
-    weather_test = await weather_dict(user_id=10, first_name='test', volume='long')
+    weather_test = asyncio.run(weather_dict(user_id=10, first_name='test', volume='long'))
     # print(weather_dict['minutely'])
     # print(weather_dict['hourly'])
     for key, value in weather_test.items():

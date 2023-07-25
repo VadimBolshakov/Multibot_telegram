@@ -1,6 +1,5 @@
 from util import keyboards
 from util import weatherparse
-from util import locbyip
 from util import weatherparse_ru
 
 

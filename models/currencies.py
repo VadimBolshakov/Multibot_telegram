@@ -3,6 +3,7 @@
 Get actual rate currency from XML-file in src folder.
 If file not exist, create a new file and get rate currency form cbr.ru.
 """
+import asyncio
 
 import urllib3
 import xml.etree.ElementTree as ET
@@ -75,4 +76,4 @@ async def currencies_dict(user_id: int, first_name: str,
 
 if __name__ == '__main__':
     date_now = datetime.datetime.now().strftime('%d-%m-%Y')
-    print(currencies_dict(user_id=111, first_name='Join', date_now_str=date_now))
+    print(asyncio.run(currencies_dict(user_id=111, first_name='Join', date_now_str=date_now)))
