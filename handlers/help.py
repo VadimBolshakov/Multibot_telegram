@@ -10,7 +10,7 @@ async def command_help(message: types.Message):
     """Check user in database and send message with password or welcome message."""
     await message.answer('Help. \n Here you can find help information\n And it will be here soon', reply_markup=main_menu)
     logger.info(
-        f'Enter in help handler user {message.from_user.first_name} (id:{message.from_user.id})')
+        f'Entry to help handler user {message.from_user.first_name} (id:{message.from_user.id})')
 
     logger.warning(
             f'Exit from help handler user {message.from_user.first_name} (id:{message.from_user.id})')

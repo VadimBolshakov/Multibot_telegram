@@ -17,7 +17,7 @@ class RegisterFSM(StatesGroup):
 async def command_start(message: types.Message):
     """Check user in database and send message with password or welcome message."""
     logger.info(
-        f'Enter in start handler user {message.from_user.first_name} (id:{message.from_user.id})')
+        f'Entry to start handler user {message.from_user.first_name} (id:{message.from_user.id})')
     if await database.get_user_db(message.from_user.id) is None:
         await message.answer('Enter password')
         """Set FSM state to password."""

@@ -7,8 +7,7 @@ from aiogram.dispatcher.filters.state import StatesGroup, State
 from databases import database
 from util.keyboards import main_menu, weather_period_menu, weather_volume_menu, weather_menu_local
 from view import weatherview, quoteview
-from util import locbyip
-from models import openweather, quote
+from models import openweather, quote, locbyip
 from admin.logsetting import logger
 
 
@@ -58,7 +57,7 @@ async def select_period(message: types.Message, state: FSMContext):
             f'Cancel weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
         await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
         return
-    await message.answer('Your location is got:\n '
+    await message.answer('Your location has been received:\n '
                          'latitude: ' + str(data['latitude']) + '\n '
                                                                 'longitude: ' + str(data['longitude']),
                          reply_markup=types.ReplyKeyboardRemove())
@@ -74,7 +73,7 @@ async def input_period(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['period'] = message.text.lower().split()
     if data['period'][0] in period_tuple:
-        await message.answer('Your period is got:\n '
+        await message.answer('your period has been received:\n '
                              'period: ' + str(data['period'][0]), reply_markup=types.ReplyKeyboardRemove())
         await message.answer('Enter volume forecast:', reply_markup=weather_volume_menu)
         await WeatherFSM.volume.set()
@@ -93,7 +92,7 @@ async def input_volume(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['volume'] = message.text.lower().split()
     if data['volume'][0] in volume_tuple:
-        await message.answer('Your volume is got:\n '
+        await message.answer('Your volume has been received:\n '
                              'volume: ' + str(data['volume'][0]), reply_markup=types.ReplyKeyboardRemove())
         data = await state.get_data()
         latitude = data['latitude']

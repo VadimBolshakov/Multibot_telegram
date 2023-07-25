@@ -5,5 +5,5 @@ def chatgpt_view(chatgpt_dictionary: dict[str, str] | str) -> str:
     if isinstance(chatgpt_dictionary, str):
         return chatgpt_dictionary
     else:
-        return chatgpt_dictionary['answer']
+        return chatgpt_dictionary.get('answer')
 
