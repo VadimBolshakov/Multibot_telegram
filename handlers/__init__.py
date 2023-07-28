@@ -8,6 +8,7 @@ from handlers import chatgpthandler
 from handlers import help
 from handlers import transhandler
 from handlers import reset
+from handlers import changelang
 
 __all__ = ['general', 'start', 'maphandler', 'weathandler', 'newshandler', 'adminhandler', 'chatgpthandler', 'help',
-           'transhandler', 'reset']
+           'transhandler', 'reset', 'changelang']

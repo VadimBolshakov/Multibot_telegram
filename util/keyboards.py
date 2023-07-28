@@ -4,7 +4,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardBu
 # main_menu.add(InlineKeyboardButton('Weather', callback_data='weather'),
 #               InlineKeyboardButton('Maps', callback_data='maps'),
 #               InlineKeyboardButton('Translate', callback_data='translate'),
-#               InlineKeyboardButton('Currency', callback_data='currency'),
+#               InlineKeyboardButton('Currency', callback_data='currency_ru'),
 #               InlineKeyboardButton('News', callback_data='news'),
 #               InlineKeyboardButton('Jokes', callback_data='jokes')
 #               ).add(InlineKeyboardButton('Chat GPT', callback_data='chat_gpt'))
@@ -13,7 +13,7 @@ main_menu = InlineKeyboardMarkup(row_width=2)
 main_menu.add(InlineKeyboardButton('Погода', callback_data='weather'),
               InlineKeyboardButton('Локация', callback_data='maps'),
               InlineKeyboardButton('Переводчик', callback_data='translate'),
-              InlineKeyboardButton('Валюты', callback_data='currency'),
+              InlineKeyboardButton('Валюты', callback_data='currency_ru'),
               InlineKeyboardButton('Новости', callback_data='news'),
               InlineKeyboardButton('Анекдоты', callback_data='jokes')
               ).add(InlineKeyboardButton('Chat GPT', callback_data='chat_gpt'))
@@ -28,15 +28,15 @@ map_menu.row(button_1, button_2)
 translate_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 button_1 = KeyboardButton('English')
 button_2 = KeyboardButton('Russian')
-button_3 = KeyboardButton("Ukrainian")
-button_4 = KeyboardButton("German")
+button_3 = KeyboardButton('Ukrainian')
+button_4 = KeyboardButton('German')
 button_5 = KeyboardButton('French')
 button_6 = KeyboardButton('Italian')
 button_7 = KeyboardButton('Spanish')
 button_8 = KeyboardButton('Greek')
 button_9 = KeyboardButton('Polish')
 button_10 = KeyboardButton('Portuguese')
-button_11 = KeyboardButton("Turkish")
+button_11 = KeyboardButton('Turkish')
 button_12 = KeyboardButton('Arabic')
 button_13 = KeyboardButton('Japanese')
 button_14 = KeyboardButton('Chinese')
@@ -88,4 +88,11 @@ category_menu.add(button_1, button_2)\
     .row(button_3, button_4)\
     .row(button_5, button_6)\
     .add(button_7, button_8)
+
+
+language_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+button_1 = KeyboardButton('English')
+button_2 = KeyboardButton('Russian')
+button_3 = KeyboardButton("Cancel")
+language_menu.add(button_1, button_2).add(button_3)
 

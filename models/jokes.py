@@ -9,8 +9,14 @@ import os
 
 async def jokes_dict(user_id: int, first_name: str, quantity: int = 10) -> dict[int, str] | str:
     """Get jokes from json-file and return dict of jokes."""
-    try:
+    lang = await database.get_user_lang_db(user_id=user_id)
+    if lang == 'ru':
         file_jokes = os.path.abspath(f'./src/jokes/jokes_ru.json')
+
+    else:
+        file_jokes = os.path.abspath(f'./src/jokes/jokes_en.json')
+
+    try:
         with open(file_jokes, 'r') as file:
             load_jokes = load(file)
 

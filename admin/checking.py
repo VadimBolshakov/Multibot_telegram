@@ -32,7 +32,7 @@ def check_admin(fn):
                 logger.warning(f'Fail the registration check user {user_first_name} (id:{user_id})')
                 return
 
-            if int(message.from_user.id) != int(ADMIN_ID):
+            if not await database.get_user_admin_db(message.from_user.id):
                 await message.answer('У вас нет доступа к этой команде')
                 # await message.answer('permission denied')
                 logger.warning(f'Fail the admin check user {user_first_name} (id:{user_id})')

@@ -10,5 +10,10 @@ def send_message(message: str) -> None:
 
 
 if __name__ == '__main__':
+    var = None
+    if var:
+        print('True')
+    else:
+        print('False')
 
-    send_message('Hello, world!')
+    # send_message('Hello, world!')

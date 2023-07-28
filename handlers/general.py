@@ -37,15 +37,15 @@ async def translate(callback_query: CallbackQuery):
     await transhandler.select_language(callback_query.message)
 
 
-# @dp.callback_query_handlers(text='currency')
+# @dp.callback_query_handlers(text='currency_ru')
 async def currency(callback_query: CallbackQuery):
     logger.info(
-        f'Entry to currency handler user {callback_query.from_user.first_name} (id:{callback_query.from_user.id})')
+        f'Entry to currency_ru handler user {callback_query.from_user.first_name} (id:{callback_query.from_user.id})')
     await bot.answer_callback_query(callback_query.id, 'Please, wait')
-    date_now = datetime.datetime.now().strftime("%d-%m-%Y")
+    date_now = datetime.datetime.now()
     currencies_dict = await currencies.currencies_dict(callback_query.from_user.id, callback_query.from_user.first_name,
                                                        date_now)
-    await callback_query.message.answer(currencyview.currency_view(date_now, currencies_dict))
+    await callback_query.message.answer(currencyview.currency_view(date_now.strftime('%d-%m-%Y %H:%M'), currencies_dict))
     await callback_query.message.answer(quoteview.quote_view(await quote.quote_dict(callback_query.from_user.id)),
                                         reply_markup=main_menu)
 
@@ -93,7 +93,7 @@ def register_handlers_general(dp: Dispatcher):
     dp.register_callback_query_handler(maps, text='maps')
     dp.register_callback_query_handler(new, text='news')
     dp.register_callback_query_handler(translate, text='translate')
-    dp.register_callback_query_handler(currency, text='currency')
+    dp.register_callback_query_handler(currency, text='currency_ru')
     dp.register_callback_query_handler(joke, text='jokes')
     dp.register_callback_query_handler(chat_gpt, text='chat_gpt')
     dp.register_message_handler(text, content_types=ContentTypes.TEXT)

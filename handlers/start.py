@@ -1,7 +1,7 @@
 """Authentication new user by password, used FSM."""
 
 from aiogram import Dispatcher, types
-from create import bot, PASSWORD
+from create import bot, PASSWORD, ADMIN_ID
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from databases import database
@@ -36,10 +36,11 @@ async def input_password(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['password'] = message.text.split()
     if data['password'][0] == PASSWORD:
-
+        status_admin: bool = True if message.from_user.id == ADMIN_ID else False
         await database.add_user_db(user_id=message.from_user.id,
                                    first_name=message.from_user.first_name,
-                                   full_name=message.from_user.full_name)
+                                   full_name=message.from_user.full_name,
+                                   status_admin=status_admin)
         logger.info(
             f'New user registrate success {message.from_user.first_name} (id:{message.from_user.id})')
         await bot.send_message(message.chat.id, f'Здравствуйте {message.from_user.full_name}.\n'

@@ -1,4 +1,5 @@
 import logging.config
+from logging.handlers import HTTPHandler
 import create
 
 
@@ -7,6 +8,7 @@ EMAIL_PASSWORD = create.EMAIL_PASSWORD
 EMAIL_RECIPIENT = create.EMAIL_RECIPIENT
 LOG_FILE = create.LOG_FILE
 TOKEN_BOT = create.TOKEN_BOT
+CHAT_ID = create.CHAT_ID
 
 
 LOGGING_CONFIG = {
@@ -51,7 +53,7 @@ LOGGING_CONFIG = {
         'telegram': {
             'class': 'logging.handlers.HTTPHandler',
             'host': 'localhost:8000',
-            'url': 'https://api.telegram.org/bot{TOKEN_BOT}/sendMessage',
+            'url': f'https://api.telegram.org/bot{TOKEN_BOT}/sendMessage?chat_id={CHAT_ID}&text=message',
             'method': 'POST',
             'level': 'ERROR',
             'formatter': 'default_formatter',
@@ -69,12 +71,13 @@ LOGGING_CONFIG = {
 
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger('my_logger')
-
+logger.setLevel(logging.DEBUG)
 
 if __name__ == '__main__':
-    logger.debug('debug log it is logger')
-    logger.info('logger info it is logger')
-    logger.warning('warning it is logger')
+    # logger.debug('debug log it is logger')
+    # logger.info('logger info it is logger')
+    # logger.warning('warning it is logger')
     # logger.error('ZeroDivisionError it is logger', exc_info=True)
     logger.exception('exception it is logger', exc_info=True)
     # logger.critical('critical it is logger')
+

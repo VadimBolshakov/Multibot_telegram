@@ -1,12 +1,12 @@
 """Main file for the Telegram Bot https://t.me/VadimBolshM1bot.
 
-VadimBolshM1 bot is a Telegram Bot that can send jokes, weather, news, currency, and other information.
+VadimBolshM1 bot is a Telegram Bot that can send jokes, weather, news, currency_ru, and other information.
 username = @VadimBolshM1bot"""
 
 from create import dp, loop
-from admin.logsetting import logger
 from aiogram.utils import executor
-from handlers import general, start, adminhandler, help
+from admin.logsetting import logger
+from handlers import general, start, adminhandler, help, changelang
 from databases import database
 
 
@@ -20,14 +20,13 @@ async def on_startup(_):
 start.register_handlers_start(dp)
 help.register_handlers_help(dp)
 adminhandler.register_handlers_admin(dp)
+changelang.register_handlers_change_lang(dp)
 general.register_handlers_general(dp)
-
-# sendadmin.register_handlers_sendadmin(dp)
 
 
 async def on_shutdown(_):
     await dp.storage.close()
     await dp.storage.wait_closed()
 
-
-executor.start_polling(dp, loop=loop, skip_updates=True, on_startup=on_startup, on_shutdown=on_shutdown)
+if __name__ == '__main__':
+    executor.start_polling(dp, loop=loop, skip_updates=True, on_startup=on_startup, on_shutdown=on_shutdown)

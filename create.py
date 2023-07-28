@@ -25,6 +25,7 @@ TOKEN_BOT = os.getenv('TOKEN_BOT')
 TOKEN_OPENWEATHER = os.getenv('TOKEN_OPENWEATHER')
 TOKEN_NEWSAPI = os.getenv('TOKEN_NEWSAPI')
 TOKEN_GOOGLE_TRANSLATE = os.getenv('TOKEN_GOOGLE_TRANSLATE')
+TOKEN_CURRENCYLAYER = os.getenv('TOKEN_CURRENCYLAYER')
 LOG_FILE = os.getenv('LOG_FILE')
 
 loop = asyncio.get_event_loop()

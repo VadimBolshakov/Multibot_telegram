@@ -13,7 +13,7 @@ import datetime
 def get_news(country: str = 'en',
              sources: str = 'bbc-news',
              category: str = 'general',
-             query: str = '',
+             query: Optional[str] = None,
              page: int = 1) -> Optional[dict[str, str | int | float | list[dict[str, str | None]]]]:
     """Get news from NewsAPI API."""
     params_newsapi = {
@@ -51,7 +51,7 @@ async def news_dict(user_id: int,
                     first_name: str,
                     country: str = 'ru',
                     category: str = 'general',
-                    query: str = '') -> dict[int | None, list[float | str | None]] | str:
+                    query: Optional[str] = None) -> dict[int | None, list[float | str | None]] | str:
     """Return dictionary of news."""
     data_news = get_news(country=country, category=category, query=query)
     if not data_news:
