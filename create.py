@@ -1,11 +1,12 @@
 """Create bot, dispatcher, storage and load environment variables."""
 import asyncio
 import os
+from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
 from aiogram import Bot
 from aiogram.dispatcher import Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-
+from middlewares.language_middleware import setup_middleware
 
 load_dotenv(find_dotenv())
 
@@ -28,8 +29,17 @@ TOKEN_GOOGLE_TRANSLATE = os.getenv('TOKEN_GOOGLE_TRANSLATE')
 TOKEN_CURRENCYLAYER = os.getenv('TOKEN_CURRENCYLAYER')
 LOG_FILE = os.getenv('LOG_FILE')
 
+I18N_DOMAIN = 'base'
+
+BASE_DIR = Path(__file__).parent
+LOCALES_DIR = BASE_DIR / 'locales'
+
+
 loop = asyncio.get_event_loop()
 bot = Bot(TOKEN_BOT, loop=loop)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
+i18n = setup_middleware(dp)
+
+_ = i18n.gettext

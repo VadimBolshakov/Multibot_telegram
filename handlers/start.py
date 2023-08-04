@@ -23,9 +23,9 @@ async def command_start(message: types.Message):
         """Set FSM state to password."""
         await RegisterFSM.password.set()
     else:
-        await message.answer(f'Здравствуйте {message.from_user.full_name}.\n'
-                             f'Этот многофункциональный бот.\n'
-                             f'Выберите вариант ниже \U0001F604', reply_markup=main_menu)
+        await message.answer(f'Hello {message.from_user.full_name}.\n'
+                             f'You already have registered.\n'
+                             f'Welcome to my bot \U0001F604', reply_markup=main_menu)
         logger.info(
             f'Exit from start handler user {message.from_user.first_name} (id:{message.from_user.id})')
 
@@ -36,17 +36,19 @@ async def input_password(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['password'] = message.text.split()
     if data['password'][0] == PASSWORD:
-        status_admin: bool = True if message.from_user.id == ADMIN_ID else False
+        status_admin: bool = True if message.from_user.id == int(ADMIN_ID) else False
         await database.add_user_db(user_id=message.from_user.id,
                                    first_name=message.from_user.first_name,
                                    full_name=message.from_user.full_name,
+                                   lang=message.from_user.language_code,
                                    status_admin=status_admin)
         logger.info(
             f'New user registrate success {message.from_user.first_name} (id:{message.from_user.id})')
-        await bot.send_message(message.chat.id, f'Здравствуйте {message.from_user.full_name}.\n'
-                                                f'Вы успешно зарегистрированы.\n'
-                                                f'Этот многофункциональный бот.\n'
-                                                f'Выберите вариант ниже\U0001F604', reply_markup=main_menu)
+        await bot.send_message(message.chat.id, f'Hello {message.from_user.full_name}.\n'
+                                                f'You are registered successfully.\n'
+                                                f'This is a multi-function bot.\n'
+                                                f'Enter command /help to learn more.\n'
+                                                f'Welcome to my bot\U0001F604', reply_markup=main_menu)
         await state.finish()
     else:
         logger.warning(

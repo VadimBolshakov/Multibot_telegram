@@ -68,7 +68,7 @@ async def send_users(message: types.Message):
         await message.answer('Users not found')
         return
     for user in users:
-        await message.answer(user.get('userid') + ' ' + user.get('firstname'))
+        await message.answer(f'id= {user.get("userid")} name: {user.get("firstname")}')
 
 
 # @dp.message_handler(commands=['getrequests'])
@@ -127,19 +127,28 @@ async def ban_user(message: types.Message, state: FSMContext):
     """Ban user by id."""
     async with state.proxy() as data:
         data['baning_user'] = message.text
+
     if data['baning_user'] == '/cancel':
         await message.answer('Cancel')
         await state.finish()
         return
-    user = await database.get_user_db(int(data['baning_user']))
-    if not user:
+
+    try:
+        user_id = int(data['baning_user'])
+    except ValueError:
+        await message.answer('Error id')
+        await state.finish()
+        return
+
+    if not await database.get_user_db(user_id):
         await message.answer('User not found')
         await state.finish()
         return
-    if await database.up_user_banned_db(int(data['baning_user'])):
-        await message.answer(f'Banned user {data["baning_user"]} is {database.get_user_banned_db(int(data["baning_user"]))}. ')
+
+    if await database.up_user_banned_db(user_id):
+        await message.answer(f'Banned user {user_id} is {await database.get_user_banned_db(user_id)}. ')
     else:
-        await message.answer(f'Error ban user {data["baning_user"]}')
+        await message.answer(f'Error ban user {user_id}')
 
     await state.finish()
 
@@ -157,15 +166,29 @@ async def status_admin(message: types.Message, state: FSMContext):
     """Change status admin."""
     async with state.proxy() as data:
         data['status_admin'] = message.text
+
     if data['status_admin'] == '/cancel':
         await message.answer('Cancel')
         await state.finish()
         return
-    if await database.up_user_admin_db(int(data['status_admin'])):
-        await message.answer(f'User {data["status_admin"]} status admin changed.\n'
-                             f'Now status admin user {data["status_admin"]} is {database.get_user_admin_db(int(data["status_admin"]))}.')
+
+    try:
+        user_id = int(data['status_admin'])
+    except ValueError:
+        await message.answer('Error id')
+        await state.finish()
+        return
+
+    if not await database.get_user_db(user_id):
+        await message.answer('User not found')
+        await state.finish()
+        return
+
+    if await database.up_user_admin_db(user_id):
+        await message.answer(f'User {user_id} status admin changed.\n'
+                             f'Now status admin user {user_id} is {await database.get_user_admin_db(user_id)}.')
     else:
-        await message.answer(f'Error user {data["status_admin"]} change status admin')
+        await message.answer(f'Error user {user_id} change status admin')
 
     await state.finish()
 

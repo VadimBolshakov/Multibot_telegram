@@ -92,7 +92,7 @@ category_menu.add(button_1, button_2)\
 
 language_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 button_1 = KeyboardButton('English')
-button_2 = KeyboardButton('Russian')
+button_2 = KeyboardButton('Русский')
 button_3 = KeyboardButton("Cancel")
 language_menu.add(button_1, button_2).add(button_3)
 

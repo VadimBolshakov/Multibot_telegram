@@ -1,7 +1,7 @@
 from aiogram import types
+
 from admin.logsetting import logger
 from databases import database
-from create import ADMIN_ID
 
 
 def check_registration(fn):

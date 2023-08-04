@@ -17,7 +17,7 @@ async def command_reset(message: types.Message, state: FSMContext):
         f'Reset the allstate user {message.from_user.first_name} (id:{message.from_user.id})')
 
 
-def register_handlers_help(dp: Dispatcher):
+def register_handlers_reset(dp: Dispatcher):
     dp.register_message_handler(command_reset, commands=['reset'], state='*')
 
 

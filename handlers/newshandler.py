@@ -33,7 +33,8 @@ async def input_category(message: types.Message, state: FSMContext):
         msg = await message.answer('Wait a second, please', reply_markup=types.ReplyKeyboardRemove())
         category = data['category'][0]
         country = await database.get_user_lang_db(user_id=int(message.from_user.id))
-        # lang = await database.get_user_lang_db(user_id=int(message.from_user.id))
+        if country == 'en':
+            country = 'us'
         answer = newsview.news_view(news_dictionary=await news.news_dict(message.from_user.id,
                                                                          message.from_user.first_name,
                                                                          country=country,
@@ -53,29 +54,6 @@ async def input_category(message: types.Message, state: FSMContext):
             f'Cancel news handler user {message.from_user.first_name} (id:{message.from_user.id})')
     await state.finish()
     await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
-
-
-# @dp.message_handler(state=NewsFSM.query)
-# async def input_translator(message: Message, state: FSMContext):
-#     """Get query and send news message."""
-#     async with state.proxy() as data:
-#         data['query'] = message.text.split()
-#
-#     data = await state.get_data()
-#     category = data['category'][0]
-#     # query = data['query'][0]
-#     msg = await message.answer('Wait a second, please')
-#     answer = newsview.news_view(news_dict=news.news_dict(country='ru', category=category, query=query))
-#
-#     if len(answer) > 4096:
-#         for x in range(0, len(answer), 4096):
-#             await message.answer(answer[x:x + 4096])
-#     else:
-#         await message.answer(answer)
-#
-#     await msg.delete()
-#     await state.finish()
-#     await message.answer(quoteview.quote_view(quote.quote_dict(lang='ru')), reply_markup=main_menu)
 
 
 if __name__ == '__main__':

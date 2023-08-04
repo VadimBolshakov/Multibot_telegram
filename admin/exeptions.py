@@ -34,3 +34,18 @@ class ResponseStatusNewsAPIError(Exception):
         if self.param:
             self.message = str(f'Response status NewsAPI {self.param} error. {self.message}')
         return self.message
+
+
+class ResponseTotalResultsNewsAPIError(Exception):
+    """Exception raised for null in the response totalResults from newsapi.
+
+    Attributes:
+        msg -- explanation of the error.
+    """
+
+    def __init__(self, msg: str = 'Total results is null from NewsAPI'):
+        self.message: str = msg
+        super().__init__(self.message)
+
+    def __str__(self) -> str:
+        return self.message

@@ -1,4 +1,5 @@
-import asyncio
+"""This module provides the interaction with the database."""
+from typing import Optional
 import asyncpg
 from asyncpg import Record, Connection
 import create
@@ -56,6 +57,7 @@ async def start_db() -> bool:
 async def add_user_db(user_id: int,
                       first_name: str,
                       full_name: str,
+                      lang: str = 'en',
                       status_admin: bool = False) -> bool:
     """Add the new user to the users table. Return True if user added, else False."""
     status: bool = False
@@ -64,9 +66,9 @@ async def add_user_db(user_id: int,
         conn = await asyncpg.connect(f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}')
 
         async with conn.transaction():
-            await conn.execute("""INSERT INTO users (UserId, FirstName, FullName, DateRegistration, StatusAdmin)
-                                  VALUES ($1, $2, $3, $4, $5)""",
-                               user_id, first_name, full_name, datetime.datetime.now(), status_admin)
+            await conn.execute("""INSERT INTO users (UserId, FirstName, FullName, DateRegistration, LanguageUser, StatusAdmin)
+                                  VALUES ($1, $2, $3, $4, $5, $6)""",
+                               user_id, first_name, full_name, datetime.datetime.now(), lang, status_admin)
         status = True
 
     except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError) as e:
@@ -105,8 +107,8 @@ async def add_request_db(user_id: int,
     return status
 
 
-async def get_user_db(user_id: int) -> Record | None:
-    """Get the data of user from the users' table by id."""
+async def get_user_db(user_id: int) -> Optional[Record]:
+    """Get the data of user from the users' table by id. Return None if user not found."""
     _user: Record | None = None
     conn: Connection | None = None
     try:
@@ -124,8 +126,8 @@ async def get_user_db(user_id: int) -> Record | None:
     return _user
 
 
-async def get_user_lang_db(user_id: int) -> str | None:
-    """Get the code of the user language from the users' table by id."""
+async def get_user_lang_db(user_id: int) -> Optional[str]:
+    """Get the code of the user language from the users' table by id. Return None if user not found."""
     _user: dict[str, str] | None = None
     conn: Connection | None = None
     try:
@@ -140,11 +142,15 @@ async def get_user_lang_db(user_id: int) -> str | None:
         if conn is not None:
             await conn.close()
 
+        if _user is None:
+            return None
+
     return _user['languageuser']
 
 
-async def get_user_admin_db(user_id: int) -> bool | None:
-    """Get the status of the user admin from the users' table by id. Return True if user admin, else False."""
+async def get_user_admin_db(user_id: int) -> Optional[bool]:
+    """Get the status of the user admin from the users' table by id. Return True if user admin, else False.
+    Return None if user not found."""
     _user: dict[str, bool] | None = None
     conn: Connection | None = None
     try:
@@ -159,11 +165,15 @@ async def get_user_admin_db(user_id: int) -> bool | None:
         if conn is not None:
             await conn.close()
 
+        if _user is None:
+            return None
+
     return _user['statusadmin']
 
 
-async def get_user_banned_db(user_id: int) -> bool | None:
-    """Get the status of the user banned from the users' table by id. Return True if user banned, else False."""
+async def get_user_banned_db(user_id: int) -> Optional[bool]:
+    """Get the status of the user banned from the users' table by id. Return True if user banned, else False.
+    Return None if user not found."""
     _user: dict[str, bool] | None = None
     conn: Connection | None = None
     try:
@@ -177,6 +187,9 @@ async def get_user_banned_db(user_id: int) -> bool | None:
     finally:
         if conn is not None:
             await conn.close()
+
+        if _user is None:
+            return None
 
     return _user['is_banned']
 
@@ -239,10 +252,13 @@ async def get_all_requests_db() -> list[Record]:
 
 
 async def up_user_admin_db(user_id: int) -> bool:
-    """Update the user status to admin in the users' table by id. Return True if the status is updated, False otherwise."""
+    """Change the user status to admin in the users' table by id. Return True if the status was changed, False otherwise."""
     status: bool = False
     conn: Connection | None = None
     _status_admin: bool | None = await get_user_admin_db(user_id)
+
+    if _status_admin is None:
+        return status
 
     try:
         conn = await asyncpg.connect(f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}')
@@ -266,6 +282,10 @@ async def up_user_lang_db(user_id: int, lang: str) -> bool:
     """Update the user language in the users' table by id. Return True if the language is updated, False otherwise."""
     status: bool = False
     conn: Connection | None = None
+
+    if not await get_user_lang_db(user_id):
+        return status
+
     try:
         conn = await asyncpg.connect(f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}')
 
@@ -288,6 +308,11 @@ async def up_user_banned_db(user_id: int) -> bool:
     """Update the user status to banned in the users' table by id. Return True if the user is banned, False otherwise."""
     status: bool = False
     conn: Connection | None = None
+    _user_banned: bool | None = await get_user_banned_db(user_id)
+
+    if _user_banned is None:
+        return status
+
     try:
         conn = await asyncpg.connect(f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}')
 
@@ -329,27 +354,4 @@ async def del_user_db(user_id: int) -> bool:
 
 
 if __name__ == '__main__':
-    print(asyncio.get_event_loop().run_until_complete(start_db()))
-    # print(asyncio.get_event_loop().run_until_complete(del_user_db(22222)))
-    # print(asyncio.get_event_loop().run_until_complete(del_user_db(11111)))
-    # print(asyncio.get_event_loop().run_until_complete(del_user_db(33333)))
-    print(asyncio.get_event_loop().run_until_complete(add_user_db(1661414346, 'Vadim', 'Vadim')))
-    print(asyncio.get_event_loop().run_until_complete(add_user_db(11111, 'Test1', 'Test Test1')))
-    print(asyncio.get_event_loop().run_until_complete(add_user_db(22222, 'Test2', 'Test Test2')))
-    print(asyncio.get_event_loop().run_until_complete(add_user_db(33333, 'Test3', 'Test Test3')))
-    print(asyncio.get_event_loop().run_until_complete(add_request_db(11111, 'Test', 100, True)))
-    print(asyncio.get_event_loop().run_until_complete(get_user_db(11111)))
-    print(asyncio.get_event_loop().run_until_complete(get_user_db(22222)))
-    print(asyncio.get_event_loop().run_until_complete(get_all_users_db()))
-    print(asyncio.get_event_loop().run_until_complete(get_requests_count_db()))
-    print(asyncio.get_event_loop().run_until_complete(get_all_requests_db()))
-    print(asyncio.get_event_loop().run_until_complete(get_user_lang_db(11111)))
-    print(asyncio.get_event_loop().run_until_complete(up_user_admin_db(11111)))
-    print(asyncio.get_event_loop().run_until_complete(up_user_lang_db(11111, 'ru')))
-    print(asyncio.get_event_loop().run_until_complete(up_user_banned_db(11111)))
-    print(asyncio.get_event_loop().run_until_complete(get_user_db(11111)))
-    print(asyncio.get_event_loop().run_until_complete(get_user_admin_db(11111)))
-    print(asyncio.get_event_loop().run_until_complete(get_user_lang_db(11111)))
-    print(asyncio.get_event_loop().run_until_complete(get_user_banned_db(11111)))
-    print(asyncio.get_event_loop().run_until_complete(up_user_admin_db(11111)))
-    print(asyncio.get_event_loop().run_until_complete(get_user_admin_db(11111)))
+    pass

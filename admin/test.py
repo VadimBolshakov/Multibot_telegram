@@ -15,5 +15,12 @@ if __name__ == '__main__':
         print('True')
     else:
         print('False')
+    print(var)
+
+    text = 'ttt'
+    if text == ('ttt' | 'ppp'):
+        print('True')
+    else:
+        print('False')
 
     # send_message('Hello, world!')

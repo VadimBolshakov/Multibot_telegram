@@ -10,7 +10,7 @@ from admin import exeptions as ex
 import datetime
 
 
-def get_news(country: str = 'en',
+def get_news(country: str = '',
              sources: str = 'bbc-news',
              category: str = 'general',
              query: Optional[str] = None,
@@ -34,6 +34,9 @@ def get_news(country: str = 'en',
         if response_news.json()['status'] == 'error':
             raise ex.ResponseStatusNewsAPIError(response_news.json()['code'], response_news.json()['message'])
 
+        if response_news.json()['totalResults'] == 0:
+            raise ex.ResponseTotalResultsNewsAPIError()
+
         if not response_news:
             raise ex.ResponseStatusError(response_news.status_code)
 
@@ -42,14 +45,15 @@ def get_news(country: str = 'en',
         #         dump(data_news, file, indent=4, ensure_ascii=False)
         return data_new
 
-    except (requests.RequestException, JSONDecodeError, ex.ResponseStatusError, ex.ResponseStatusNewsAPIError) as e:
+    except (requests.RequestException, JSONDecodeError, ex.ResponseStatusError,
+            ex.ResponseStatusNewsAPIError, ex.ResponseTotalResultsNewsAPIError) as e:
         logger.exception(f'NewsError: {str(e)}')
         return None
 
 
 async def news_dict(user_id: int,
                     first_name: str,
-                    country: str = 'ru',
+                    country: str = '',
                     category: str = 'general',
                     query: Optional[str] = None) -> dict[int | None, list[float | str | None]] | str:
     """Return dictionary of news."""
