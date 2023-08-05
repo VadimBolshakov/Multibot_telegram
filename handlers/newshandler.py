@@ -1,11 +1,11 @@
 """Handler for news."""
-
+from asyncio import sleep
 from aiogram import types
 from create import dp
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from databases import database
-from util.keyboards import main_menu, category_menu
+from util.keyboards import main_menu, news_category_menu, news_query_menu
 from view import newsview, quoteview
 from models import news, quote
 from admin.logsetting import logger
@@ -19,7 +19,7 @@ class NewsFSM(StatesGroup):
 # @dp.message_handler(state=None)
 async def select_category(message: types.Message):
     """Select category and set FSM state."""
-    await message.answer('Select category or press "Cancel" for exit', reply_markup=category_menu)
+    await message.answer('Select category or press "Cancel" for exit', reply_markup=news_category_menu)
     """Set FSM state."""
     await NewsFSM.category.set()
 
@@ -30,23 +30,51 @@ async def input_category(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['category'] = message.text.lower().split()
     if data['category'][0] in ('business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology'):
+        await message.answer('Input text to query (ex. football) or press "Cancel" for exit\n'
+                             'If you want to see all news (without query), input "All"\n'
+                             'Note. for English is a better input query, otherwise, world news will be shown.',
+                             reply_markup=news_query_menu)
+        await NewsFSM.next()
+    else:
+        await message.answer('I don\'t understand you', reply_markup=types.ReplyKeyboardRemove())
+        logger.info(
+            f'Cancel news handler user {message.from_user.first_name} (id:{message.from_user.id})')
+        await state.finish()
+        await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
+
+
+@dp.message_handler(state=NewsFSM.query)
+async def input_query(message: types.Message, state: FSMContext):
+    """Set query and send news."""
+    async with state.proxy() as data:
+        data['query'] = message.text.lower().split()
+    if data['query'][0] != 'cancel':
         msg = await message.answer('Wait a second, please', reply_markup=types.ReplyKeyboardRemove())
         category = data['category'][0]
         country = await database.get_user_lang_db(user_id=int(message.from_user.id))
         if country == 'en':
-            country = 'us'
-        answer = newsview.news_view(news_dictionary=await news.news_dict(message.from_user.id,
-                                                                         message.from_user.first_name,
-                                                                         country=country,
-                                                                         category=category))
-
-        if len(answer) > 4096:
-            for x in range(0, len(answer), 4096):
-                await message.answer(answer[x:x + 4096])
-        else:
-            await message.answer(answer)
-
+            country = ''
+        query = data['query'][0]
+        if query == 'all':
+            query = None
+        news_dictionary = await news.news_dict(message.from_user.id,
+                                               message.from_user.first_name,
+                                               country=country,
+                                               category=category,
+                                               query=query)
         await msg.delete()
+        for item_news in newsview.news_view(news_dictionary):
+
+            if len(item_news) > 4096:
+                for x in range(0, len(item_news), 4096):
+                    await message.answer(item_news[x:x + 4096])
+            else:
+                await message.answer(item_news)
+
+            await sleep(.1)
+
+        logger.info(
+            f'Exit News handler user {message.from_user.first_name} (id:{message.from_user.id})')
 
     else:
         await message.answer('I don\'t understand you', reply_markup=types.ReplyKeyboardRemove())

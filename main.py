@@ -7,6 +7,7 @@ from create import dp, loop, PASSWORD
 from admin.logsetting import logger
 from databases import database
 from middlewares import middleware
+from middlewares.langmiddleware import setup_middleware
 from aiogram.utils import executor
 from handlers import general, start, adminhandler, help, changelang, reset
 
@@ -17,6 +18,9 @@ async def on_startup(_):
     await database.start_db()
     logger.info('DB created')
     dp.middleware.setup(middleware.ManageMiddleware(PASSWORD))
+    i18n = setup_middleware(dp)
+
+    _ = i18n.gettext
 
 # loop.run_until_complete(database.start_db())
 start.register_handlers_start(dp)
@@ -30,6 +34,7 @@ general.register_handlers_general(dp)
 async def on_shutdown(_):
     await dp.storage.wait_closed()
     await dp.storage.close()
+    await dp.wait_closed()
 
 
 if __name__ == '__main__':

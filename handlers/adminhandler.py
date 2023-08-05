@@ -1,16 +1,16 @@
+"""Admin handler."""
 import asyncio
 
-from create import bot
-from admin.logsetting import logger
+from aiogram import types
 from aiogram.dispatcher import Dispatcher, FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram import types
-from admin import smtp
-from databases import database
-from datetime import datetime
-from create import LOG_FILE
-from admin import checking
 from asyncpg import Record
+
+from admin import checking
+from admin.logsetting import logger
+from create import bot
+from databases import database
+from models.admin import AdminResponse
 
 
 class AdminFSM(StatesGroup):
@@ -37,46 +37,28 @@ async def admin(message: types.Message):
 @checking.check_admin
 async def send_log(message: types.Message):
     """Send log file to admin in telegram."""
-    try:
-        with open(LOG_FILE, 'rb') as file:
-            await message.answer_document(file)
-    except FileNotFoundError as e:
-        logger.exception(f'Error: {str(e)}')
-        await message.answer('Log file not found')
-    except Exception as e:
-        logger.exception(f'Error: {str(e)}')
-        await message.answer('Error send log file')
+    await AdminResponse(message).send_log()
 
 
 # @dp.message_handler(commands=['getemail'])
 @checking.check_admin
 async def send_email_lod(message: types.Message):
     """Send log file to admin in email."""
-    subject = f'Log file by {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
-    if smtp.send_email(subject=subject, file=LOG_FILE, attach_file=True):
-        await message.answer('Log file send to email')
-    else:
-        await message.answer('Error send log file to email')
+    await AdminResponse(message).send_email_lod()
 
 
 # @dp.message_handler(commands=['getusers'])
 @checking.check_admin
 async def send_users(message: types.Message):
     """Send id and users of this chat to admin."""
-    users: list[Record] = await database.get_all_users_db()
-    if not users:
-        await message.answer('Users not found')
-        return
-    for user in users:
-        await message.answer(f'id= {user.get("userid")} name: {user.get("firstname")}')
+    await AdminResponse(message).send_users()
 
 
 # @dp.message_handler(commands=['getrequests'])
 @checking.check_admin
 async def send_requests(message: types.Message):
     """Send number of requests to admin."""
-    requests = await database.get_requests_count_db()
-    await message.answer(f'Number of  requests is {requests}')
+    await AdminResponse(message).send_requests()
 
 
 # @dp.message_handler(commands=['sendall'], state=None)
@@ -191,8 +173,6 @@ async def status_admin(message: types.Message, state: FSMContext):
         await message.answer(f'Error user {user_id} change status admin')
 
     await state.finish()
-
-
 
 
 def register_handlers_admin(dp: Dispatcher):

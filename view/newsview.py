@@ -5,7 +5,7 @@ def news_view(news_dictionary: dict[int | None, list[float | str | None]] | str)
     if isinstance(news_dictionary, str):
         return news_dictionary
     else:
-        result = ''
+        # result = ''
         for key, value in news_dictionary.items():
-            result += f'\n'.join([f'    {i}' for i in value if i is not None])
-        return result
+            yield f'\n'.join([f'    {i}' for i in value if i is not None])
+            # result += f'\n'.join([f'    {i}' for i in value if i is not None]) + '\n'

@@ -6,7 +6,7 @@ from databases import database
 
 def check_registration(fn):
     """Checking the registration user"""
-    async def wrapper(message: types.Message):
+    async def wrapper(message: types.Message, *args, **kwargs):
         user_first_name = message.from_user.first_name
         user_id = message.from_user.id
         if await database.get_user_db(message.from_user.id) is None:
@@ -17,7 +17,7 @@ def check_registration(fn):
         
         logger.info(f'Passed the registration check user {user_first_name} (id:{user_id})')
 
-        return await fn(message)
+        return await fn(*args, **kwargs)
     return wrapper
 
 

@@ -7,7 +7,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardBu
 #               InlineKeyboardButton('Currency', callback_data='currency_ru'),
 #               InlineKeyboardButton('News', callback_data='news'),
 #               InlineKeyboardButton('Jokes', callback_data='jokes')
-#               ).add(InlineKeyboardButton('Chat GPT', callback_data='chat_gpt'))
+#               ).add(InlineKeyboardButton('ChatGPT', callback_data='chat_gpt'))
 
 main_menu = InlineKeyboardMarkup(row_width=2)
 main_menu.add(InlineKeyboardButton('Погода', callback_data='weather'),
@@ -54,10 +54,10 @@ translate_menu.row(button_1, button_2)\
 
 weather_menu_local = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 button_1 = KeyboardButton('Get location', request_location=True)
-# button_2 = KeyboardButton('Enter city')
+button_2 = KeyboardButton('Enter city')
 button_3 = KeyboardButton("Get by IP")
 button_4 = KeyboardButton("Cancel")
-weather_menu_local.add(button_1, button_3, button_4)
+weather_menu_local.add(button_1, button_2, button_3).add(button_4)
 
 
 weather_period_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
@@ -75,7 +75,7 @@ button_3 = KeyboardButton("Cancel")
 weather_volume_menu.add(button_1, button_2).add(button_3)
 
 
-category_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+news_category_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 button_1 = KeyboardButton('Business')
 button_2 = KeyboardButton('Entertainment')
 button_3 = KeyboardButton("General")
@@ -84,11 +84,15 @@ button_5 = KeyboardButton('Science')
 button_6 = KeyboardButton('Sports')
 button_7 = KeyboardButton('Technology')
 button_8 = KeyboardButton("Cancel")
-category_menu.add(button_1, button_2)\
+news_category_menu.add(button_1, button_2)\
     .row(button_3, button_4)\
     .row(button_5, button_6)\
     .add(button_7, button_8)
 
+news_query_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+button_1 = KeyboardButton('All')
+button_2 = KeyboardButton('Cancel')
+news_query_menu.add(button_1, button_2)
 
 language_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 button_1 = KeyboardButton('English')

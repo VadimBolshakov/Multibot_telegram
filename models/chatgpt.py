@@ -52,7 +52,10 @@ async def chatgpt_dict(user_id: int, first_name: str, prompt: str) -> dict[str, 
 
     _chatgpt = {'answer': data_chatgpt['choices'][0]['text']}
 
-    await database.add_request_db(user_id=user_id, type_request='chatgpt', num_tokens=data_chatgpt['usage']['total_tokens'], status_request=True)
+    await database.add_request_db(user_id=user_id,
+                                  type_request='chatgpt',
+                                  num_tokens=data_chatgpt['usage']['total_tokens'],
+                                  status_request=True)
     logger.info(
         f'Exit from chatgpt model user {first_name} (id:{user_id})')
 

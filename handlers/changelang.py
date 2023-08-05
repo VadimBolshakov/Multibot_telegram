@@ -16,8 +16,8 @@ async def select_lang(message: types.Message):
     """Change language."""
     logger.info(
         f'Entry to select language handler user {message.from_user.first_name} (id:{message.from_user.id})')
-    await message.answer(f'Ваш текущий язык / Your are currently language : {await database.get_user_lang_db(message.from_user.id)} \n'
-                         f' Выберите язык / Choose language', reply_markup=language_menu)
+    await message.answer(f'Your are currently language : {await database.get_user_lang_db(message.from_user.id)} \n'
+                         f' Choose language', reply_markup=language_menu)
     # await message.answer('Choose language', reply_markup=keyboard_lang)
     await ChangeLangFSM.language.set()
 

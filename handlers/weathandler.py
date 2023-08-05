@@ -1,18 +1,20 @@
 """Handler for forecast weather function."""
 
 from aiogram import types
+
 from create import dp
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from databases import database
 from util.keyboards import main_menu, weather_period_menu, weather_volume_menu, weather_menu_local
 from view import weatherview, quoteview
-from models import openweather, quote, locbyip
+from models import openweather, quote, locbyip, citydata
 from admin.logsetting import logger
 
 
 class WeatherFSM(StatesGroup):
     location = State()
+    city = State()
     period = State()
     volume = State()
 
@@ -50,6 +52,22 @@ async def select_period(message: types.Message, state: FSMContext):
                            f'Exit weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
             await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
             return
+
+    elif message.text == 'Enter city':
+        await message.answer('Enter city name or press "Cancel" for exit', reply_markup=types.ReplyKeyboardMarkup(
+            keyboard=[[types.KeyboardButton('Cancel')]], resize_keyboard=True))
+        """Set FSM state."""
+        await WeatherFSM.city.set()
+        return
+
+    elif message.text == 'Cancel':
+        await message.answer('Cancel', reply_markup=types.ReplyKeyboardRemove())
+        await state.finish()
+        logger.info(
+            f'Cancel weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
+        await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
+        return
+
     else:
         await message.answer('I don\'t understand you', reply_markup=types.ReplyKeyboardRemove())
         await state.finish()
@@ -64,6 +82,39 @@ async def select_period(message: types.Message, state: FSMContext):
     await message.answer('Select forecast period or press "Cancel" for exit', reply_markup=weather_period_menu)
     """Set FSM state."""
     await WeatherFSM.period.set()
+
+
+@dp.message_handler(content_types=types.ContentType.TEXT, state=WeatherFSM.city)
+async def input_city(message: types.Message, state: FSMContext):
+    """Set city and suggest select of forecast period."""
+    async with state.proxy() as data:
+        data['city'] = message.text.lower().split()
+    if data['city'][0] == 'cancel':
+        await message.answer('Cancel', reply_markup=types.ReplyKeyboardRemove())
+        await state.finish()
+        logger.info(
+            f'Cancel weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
+        await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
+        return
+    else:
+        city_data = citydata.location_dict(city=data['city'][0])
+        if isinstance(city_data, dict):
+            async with state.proxy() as data:
+                data['latitude'] = city_data['latitude']
+                data['longitude'] = city_data['longitude']
+        else:
+            await message.answer(city_data, reply_markup=types.ReplyKeyboardRemove())
+            await state.finish()
+            logger.warning(f'Location by city error. '
+                           f'Exit weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
+            await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
+            return
+
+        await message.answer('Your city has been received:\n '
+                             'city: ' + str(data['city'][0]), reply_markup=types.ReplyKeyboardRemove())
+        await message.answer('Select forecast period or press "Cancel" for exit', reply_markup=weather_period_menu)
+        """Set FSM state."""
+        await WeatherFSM.period.set()
 
 
 @dp.message_handler(content_types=types.ContentType.TEXT, state=WeatherFSM.period)

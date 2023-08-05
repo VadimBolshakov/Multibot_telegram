@@ -1,10 +1,12 @@
 """This module provides the interaction with the database."""
+import datetime
 from typing import Optional
+
 import asyncpg
 from asyncpg import Record, Connection
+
 import create
 from admin.logsetting import logger
-import datetime
 
 DB_NAME = create.DB_NAME
 DB_USER = create.DB_USER

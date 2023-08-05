@@ -296,7 +296,8 @@ def parse_alerts(alerts_element: dict, timezone_offset: int, show_long: bool = T
         alerts_start = datetime.utcfromtimestamp(alerts_element['start'] + timezone_offset).strftime('%Y-%m-%d %H:%M')
         alerts_end = datetime.utcfromtimestamp(alerts_element['end'] + timezone_offset).strftime('%Y-%m-%d %H:%M')
         alerts_description = alerts_element['description']
-        alerts.append(f'{alerts_description}. According to the {alerts_sender_name} from {alerts_start} to {alerts_end} {alerts_event} is expected.')
+        alerts.append(f'{alerts_description}. '
+                      f'According to the {alerts_sender_name} from {alerts_start} to {alerts_end} {alerts_event} is expected.')
     if 'tags' in alerts_element:
         alerts_tags = alerts_element['tags']
 

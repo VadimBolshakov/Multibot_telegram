@@ -24,7 +24,7 @@ async def select_question(message: types.Message):
 
 @dp.message_handler(state=NewsFSM.question)
 async def input_question(message: types.Message, state: FSMContext):
-    """Get some question and request an answer by Chat GPT."""
+    """Get some question and request an answer by ChatGPT."""
     async with state.proxy() as data:
         data['question'] = message.text
     if data['question'] != 'q' and data['question'] != 'Q' and data['question'] != 'й' and data['question'] != 'Й':

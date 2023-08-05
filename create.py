@@ -6,7 +6,6 @@ from dotenv import load_dotenv, find_dotenv
 from aiogram import Bot
 from aiogram.dispatcher import Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from middlewares.language_middleware import setup_middleware
 
 load_dotenv(find_dotenv())
 
@@ -35,11 +34,10 @@ BASE_DIR = Path(__file__).parent
 LOCALES_DIR = BASE_DIR / 'locales'
 
 
-loop = asyncio.get_event_loop()
+# loop = asyncio.new_event_loop()
+# loop = asyncio.get_event_loop()
+loop = None
 bot = Bot(TOKEN_BOT, loop=loop)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
-i18n = setup_middleware(dp)
-
-_ = i18n.gettext

@@ -1,26 +1,28 @@
 import requests
-from create import TOKEN_BOT, CHAT_ID
+# from create import TOKEN_BOT, CHAT_ID
+#
+#
+# def send_message(message: str) -> None:
+#     """Send message to the Telegram channel."""
+#     url = f'https://api.telegram.org/bot{TOKEN_BOT}/sendMessage'
+#     data = {'chat_id': CHAT_ID, 'text': message}
+#     requests.post(url, data=data)
+# Create a generator output the dict_test.
+def generator_dict(dict_test: dict) -> str:
+    """Generator output the dict_test."""
+    for key, value in dict_test.items():
+        yield f'{key} {value}'
 
-
-def send_message(message: str) -> None:
-    """Send message to the Telegram channel."""
-    url = f'https://api.telegram.org/bot{TOKEN_BOT}/sendMessage'
-    data = {'chat_id': CHAT_ID, 'text': message}
-    requests.post(url, data=data)
 
 
 if __name__ == '__main__':
-    var = None
-    if var:
-        print('True')
-    else:
-        print('False')
-    print(var)
+    dict_test = {'a': 1, 'b': 2, 'c': 3}
+    print(dict_test)
+    print(str(dict_test))
+    print(len(dict_test))
+    for key, value in dict_test.items():
+        print(key, value)
 
-    text = 'ttt'
-    if text == ('ttt' | 'ppp'):
-        print('True')
-    else:
-        print('False')
+    for i in generator_dict(dict_test):
+        print(i)
 
-    # send_message('Hello, world!')
