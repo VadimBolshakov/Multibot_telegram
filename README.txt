@@ -16,3 +16,16 @@ command /language to change language. You can use this command to change languag
 в программе реаализованна парадигма MVC. the all input requests processing in handlers (handlers module) and seng to model (model module).
 in model module the all requests processing and send to view (view module).
 
+in view module the all output requests processing and send to handlers (handlers module).
+
+in handlers module the all input requests processing and send to model (model module).
+
+in model module the all requests processing and send to view (view module).
+
+in view module the all output requests processing and send to handlers (handlers module).
+
+in currency module the requests processing make through two different channels because there are two different API for two languages, English and russinan
+and using urllib module, not aiohttp module.
+
+middleware description
+loggin - send to chat admin

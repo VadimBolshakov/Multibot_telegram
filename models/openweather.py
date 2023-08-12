@@ -1,12 +1,11 @@
 import asyncio
-import requests
+import aiohttp
 import admin.exeptions as ex
 from admin.logsetting import logger
 from create import TOKEN_OPENWEATHER
 from json import JSONDecodeError
-from typing import Optional
-from util.weatherparse_ru import parse_daily, parse_hourly, parse_current, parse_alerts, parse_minutely
 from databases import database
+from typing import Optional, Any
 
 
 def get_excluded(period: str) -> str:
@@ -23,12 +22,12 @@ def get_excluded(period: str) -> str:
     return exclude
 
 
-def get_weather(lat: float,
-                lon: float,
-                units: str = 'metric',
-                lang: str = 'en',
-                exclude: str = '',
-                appid: str = TOKEN_OPENWEATHER) -> Optional[dict[str, str | int | float | list | dict]]:
+async def get_weather(lat: float,
+                      lon: float,
+                      units: str = 'metric',
+                      lang: str = 'en',
+                      exclude: str = '',
+                      appid: str = TOKEN_OPENWEATHER) -> Optional[dict[str, Any]]:
     """Get weather from OpenWeatherMap API."""
     params_weather = {
         'lat': lat,
@@ -45,17 +44,16 @@ def get_weather(lat: float,
     url_weather = 'https://api.openweathermap.org/data/3.0/onecall?'
 
     try:
-        response_weather = requests.get(url=url_weather, params=params_weather)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url_weather, params=params_weather) as response:
+                if response.status != 200:
+                    raise ex.ResponseStatusError(response.status)
 
-        if not response_weather:
-            raise ex.ResponseStatusError(response_weather.status_code)
+                data_weather = await response.json()
 
-        data_weather = response_weather.json()
-        # with open('weather-4.json', 'w') as file:
-        #         dump(data_weather, file, indent=4, ensure_ascii=False)
-        return data_weather
+                return data_weather
 
-    except (requests.RequestException, JSONDecodeError, ex.ResponseStatusError) as e:
+    except (aiohttp.ClientConnectorError, JSONDecodeError, ex.ResponseStatusError) as e:
         logger.exception(f'WeatherError: {str(e)}')
         return None
 
@@ -68,11 +66,17 @@ async def weather_dict(user_id: int,
                        period: str = '',
                        volume: str = 'short') -> dict[str, list] | str:
     """Parse weather from JSON-file and return dict."""
+    # Import necessary modules for parsing weather
+    if lang == 'ru':
+        from util.weatherparse_ru import parse_weather, parse_minutely, parse_alerts
+    else:
+        from util.weatherparse_en import parse_weather, parse_minutely, parse_alerts
+
     exclude = get_excluded(period)
 
     show_long = True if volume == 'long' else False
 
-    data_weather = get_weather(lat=lat, lon=lon, lang=lang, exclude=exclude)
+    data_weather = await get_weather(lat=lat, lon=lon, lang=lang, exclude=exclude)
 
     if not data_weather:
         logger.warning(f'WeatherError. User {first_name} (id:{user_id})')
@@ -86,23 +90,23 @@ async def weather_dict(user_id: int,
 
     weather['timezone'] = [time_zone]
 
-    if 'current' in data_weather:
-        weather['current'] = parse_current(data_weather['current'], timezone_offset, show_long)
+    if data_weather.get('current'):
+        weather['current'] = parse_weather(data_weather['current'], timezone_offset, show_long)
 
-    if 'minutely' in data_weather:
+    if data_weather.get('minutely'):
         weather['minutely'] = []
         for minutely_values in data_weather['minutely']:
             weather['minutely'].append(parse_minutely(minutely_values, timezone_offset, show_long))
 
-    if 'hourly' in data_weather:
+    if data_weather.get('hourly'):
         weather['hourly'] = []
         for hourly_values in data_weather['hourly']:
-            weather['hourly'].append(parse_hourly(hourly_values, timezone_offset, show_long))
+            weather['hourly'].append(parse_weather(hourly_values, timezone_offset, show_long))
 
-    if 'daily' in data_weather:
+    if data_weather.get('daily'):
         weather['daily'] = []
         for daily_values in data_weather['daily']:
-            weather['daily'].append(parse_daily(daily_values, timezone_offset, show_long))
+            weather['daily'].append(parse_weather(daily_values, timezone_offset, show_long))
 
     if 'alerts' in data_weather:
         weather['alerts'] = []

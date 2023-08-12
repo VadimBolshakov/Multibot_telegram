@@ -11,6 +11,7 @@ from admin.logsetting import logger
 from create import bot
 from databases import database
 from models.admin import AdminResponse
+from middlewares import AdminFilter
 
 
 class AdminFSM(StatesGroup):
@@ -55,7 +56,7 @@ async def send_users(message: types.Message):
 
 
 # @dp.message_handler(commands=['getrequests'])
-@checking.check_admin
+# @checking.check_admin
 async def send_requests(message: types.Message):
     """Send number of requests to admin."""
     await AdminResponse(message).send_requests()
@@ -180,7 +181,7 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(send_log, commands=['getlog'])
     dp.register_message_handler(send_email_lod, commands=['getemail'])
     dp.register_message_handler(send_users, commands=['getusers'])
-    dp.register_message_handler(send_requests, commands=['getrequests'])
+    dp.register_message_handler(send_requests, AdminFilter(), commands=['getrequests'])
     dp.register_message_handler(send_all, commands=['sendall'], state=None)
     dp.register_message_handler(send_all_message, state=AdminFSM.broadcast)
     dp.register_message_handler(baning_user_id, commands=['banneruser'], state=None)

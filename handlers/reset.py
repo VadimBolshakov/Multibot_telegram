@@ -3,18 +3,21 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from admin import checking
 from admin.logsetting import logger
+from create import dp
 from util.keyboards import main_menu
 
 
 # @dp.message_handler(commands=['reset'], state='*')
-@checking.check_registration
 async def command_reset(message: types.Message, state: FSMContext):
     """Check the user in the database and reset the allstate him."""
     await message.answer('Reset all state', reply_markup=types.ReplyKeyboardRemove())
-    await state.finish()
-    await message.answer('The allstate reset', reply_markup=main_menu)
-    logger.info(
-        f'Reset the allstate user {message.from_user.first_name} (id:{message.from_user.id})')
+    if dp.current_state(user=message.from_user.id):
+        await state.finish()
+        await message.answer('The allstate reset', reply_markup=main_menu)
+        logger.info(
+            f'Reset the allstate user {message.from_user.first_name} (id:{message.from_user.id})')
+    else:
+        await message.answer('The currency state not found', reply_markup=main_menu)
 
 
 def register_handlers_reset(dp: Dispatcher):

@@ -10,6 +10,7 @@ from create import bot
 from admin.logsetting import logger
 
 
+
 # from aiogram.contrib.middlewares.i18n import I18nMiddleware
 
 
@@ -71,13 +72,13 @@ async def chat_gpt(callback_query: CallbackQuery):
     logger.info(
         f'Entry to chat_gpt handler user {callback_query.from_user.first_name} (id:{callback_query.from_user.id})')
     await callback_query.answer('Please, wait')
-    await callback_query.message.answer('Спроси меня что-нибудь')
+    await callback_query.message.answer('Ask me a everything you want')
     await chatgpthandler.select_question(callback_query.message)
 
 
 # @dp.message_handler(content_types=ContentTypes.TEXT)
 async def text(message: Message):
-    await message.answer('Pres any key', reply_markup=ReplyKeyboardRemove())
+    await message.answer(f'Hi, you typed {message.text}', reply_markup=ReplyKeyboardRemove())
 
 
 # @dp.message_handler(content_types=types.ContentType.ANY, state='*')

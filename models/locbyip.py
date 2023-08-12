@@ -1,10 +1,10 @@
-import requests
+import aiohttp
 import admin.exeptions as ex
 from admin.logsetting import logger
 from json import JSONDecodeError
 
 
-def get_location_by_ip(ip: str = '') -> dict[str, str] | None:
+async def get_location_by_ip(ip: str = '') -> dict[str, str] | None:
     """Get location by IP."""
     # try:
     #     response_location = requests.get(f'http://ip-api.com/json/{ip}?fields=lat,lon')
@@ -22,21 +22,23 @@ def get_location_by_ip(ip: str = '') -> dict[str, str] | None:
     url = 'http://ipinfo.io/json'
 
     try:
-        response_location = requests.get(url)
-        if not response_location:
-            raise ex.ResponseStatusError(response_location.status_code)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                if response.status != 200:
+                    raise ex.ResponseStatusError(response.status)
 
-        data_location = response_location.json()
-        return data_location
+                data_location = await response.json()
 
-    except (requests.RequestException, JSONDecodeError, ex.ResponseStatusError) as e:
+                return data_location
+
+    except (aiohttp.ClientConnectorError, JSONDecodeError, ex.ResponseStatusError) as e:
         logger.exception(f'LocationError: {str(e)}')
         return None
 
 
-def location_dict(ip: str = '') -> dict[str, float | str] | str:
+async def location_dict(ip: str = '') -> dict[str, float | str] | str:
     """Parse location from JSON-file and return dict."""
-    data_location = get_location_by_ip(ip)
+    data_location = await get_location_by_ip(ip)
     if not data_location:
         return 'Sorry, but we have not information about your location.'
 

@@ -1,6 +1,5 @@
 import asyncio
-
-import requests
+import aiohttp
 from json import JSONDecodeError
 from databases import database
 from admin.logsetting import logger
@@ -10,7 +9,7 @@ from admin import exeptions as ex
 import datetime
 
 
-def get_news(country: str = '',
+async def get_news(country: str = '',
              sources: str = 'bbc-news',
              category: str = 'general',
              query: Optional[str] = None,
@@ -28,27 +27,29 @@ def get_news(country: str = '',
         params_newsapi['q'] = query
 
     url_newsapi = 'https://newsapi.org/v2/top-headlines'
+
     try:
-        response_news = requests.get(url=url_newsapi, params=params_newsapi)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url_newsapi, params=params_newsapi) as response:
 
-        if response_news.json()['status'] == 'error':
-            raise ex.ResponseStatusNewsAPIError(response_news.json()['code'], response_news.json()['message'])
+                if response.status != 200:
+                    raise ex.ResponseStatusError(response.status)
 
-        if response_news.json()['totalResults'] == 0:
-            raise ex.ResponseTotalResultsNewsAPIError()
+                data_newsapi = await response.json()
 
-        if not response_news:
-            raise ex.ResponseStatusError(response_news.status_code)
+                if data_newsapi['status'] == 'error':
+                    raise ex.ResponseStatusNewsAPIError(response.json()['code'], response.json()['message'])
 
-        data_new = response_news.json()
-        # with open('weather-5.json', 'w') as file:
-        #         dump(data_news, file, indent=4, ensure_ascii=False)
-        return data_new
+                if data_newsapi['totalResults'] == 0:
+                    raise ex.ResponseTotalResultsNewsAPIError()
 
-    except (requests.RequestException, JSONDecodeError, ex.ResponseStatusError,
+                return data_newsapi
+
+    except (aiohttp.ClientConnectorError, JSONDecodeError, ex.ResponseStatusError,
             ex.ResponseStatusNewsAPIError, ex.ResponseTotalResultsNewsAPIError) as e:
         logger.exception(f'NewsError: {str(e)}')
         return None
+
 
 
 async def news_dict(user_id: int,
@@ -57,7 +58,7 @@ async def news_dict(user_id: int,
                     category: str = 'general',
                     query: Optional[str] = None) -> dict[int | None, list[float | str | None]] | str:
     """Return dictionary of news."""
-    data_news = get_news(country=country, category=category, query=query)
+    data_news = await get_news(country=country, category=category, query=query)
     if not data_news:
         logger.warning(f'NewsError. User {first_name} (id:{user_id})')
         await database.add_request_db(user_id=user_id, type_request='news', num_tokens=0, status_request=False)

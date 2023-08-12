@@ -1,15 +1,14 @@
 import asyncio
 
-import requests
+import aiohttp
 from json import JSONDecodeError
-# from json import dump
 from admin.logsetting import logger
 from typing import Optional
 from admin import exeptions as ex
 from databases import database
 
 
-def get_quote(lang: str = 'en') -> Optional[dict[str, str | None]]:
+async def get_quote(lang: str = 'en') -> Optional[dict[str, str | None]]:
     """Get quote from http://forismatic.com/ru/api/."""
     params_quote = {
         'method': 'getQuote',
@@ -20,17 +19,16 @@ def get_quote(lang: str = 'en') -> Optional[dict[str, str | None]]:
 
     url_quote = 'http://api.forismatic.com/api/1.0/'
     try:
-        response_quote = requests.get(url=url_quote, params=params_quote)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url_quote, params=params_quote) as response:
+                if response.status != 200:
+                    raise ex.ResponseStatusError(response.status)
 
-        if not response_quote:
-            raise ex.ResponseStatusError(response_quote.status_code)
+                data_quote = await response.json()
 
-        data_quote = response_quote.json()
-        # with open('quote.json', 'w') as file:
-        #         dump(data_news, file, indent=4, ensure_ascii=False)
-        return data_quote
+                return data_quote
 
-    except (requests.RequestException, JSONDecodeError, ex.ResponseStatusError) as e:
+    except (aiohttp.ClientConnectorError, JSONDecodeError, ex.ResponseStatusError) as e:
         logger.exception(f'QuoteError: {str(e)}')
         return None
 
@@ -38,7 +36,7 @@ def get_quote(lang: str = 'en') -> Optional[dict[str, str | None]]:
 async def quote_dict(user_id) -> dict[str, str | None] | str:
     """Return quote."""
     lang = await database.get_user_lang_db(user_id=int(user_id))
-    _quote = get_quote(lang)
+    _quote = await get_quote(lang)
     if _quote is None:
         return 'Error: quote not found'
     else:

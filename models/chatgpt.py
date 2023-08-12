@@ -1,6 +1,6 @@
 import asyncio
-
-import requests
+import aiohttp
+from json import JSONDecodeError
 from admin import exeptions as ex
 from admin.logsetting import logger
 from databases import database
@@ -8,7 +8,7 @@ from create import GPT_API_KEY
 from typing import Optional
 
 
-def get_chatgpt(prompt: str) -> Optional[dict]:
+async def get_chatgpt(prompt: str) -> Optional[dict]:
     """Get answer from ChatGPT API."""
     json = {
         'model': 'text-davinci-003',  # 'davinci' is the default
@@ -28,22 +28,36 @@ def get_chatgpt(prompt: str) -> Optional[dict]:
     }
 
     try:
-        response_chatgpt = requests.post(url=url, json=json, headers=headers)
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url=url, json=json, headers=headers) as response:
+                if response.status != 200:
+                    raise ex.ResponseStatusError(response.status)
 
-        if not response_chatgpt:
-            raise ex.ResponseStatusError(response_chatgpt.status_code)
+                data_chatgpt = await response.json()
 
-        data_chatgpt = response_chatgpt.json()
-        return data_chatgpt
+                return data_chatgpt
 
-    except (requests.RequestException, ex.ResponseStatusError) as e:
-        logger.exception(f'Chatgpt: {str(e)}')
+    except (aiohttp.ClientConnectorError, JSONDecodeError, ex.ResponseStatusError) as e:
+        logger.exception(f'ChatgptError: {str(e)}')
         return None
+
+
+    #     response_chatgpt = requests.post(url=url, json=json, headers=headers)
+    #
+    #     if not response_chatgpt:
+    #         raise ex.ResponseStatusError(response_chatgpt.status_code)
+    #
+    #     data_chatgpt = response_chatgpt.json()
+    #     return data_chatgpt
+    #
+    # except (requests.RequestException, ex.ResponseStatusError) as e:
+    #     logger.exception(f'Chatgpt: {str(e)}')
+    #     return None
 
 
 async def chatgpt_dict(user_id: int, first_name: str, prompt: str) -> dict[str, str] | str:
     """Return dict with answer from ChatGPT API."""
-    data_chatgpt = get_chatgpt(prompt)
+    data_chatgpt = await get_chatgpt(prompt)
 
     if data_chatgpt is None:
         logger.warning(f'ChatgptError. User {first_name} (id:{user_id})')

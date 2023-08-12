@@ -27,6 +27,7 @@ TOKEN_NEWSAPI = os.getenv('TOKEN_NEWSAPI')
 TOKEN_GOOGLE_TRANSLATE = os.getenv('TOKEN_GOOGLE_TRANSLATE')
 TOKEN_CURRENCYLAYER = os.getenv('TOKEN_CURRENCYLAYER')
 LOG_FILE = os.getenv('LOG_FILE')
+FOUL_FILE = os.getenv('FOUL_FILE')
 
 I18N_DOMAIN = 'base'
 
@@ -34,10 +35,10 @@ BASE_DIR = Path(__file__).parent
 LOCALES_DIR = BASE_DIR / 'locales'
 
 
-# loop = asyncio.new_event_loop()
+loop = asyncio.new_event_loop()
 # loop = asyncio.get_event_loop()
-loop = None
-bot = Bot(TOKEN_BOT, loop=loop)
+
+bot = Bot(TOKEN_BOT)
 storage = MemoryStorage()
-dp = Dispatcher(bot, storage=storage)
+dp = Dispatcher(bot, loop=loop, storage=storage)
 

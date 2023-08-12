@@ -5,8 +5,9 @@ Target must be an ISO 639-1 language code.
 See https://g.co/cloud/translate/v2/translate-reference#supported_languages
 """
 import asyncio
+import aiohttp
+from json import JSONDecodeError
 
-import requests
 from create import TOKEN_GOOGLE_TRANSLATE
 from admin import exeptions as ex
 from admin.logsetting import logger
@@ -14,7 +15,7 @@ from databases import database
 from typing import Optional
 
 
-def get_language(text_to_translate: str) -> Optional[dict[str]]:
+async def get_language(text_to_translate: str) -> Optional[dict[str]]:
     """Detects the text's language using the Google Translate API."""
 
     url = "https://translation.googleapis.com/language/translate/v2/detect"
@@ -24,20 +25,21 @@ def get_language(text_to_translate: str) -> Optional[dict[str]]:
     }
 
     try:
-        response_language = requests.get(url=url, params=params)
-        if not response_language:
-            raise ex.ResponseStatusError(response_language.status_code)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params) as response:
+                if response.status != 200:
+                    raise ex.ResponseStatusError(response.status)
 
-        data_language = response_language.json()
+                data_language = await response.json()
 
-        return data_language
+                return data_language
 
-    except (requests.RequestException, ex.ResponseStatusError) as e:
+    except (aiohttp.ClientConnectorError, JSONDecodeError, ex.ResponseStatusError) as e:
         logger.exception(f'DetectError: {str(e)}')
         return None
 
 
-def get_translate(language_target: str, text_to_translate: str) -> Optional[dict[str]]:
+async def get_translate(language_target: str, text_to_translate: str) -> Optional[dict[str]]:
     """Translates text from one language to another using the Google Translate API."""
 
     if isinstance(text_to_translate, bytes):
@@ -50,24 +52,24 @@ def get_translate(language_target: str, text_to_translate: str) -> Optional[dict
         "target": language_target,
         'key': TOKEN_GOOGLE_TRANSLATE,
     }
-
     try:
-        response_translate = requests.get(url=url, params=params)
-        if not response_translate:
-            raise ex.ResponseStatusError(response_translate.status_code)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params) as response:
+                if response.status != 200:
+                    raise ex.ResponseStatusError(response.status)
 
-        data_translate = response_translate.json()
+                data_translate = await response.json()
 
-        return data_translate
+                return data_translate
 
-    except (requests.RequestException, ex.ResponseStatusError) as e:
+    except (aiohttp.ClientConnectorError, JSONDecodeError, ex.ResponseStatusError) as e:
         logger.exception(f'TranslateError: {str(e)}')
         return None
 
 
 async def translate_dict(user_id: int, first_name: str, language_target: str, text_to_translate: str) -> dict[str, str] | str:
     """Get translate from Google Translate API and return dict."""
-    data_translate = get_translate(language_target, text_to_translate)
+    data_translate = await get_translate(language_target, text_to_translate)
 
     if data_translate is None:
         logger.warning(f'TranslateError. User {first_name} (id:{user_id})')

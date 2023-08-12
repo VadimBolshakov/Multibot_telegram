@@ -20,9 +20,10 @@ main_menu.add(InlineKeyboardButton('Погода', callback_data='weather'),
 
 
 map_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-button_1 = KeyboardButton('Location', request_location=True)
-button_2 = KeyboardButton("Cancel")
-map_menu.row(button_1, button_2)
+button_1 = KeyboardButton('Get location', request_location=True)
+button_2 = KeyboardButton('Get by IP')
+button_3 = KeyboardButton("Cancel")
+map_menu.row(button_1, button_2).add(button_3)
 
 
 translate_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
@@ -41,6 +42,7 @@ button_12 = KeyboardButton('Arabic')
 button_13 = KeyboardButton('Japanese')
 button_14 = KeyboardButton('Chinese')
 button_15 = KeyboardButton("Cancel")
+
 
 translate_menu.row(button_1, button_2)\
     .row(button_3, button_4)\

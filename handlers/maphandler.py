@@ -5,7 +5,7 @@ from create import dp
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from databases import database
-from util.keyboards import main_menu, weather_menu_local
+from util.keyboards import main_menu, map_menu
 from view import quoteview
 from models import quote, locbyip
 from admin.logsetting import logger
@@ -18,7 +18,7 @@ class MapsFSM(StatesGroup):
 # @dp.message_handler(state=None)
 async def select_location(message: types.Message):
     """Input location and set FSM state."""
-    await message.answer('Enter way of location or press "Cancel" for exit', reply_markup=weather_menu_local)
+    await message.answer('Enter way of location or press "Cancel" for exit', reply_markup=map_menu)
     """Set FSM state."""
     await MapsFSM.location.set()
 
@@ -44,7 +44,7 @@ async def select_period(message: types.Message, state: FSMContext):
             f'Exit from location handler user {message.from_user.first_name} (id:{message.from_user.id})')
 
     elif message.text == 'Get by IP':
-        local_data = locbyip.location_dict()
+        local_data = await locbyip.location_dict()
         if isinstance(local_data, dict):
             await message.answer(f'Your location has been received:\n'
                                  f' latitude: {local_data["latitude"]}\n'

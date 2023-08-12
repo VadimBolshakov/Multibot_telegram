@@ -46,231 +46,127 @@ wind_direction = {
 }
 
 
-def parse_daily(daily_element: dict, timezone_offset: int, show_long: bool = True) -> list[str]:
+def parse_weather(element: dict, timezone_offset: int, show_long: bool = True) -> list[str]:
     """Parse daily weather from JSON-file and return list."""
-    daily = []
-    if 'dt' in daily_element:
-        daily_dt = datetime.utcfromtimestamp(daily_element['dt'] + timezone_offset).strftime('%Y-%m-%d')
-        daily.append(f'Погода на {daily_dt}')
-    if ('sunrise' in daily_element) & show_long:
-        daily_sunrise = datetime.utcfromtimestamp(daily_element['sunrise'] + timezone_offset).strftime('%H:%M')
-        daily.append(f'Расвет: {daily_sunrise}')
-    if ('sunset' in daily_element) & show_long:
-        daily_sunset = datetime.utcfromtimestamp(daily_element['sunset'] + timezone_offset).strftime('%H:%M')
-        daily.append(f'Закат: {daily_sunset}')
-    if ('moonrise' in daily_element) & show_long:
-        daily_moonrise = datetime.utcfromtimestamp(daily_element['moonrise'] + timezone_offset).strftime('%H:%M')
-        daily.append(f'Восход луны: {daily_moonrise}')
-    if ('moonset' in daily_element) & show_long:
-        daily_moonset = datetime.utcfromtimestamp(daily_element['moonset'] + timezone_offset).strftime('%H:%M')
-        daily.append(f'Заход луны: {daily_moonset}')
-    if ('moon_phase' in daily_element) & show_long:
-        daily_moon_phase = daily_element['moon_phase']
-        daily.append(f'Фаза луны: {_moon_phase(daily_moon_phase)}')
-    if 'summary' in daily_element:
-        daily_summary = daily_element['summary']
-        daily.append(f'Общее: {daily_summary}')
+    weather = []
+    if element.get('dt'):
+        daily_dt = datetime.utcfromtimestamp(element['dt'] + timezone_offset).strftime('%Y-%m-%d %H:%M')
+        weather.append(f'Погода на {daily_dt}')
+    if (element.get('sunrise', False)) & show_long:
+        sunrise = datetime.utcfromtimestamp(element['sunrise'] + timezone_offset).strftime('%H:%M')
+        weather.append(f'Рассвет: {sunrise}')
+    if (element.get('sunset', False)) & show_long:
+        sunset = datetime.utcfromtimestamp(element['sunset'] + timezone_offset).strftime('%H:%M')
+        weather.append(f'Закат: {sunset}')
+    if (element.get('moonrisemoonrise', False)) & show_long:
+        moonrise = datetime.utcfromtimestamp(element['moonrise'] + timezone_offset).strftime('%H:%M')
+        weather.append(f'Восход луны: {moonrise}')
+    if (element.get('moonset', False)) & show_long:
+        moonset = datetime.utcfromtimestamp(element['moonset'] + timezone_offset).strftime('%H:%M')
+        weather.append(f'Заход луны: {moonset}')
+    if (element.get('moon_phase', False)) & show_long:
+        moon_phase = element['moon_phase']
+        weather.append(f'Фаза луны: {_moon_phase(moon_phase)}')
+    if element.get('summary'):
+        summary = element['summary']
+        weather.append(f'Общее: {summary}')
 
-    if 'temp' in daily_element:
-        if ('morn' in daily_element['temp']) & show_long:
-            daily_temp_morn = daily_element['temp']['morn']
-            daily.append(f'Температра утром: {round(daily_temp_morn)}\u2103')
-        if 'day' in daily_element['temp']:
-            daily_temp_day = daily_element['temp']['day']
-            daily.append(f'Температра днем: {round(daily_temp_day)}\u2103')
-        if 'min' in daily_element['temp']:
-            daily_temp_min = daily_element['temp']['min']
-            daily.append(f'Температра min: {round(daily_temp_min)}\u2103')
-        if 'max' in daily_element['temp']:
-            daily_temp_max = daily_element['temp']['max']
-            daily.append(f'Температра max: {round(daily_temp_max)}\u2103')
-        if ('eve' in daily_element['temp']) & show_long:
-            daily_temp_eve = daily_element['temp']['eve']
-            daily.append(f'Температра вечером: {round(daily_temp_eve)}\u2103')
-        if 'night' in daily_element['temp']:
-            daily_temp_night = daily_element['temp']['night']
-            daily.append(f'Температра ночью: {round(daily_temp_night)}\u2103')
+    if element.get('weather'):
+        if 'id' in element['weather'][0]:
+            weather_id = element['weather'][0]['id']
+        if ('main' in element['weather'][0]) & ('description' in element['weather'][0]) & show_long:
+            weather_main = element['weather'][0]['main']
+            weather_description = element['weather'][0]['description']
+            weather.append(f'Погода : {weather_main}. {weather_description}')
+        if 'icon' in element['weather'][0]:
+            weather_icon = element['weather'][0]['icon']
+            weather.append(f'Weather_icon: {weather_icon}')
 
-    if 'feels_like' in daily_element:
-        if ('morn' in daily_element['feels_like']) & show_long:
-            daily_feels_like_morn = daily_element['feels_like']['morn']
-            daily.append(f'Ощущается утром как : {round(daily_feels_like_morn)}\u2103')
-        if 'day' in daily_element['feels_like']:
-            daily_feels_like_day = daily_element['feels_like']['day']
-            daily.append(f'Ощущается днем как : {round(daily_feels_like_day)}\u2103')
-        if 'night' in daily_element['feels_like']:
-            daily_feels_like_night = daily_element['feels_like']['night']
-            daily.append(f'Ощущается ночью как : {round(daily_feels_like_night)}\u2103')
-        if ('eve' in daily_element['feels_like']) & show_long:
-            daily_feels_like_eve = daily_element['feels_like']['eve']
-            daily.append(f'Ощущается вечером как : {round(daily_feels_like_eve)}\u2103')
+    if isinstance(element.get('temp'), dict):
+        if (element['temp'].get('morn', False)) & show_long:
+            temp_morn = element['temp']['morn']
+            weather.append(f'Температура утром: {round(temp_morn)}\u2103')
+        if element['temp'].get('day'):
+            temp_day = element['temp']['day']
+            weather.append(f'Температура днём: {round(temp_day)}\u2103')
+        if element['temp'].get('min'):
+            temp_min = element['temp']['min']
+            weather.append(f'Температура min: {round(temp_min)}\u2103')
+        if element['temp'].get('max'):
+            temp_max = element['temp']['max']
+            weather.append(f'Температура max: {round(temp_max)}\u2103')
+        if (element['temp'].get('eve', False)) & show_long:
+            temp_eve = element['temp']['eve']
+            weather.append(f'Температура вечером: {round(temp_eve)}\u2103')
+        if element['temp'].get('night'):
+            temp_night = element['temp']['night']
+            weather.append(f'Температура ночью: {round(temp_night)}\u2103')
+    else:
+        temp = element['temp']
+        weather.append(f'Температура: {round(temp)}\u2103')
 
-    if 'pressure' in daily_element:
-        daily_pressure = daily_element['pressure']
-        daily.append(f'Давление: {round(daily_pressure * 0.75)} mmHg')
-    if 'humidity' in daily_element:
-        daily_humidity = daily_element['humidity']
-        daily.append(f'Влажность: {daily_humidity} %')
-    if 'dew_point' in daily_element:
-        daily_dew_point = daily_element['dew_point']
-        daily.append(f'Точка росы: {round(daily_dew_point)}\u2103')
-    if 'wind_speed' in daily_element:
-        daily_wind_speed = daily_element['wind_speed']
-        daily.append(f'Скорость ветра: {daily_wind_speed} m/s')
-    if 'wind_deg' in daily_element:
-        daily_wind_deg = daily_element['wind_deg']
-        daily.append(f'Напрвление ветра: {wind_direction.get(round(daily_wind_deg / 22.5) * 22.5)}')
-    if 'wind_gust' in daily_element:
-        daily_wind_gust = daily_element['wind_gust']
-        daily.append(f'Порывы ветра: {daily_wind_gust} m/s')
-    if 'clouds' in daily_element:
-        daily_clouds = daily_element['clouds']
-        daily.append(f'Облачность: {daily_clouds} %')
-    if 'pop' in daily_element:
-        daily_pop = daily_element['pop']
-        daily.append(f'Вероятность осадков: {daily_pop}')
-    if 'rain' in daily_element:
-        daily_rain = daily_element['rain']
-        daily.append(f'Дождь: {daily_rain} mm')
-    if 'uvi' in daily_element:
-        daily_uvi = daily_element['uvi']
-        daily.append(f'Индекс УФ: {daily_uvi}')
-    if 'snow' in daily_element:
-        daily_snow = daily_element['snow']
-        daily.append(f'Снег: {daily_snow} mm')
-    if 'weather' in daily_element:
-        if 'id' in daily_element['weather'][0]:
-            daily_weather_id = daily_element['weather'][0]['id']
-        if ('main' in daily_element['weather'][0]) & ('description' in daily_element['weather'][0]) & show_long:
-            daily_weather_main = daily_element['weather'][0]['main']
-            daily_weather_description = daily_element['weather'][0]['description']
-            daily.append(f'Погода : {daily_weather_main}. {daily_weather_description}')
-        if 'icon' in daily_element['weather'][0]:
-            daily_weather_icon = daily_element['weather'][0]['icon']
+    if isinstance(element.get('feels_like'), dict):
+        if (element['feels_like'].get('morn', False)) & show_long:
+            feels_like_morn = element['feels_like']['morn']
+            weather.append(f'Ощущается как утром: {round(feels_like_morn)}\u2103')
+        if element['feels_like'].get('day'):
+            feels_like_day = element['feels_like']['day']
+            weather.append(f'Ощущается как днём: {round(feels_like_day)}\u2103')
+        if (element['feels_like'].get('eve', False)) & show_long:
+            feels_like_eve = element['feels_like']['eve']
+            weather.append(f'Ощущается как вечером: {round(feels_like_eve)}\u2103')
+        if element['feels_like'].get('night'):
+            feels_like_night = element['feels_like']['night']
+            weather.append(f'Ощущается как ночью: {round(feels_like_night)}\u2103')
+    else:
+        feels_like = element['feels_like']
+        weather.append(f'Ощущается как: {round(feels_like)}\u2103')
 
-    return daily
+    if element.get('pressure'):
+        pressure = element['pressure']
+        weather.append(f'Давление: {round(pressure * 0.75)} мм. рт. ст.')
+    if element.get('humidity'):
+        humidity = element['humidity']
+        weather.append(f'Влажность: {humidity}%')
+    if element.get('dew_point'):
+        dew_point = element['dew_point']
+        weather.append(f'Точка росы: {round(dew_point)}\u2103')
+    if element.get('wind_speed'):
+        wind_speed = element['wind_speed']
+        weather.append(f'Скорость ветра: {wind_speed} м/с')
+    if element.get('wind_deg'):
+        wind_deg = element['wind_deg']
+        weather.append(f'Направление ветра: {wind_deg}° {wind_direction.get(round(wind_deg / 22.5) * 22.5)}')
+    if element.get('wind_gust'):
+        wind_gust = element['wind_gust']
+        weather.append(f'Порывы ветра: {wind_gust} м/с')
+    if element.get('clouds'):
+        clouds = element['clouds']
+        weather.append(f'Облачность: {clouds}%')
+    if element.get('pop'):
+        pop = element['pop']
+        weather.append(f'Вероятность осадков: {round(pop * 100)}%')
+    if element.get('rain'):
+        rain = element['rain']
+        weather.append(f'Дождь: {rain} mm')
+    if element.get('rain').get('1h'):
+        rain_1h = element['rain']['1h']
+        weather.append(f'Дождь: {rain_1h} мм/ч')
+    if element.get('snow').get('1h'):
+        snow = element['snow']['1h']
+        weather.append(f'Снег: {snow} мм/ч')
 
+    if element.get('uvi'):
+        uvi = element['uvi']
+        weather.append(f'Индекс УФ: {uvi}')
+    if element.get('snow'):
+        snow = element['snow']
+        weather.append(f'Снег: {snow} mm')
+    if element.get('visibility'):
+        visibility = element['visibility']
+        weather.append(f'Видимость: {visibility} m')
 
-def parse_hourly(hourly_element: dict, timezone_offset: int, show_long: bool = True) -> list[str]:
-    hourly = []
-
-    if 'dt' in hourly_element:
-        hourly_dt = datetime.utcfromtimestamp(hourly_element['dt'] + timezone_offset).strftime('%Y-%m-%d %H:%M')
-        hourly.append(f'Дата и время: {hourly_dt}')
-    if 'temp' in hourly_element:
-        hourly_temp = hourly_element['temp']
-        hourly.append(f'Температра: {round(hourly_temp)}\u2103')
-    if 'feels_like' in hourly_element:
-        hourly_feels_like = hourly_element['feels_like']
-        hourly.append(f'Ощущается как: {round(hourly_feels_like)}\u2103')
-    if 'pressure' in hourly_element:
-        hourly_pressure = hourly_element['pressure']
-        hourly.append(f'Давление: {round(hourly_pressure * 0.75)} mmHg')
-    if 'humidity' in hourly_element:
-        hourly_humidity = hourly_element['humidity']
-        hourly.append(f'Влажность: {hourly_humidity} %')
-    if ('dew_point' in hourly_element) & show_long:
-        hourly_dew_point = hourly_element['dew_point']
-        hourly.append(f'Точка росы: {round(hourly_dew_point)}\u2103')
-    if ('uvi' in hourly_element) & show_long:
-        hourly_uvi = hourly_element['uvi']
-        hourly.append(f'Индекс УФ: {hourly_uvi}')
-    if 'clouds' in hourly_element:
-        hourly_clouds = hourly_element['clouds']
-        hourly.append(f'Облачность: {hourly_clouds} %')
-    if 'visibility' in hourly_element:
-        hourly_visibility = hourly_element['visibility']
-        hourly.append(f'Видимость: {hourly_visibility} m')
-    if 'wind_speed' in hourly_element:
-        hourly_wind_speed = hourly_element['wind_speed']
-        hourly.append(f'Скорость верта: {hourly_wind_speed} m/s')
-    if 'wind_deg' in hourly_element:
-        hourly_wind_deg = hourly_element['wind_deg']
-        hourly.append(f'Направление ветра: {wind_direction.get(round(hourly_wind_deg / 22.5) * 22.5)}')
-    if 'wind_gust' in hourly_element:
-        hourly_wind_gust = hourly_element['wind_gust']
-        hourly.append(f'Порывы ветра: {hourly_wind_gust} m/s')
-    if 'pop' in hourly_element:
-        hourly_pop = hourly_element['pop']
-        hourly.append(f'Вероятность осадков: {hourly_pop}')
-    if 'rain' in hourly_element:
-        hourly_rain = hourly_element['rain']
-        hourly.append(f'Дождь: {hourly_rain} mm/h')
-    if 'snow' in hourly_element:
-        hourly_snow = hourly_element['snow']
-        hourly.append(f'Снег: {hourly_snow} mm/h')
-    if 'weather' in hourly_element:
-        if 'id' in hourly_element['weather'][0]:
-            hourly_weather_id = hourly_element['weather'][0]['id']
-        if ('main' in hourly_element['weather'][0]) & ('description' in hourly_element['weather'][0]) & show_long:
-            hourly_weather_main = hourly_element['weather'][0]['main']
-            hourly_weather_description = hourly_element['weather'][0]['description']
-            hourly.append(f'Погода : {hourly_weather_main}. {hourly_weather_description}')
-        if 'icon' in hourly_element['weather'][0]:
-            hourly_weather_icon = hourly_element['weather'][0]['icon']
-
-    return hourly
-
-
-def parse_current(current_element: dict, timezone_offset: int, show_long: bool = True) -> list[str]:
-    current = []
-
-    if 'dt' in current_element:
-        current_dt = datetime.utcfromtimestamp(current_element['dt'] + timezone_offset).strftime('%Y-%m-%d %H:%M:%S')
-        current.append(f'Текущее время: {current_dt}')
-    if 'sunrise' in current_element:
-        current_sunrise = datetime.utcfromtimestamp(current_element['sunrise'] + timezone_offset).strftime('%H:%M')
-        current.append(f'Рассвет: {current_sunrise}')
-    if 'sunset' in current_element:
-        current_sunset = datetime.utcfromtimestamp(current_element['sunset'] + timezone_offset).strftime('%H:%M')
-        current.append(f'Закат: {current_sunset}')
-    if 'temp' in current_element:
-        current_temp = current_element['temp']
-        current.append(f'Температра: {round(current_temp)} \u2103')
-    if 'feels_like' in current_element:
-        current_feels_like = current_element['feels_like']
-        current.append(f'Ощущается как: {round(current_feels_like)} \u2103')
-    if 'pressure' in current_element:
-        current_pressure = current_element['pressure']
-        current.append(f'Давление: {round(current_pressure * 0.75)} mmHg')
-    if 'humidity' in current_element:
-        current_humidity = current_element['humidity']
-        current.append(f'Влажность: {current_humidity}%')
-    if 'dew_point' in current_element:
-        current_dew_point = current_element['dew_point']
-        current.append(f'Точка росы: {round(current_dew_point)} \u2103')
-    if 'uvi' in current_element:
-        current_uvi = current_element['uvi']
-        current.append(f'Индекс УФ: {current_uvi}')
-    if 'clouds' in current_element:
-        current_clouds = current_element['clouds']
-        current.append(f'Облачность: {current_clouds}%')
-    if 'visibility' in current_element:
-        current_visibility = current_element['visibility']
-        current.append(f'Видимость: {current_visibility} m')
-    if 'wind_speed' in current_element:
-        current_wind_speed = current_element['wind_speed']
-        current.append(f'Скорость ветра: {current_wind_speed} m/s')
-    if 'wind_deg' in current_element:
-        current_wind_deg = current_element['wind_deg']
-        current.append(f'направление ветра: {wind_direction.get(round(current_wind_deg / 22.5) * 22.5)}')
-    if 'wind_gust' in current_element:
-        current_wind_gust = current_element['wind_gust']
-        current.append(f'порывы ветра: {current_wind_gust} m/s')
-    if 'rain' in current_element:
-        current_rain = current_element['rain']['1h']
-        current.append(f'Дождь: {current_rain} mm/h')
-    if 'snow' in current_element:
-        current_snow = current_element['snow']['1h']
-        current.append(f'Снег: {current_snow} mm/h')
-    if 'weather' in current_element:
-        current_weather_id = current_element['weather'][0]['id']
-        current_weather_main = current_element['weather'][0]['main']
-        current_weather_description = current_element['weather'][0]['description']
-        current_weather_icon = current_element['weather'][0]['icon']
-        current.append(f'Погода: {current_weather_main}.  {current_weather_description}')
-
-    return current
+    return weather
 
 
 def parse_minutely(minutely_element: dict, timezone_offset: int, show_long: bool = True) -> list[str] | None:
@@ -281,7 +177,7 @@ def parse_minutely(minutely_element: dict, timezone_offset: int, show_long: bool
         minutely_dt = datetime.utcfromtimestamp(minutely_element['dt'] + timezone_offset).strftime('%H:%M')
         minutely_precipitation = minutely_element['precipitation']
         if minutely_precipitation > 0:
-            minutely.append(f'Время: {minutely_dt} осадки: {minutely_precipitation} mm/h')
+            minutely.append(f'Время: {minutely_dt} осадки: {minutely_precipitation} мм/ч')
 
     return minutely
 
@@ -296,7 +192,8 @@ def parse_alerts(alerts_element: dict, timezone_offset: int, show_long: bool = T
         alerts_start = datetime.utcfromtimestamp(alerts_element['start'] + timezone_offset).strftime('%Y-%m-%d %H:%M')
         alerts_end = datetime.utcfromtimestamp(alerts_element['end'] + timezone_offset).strftime('%Y-%m-%d %H:%M')
         alerts_description = alerts_element['description']
-        alerts.append(f'По информации {alerts_sender_name} с {alerts_start} до {alerts_end} ожидается {alerts_event}.{alerts_description}')
+        alerts.append(f'{alerts_description}. '
+                      f'Согластно {alerts_sender_name} с {alerts_start} по {alerts_end} ожидается {alerts_event}.')
     if 'tags' in alerts_element:
         alerts_tags = alerts_element['tags']
 

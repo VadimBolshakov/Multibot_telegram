@@ -2,7 +2,8 @@
 
 This module contains the manage middleware and the admin filter."""
 import asyncio
-from tracemalloc import BaseFilter
+import json
+import string
 
 from aiogram import types
 from aiogram.dispatcher import DEFAULT_RATE_LIMIT, Dispatcher
@@ -23,11 +24,22 @@ class ManageMiddleware(BaseMiddleware):
     This middleware checks user ban, registration, and flood.
     Anti-flood middleware is used from https://docs.aiogram.dev/en/latest/examples/middleware_and_antiflood.html."""
 
-    def __init__(self, password: str, limit=DEFAULT_RATE_LIMIT, key_prefix='antiflood_'):
+    def __init__(self, *, password: str, foul_file: str, limit=DEFAULT_RATE_LIMIT, key_prefix='antiflood_'):
         self.password = password
+        self.foul_set = self._foul_as_set(foul_file)
         self.rate_limit = limit
         self.prefix = key_prefix
         super(ManageMiddleware, self).__init__()
+
+    def _foul_as_set(self, foul_file: str) -> set:
+        """Return set of words from user text."""
+        foul_set = set()
+        try:
+            with open(foul_file, encoding='utf-8') as file:
+                foul_set = json.load(file)
+        except FileNotFoundError:
+            logger.warning('Foul file not found')
+        return foul_set
 
     async def on_pre_process_update(self, update: types.Update, data: dict):
         """Check the user in the database and check the user ban."""
@@ -75,7 +87,7 @@ class ManageMiddleware(BaseMiddleware):
             raise CancelHandler()
 
     async def on_process_message(self, message: types.Message, data: dict):
-        """Check the throttling rate limit for message handler."""
+        """Check the foul language and the throttling rate limit for message handler."""
         handler = current_handler.get()
 
         dispatcher = Dispatcher.get_current()
@@ -88,8 +100,16 @@ class ManageMiddleware(BaseMiddleware):
             key = f"{self.prefix}_message"
 
         user_id = message.from_user.id
+        user_first_name = message.from_user.first_name
 
         try:
+            if message.text is not None:
+                if {i.lower().translate(str.maketrans('', '', string.punctuation)) for i in message.text.split(' ')} \
+                        .intersection(self.foul_set):
+                    await message.reply('foul language is prohibited')
+                    if message: await message.delete()
+                    logger.warning(f'Fail the foul language check user {user_first_name} (id:{user_id})')
+                    raise CancelHandler()
             await dispatcher.throttle(key, rate=limit)
 
         except Throttled as t:
@@ -98,7 +118,7 @@ class ManageMiddleware(BaseMiddleware):
             raise CancelHandler()
 
         except Exception as e:
-            logger.exception(f'Error {str(e)} for update user id:{user_id}')
+            logger.exception(f'Error {str(e)} for update user {user_first_name} (id:{user_id})')
             raise CancelHandler()
 
     async def message_throttled(self, message: types.Message, throttled: Throttled):
@@ -161,12 +181,3 @@ class ManageMiddleware(BaseMiddleware):
             logger.exception(f'Error {str(e)} for update user id:{user_id}')
             raise CancelHandler()
 
-
-class AdminFilter(BaseFilter):
-    """ Filter for admins."""
-    def __init__(self, admins: list, inclusive: bool):
-        self.admins = admins
-        super().__init__(inclusive)
-
-    async def check(self, message: types.Message) -> bool:
-        return message.from_user.id in self.admins

@@ -17,12 +17,6 @@ def generator_dict(dict_test: dict) -> str:
 
 if __name__ == '__main__':
     dict_test = {'a': 1, 'b': 2, 'c': 3}
-    print(dict_test)
-    print(str(dict_test))
-    print(len(dict_test))
-    for key, value in dict_test.items():
-        print(key, value)
-
-    for i in generator_dict(dict_test):
-        print(i)
+    if dict_test.get('e', False) & False:
+        print(1)
 

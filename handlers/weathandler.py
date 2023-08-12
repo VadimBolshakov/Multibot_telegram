@@ -40,7 +40,7 @@ async def select_period(message: types.Message, state: FSMContext):
         await message.delete()
 
     elif message.text == 'Get by IP':
-        local_data = locbyip.location_dict()
+        local_data = await locbyip.location_dict()
         if isinstance(local_data, dict):
             async with state.proxy() as data:
                 data['latitude'] = local_data['latitude']
@@ -97,7 +97,7 @@ async def input_city(message: types.Message, state: FSMContext):
         await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
         return
     else:
-        city_data = citydata.location_dict(city=data['city'][0])
+        city_data = await citydata.location_dict(city=data['city'][0])
         if isinstance(city_data, dict):
             async with state.proxy() as data:
                 data['latitude'] = city_data['latitude']
@@ -111,7 +111,11 @@ async def input_city(message: types.Message, state: FSMContext):
             return
 
         await message.answer('Your city has been received:\n '
-                             'city: ' + str(data['city'][0]), reply_markup=types.ReplyKeyboardRemove())
+                             'city: ' + str(data['city'][0] + '\n '
+                                                              'latitude: ') + str(data['latitude']) + '\n '
+                                                                                                      'longitude: ' + str(data['longitude']),
+                             reply_markup=types.ReplyKeyboardRemove())
+
         await message.answer('Select forecast period or press "Cancel" for exit', reply_markup=weather_period_menu)
         """Set FSM state."""
         await WeatherFSM.period.set()
