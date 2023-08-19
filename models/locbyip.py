@@ -1,6 +1,6 @@
 import aiohttp
 import admin.exeptions as ex
-from admin.logsetting import logger
+from create import logger
 from json import JSONDecodeError
 
 

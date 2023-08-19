@@ -1,10 +1,8 @@
 import asyncio
 import aiohttp
 import admin.exeptions as ex
-from admin.logsetting import logger
-from create import TOKEN_OPENWEATHER
+from create import TOKEN_OPENWEATHER, db, logger
 from json import JSONDecodeError
-from databases import database
 from typing import Optional, Any
 
 
@@ -80,7 +78,7 @@ async def weather_dict(user_id: int,
 
     if not data_weather:
         logger.warning(f'WeatherError. User {first_name} (id:{user_id})')
-        await database.add_request_db(user_id=user_id, type_request='weather', num_tokens=0, status_request=False)
+        await db.add_request_db(user_id=user_id, type_request='weather', num_tokens=0, status_request=False)
         return 'Sorry, but we have not information about actual weather.'
 
     weather: dict[str, list] = {}
@@ -113,7 +111,7 @@ async def weather_dict(user_id: int,
         for alerts_values in data_weather['alerts']:
             weather['alerts'].append(parse_alerts(alerts_values, timezone_offset, show_long))
 
-    await database.add_request_db(user_id=user_id, type_request='weather', num_tokens=0, status_request=True)
+    await db.add_request_db(user_id=user_id, type_request='weather', num_tokens=0, status_request=True)
     logger.info(
         f'Exit from weather model user {first_name} (id:{user_id})')
 

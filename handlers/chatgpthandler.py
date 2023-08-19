@@ -1,13 +1,12 @@
 """Handler for chat_gpt."""
 
 from aiogram import types
-from create import dp
+from create import dp, logger
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from util.keyboards import main_menu
 from view import chatgptview, quoteview
 from models import chatgpt, quote
-from admin.logsetting import logger
 
 
 class NewsFSM(StatesGroup):

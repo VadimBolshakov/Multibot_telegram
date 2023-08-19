@@ -1,4 +1,4 @@
-from admin.logsetting import logger
+from create import logger
 
 
 def quote_view(quote_dict: dict[str, str | None] | str) -> str:

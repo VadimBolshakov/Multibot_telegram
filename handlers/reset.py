@@ -1,9 +1,7 @@
 """Handler for /reset command"""
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
-from admin import checking
-from admin.logsetting import logger
-from create import dp
+from create import dp, logger
 from util.keyboards import main_menu
 
 

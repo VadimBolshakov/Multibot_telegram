@@ -3,9 +3,8 @@
 import aiohttp
 from typing import Optional
 import admin.exeptions as ex
-from admin.logsetting import logger
 from json import JSONDecodeError
-from create import TOKEN_OPENWEATHER
+from create import TOKEN_OPENWEATHER, logger
 
 
 async def get_location_by_city(city: str, limit: int = 1, appid: str = TOKEN_OPENWEATHER) -> Optional[list[dict[str, str | int | float]]]:

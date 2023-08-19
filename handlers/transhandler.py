@@ -1,14 +1,13 @@
 """Handler for translate function."""
 
 from aiogram import types
-from create import dp
+from create import dp, logger
 from aiogram.types import ReplyKeyboardRemove
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from util.keyboards import main_menu, translate_menu
 from view import translateview, quoteview
 from models import translator, quote
-from admin.logsetting import logger
 
 
 class TranslateFSM(StatesGroup):

@@ -10,9 +10,8 @@ from aiogram.dispatcher import DEFAULT_RATE_LIMIT, Dispatcher
 from aiogram.dispatcher.handler import current_handler, CancelHandler
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.utils.exceptions import Throttled
-from databases import database
-
-from admin.logsetting import logger
+from logging import Logger
+from databases.database import DataBaseMain as DataBase
 
 
 # Default rate limit set in DEFAULT_RATE_LIMIT = 0.1 seconds
@@ -24,7 +23,10 @@ class ManageMiddleware(BaseMiddleware):
     This middleware checks user ban, registration, and flood.
     Anti-flood middleware is used from https://docs.aiogram.dev/en/latest/examples/middleware_and_antiflood.html."""
 
-    def __init__(self, *, password: str, foul_file: str, limit=DEFAULT_RATE_LIMIT, key_prefix='antiflood_'):
+    def __init__(self, *, logger: Logger, db: DataBase, password: str, foul_file: str, limit=DEFAULT_RATE_LIMIT, key_prefix='antiflood_'):
+        """Initialize the middleware."""
+        self.logger = logger
+        self.db = db
         self.password = password
         self.foul_set = self._foul_as_set(foul_file)
         self.rate_limit = limit
@@ -38,7 +40,7 @@ class ManageMiddleware(BaseMiddleware):
             with open(foul_file, encoding='utf-8') as file:
                 foul_set = json.load(file)
         except FileNotFoundError:
-            logger.warning('Foul file not found')
+            self.logger.warning('Foul file not found')
         return foul_set
 
     async def on_pre_process_update(self, update: types.Update, data: dict):
@@ -61,29 +63,29 @@ class ManageMiddleware(BaseMiddleware):
             return
         try:
 
-            if await database.get_user_db(user_id) is None:
+            if await self.db.get_user_db(user_id) is None:
                 if message_text != '/start' and message_text != self.password:
                     if update.message:
                         await update.message.answer(f"You are not registered. Enter the command /start")
                     elif update.callback_query:
                         await update.callback_query.answer(f"You are not registered. Enter the command /start")
-                    logger.warning(f'Fail the registration check user id:{user_id}')
+                    self.logger.warning(f'Fail the registration check user id:{user_id}')
                     raise CancelHandler()
                 # # if registration is without password then add user to db
                 # else:
-                #     await database.add_user_db(user_id, update.message.from_user.first_name)
+                #     await db.add_user_db(user_id, update.message.from_user.first_name)
                 #     await update.message.answer(f"Hello, {update.message.from_user.first_name}! You are registered")
 
-            if await database.get_user_banned_db(user_id):
+            if await self.db.get_user_banned_db(user_id):
                 if update.message:
                     await update.message.answer('You are banned')
                 elif update.callback_query:
                     await update.callback_query.answer('You are banned')
-                logger.warning(f'Fail the ban check user id:{user_id}')
+                self.logger.warning(f'Fail the ban check user id:{user_id}')
                 raise CancelHandler()
 
         except Exception as e:
-            logger.exception(f'Error {str(e)} for update user id:{user_id}')
+            self.logger.exception(f'Error {str(e)} for update user id:{user_id}')
             raise CancelHandler()
 
     async def on_process_message(self, message: types.Message, data: dict):
@@ -108,7 +110,7 @@ class ManageMiddleware(BaseMiddleware):
                         .intersection(self.foul_set):
                     await message.reply('foul language is prohibited')
                     if message: await message.delete()
-                    logger.warning(f'Fail the foul language check user {user_first_name} (id:{user_id})')
+                    self.logger.warning(f'Fail the foul language check user {user_first_name} (id:{user_id})')
                     raise CancelHandler()
             await dispatcher.throttle(key, rate=limit)
 
@@ -118,7 +120,7 @@ class ManageMiddleware(BaseMiddleware):
             raise CancelHandler()
 
         except Exception as e:
-            logger.exception(f'Error {str(e)} for update user {user_first_name} (id:{user_id})')
+            self.logger.exception(f'Error {str(e)} for update user {user_first_name} (id:{user_id})')
             raise CancelHandler()
 
     async def message_throttled(self, message: types.Message, throttled: Throttled):
@@ -178,6 +180,6 @@ class ManageMiddleware(BaseMiddleware):
             raise CancelHandler()
 
         except Exception as e:
-            logger.exception(f'Error {str(e)} for update user id:{user_id}')
+            self.logger.exception(f'Error {str(e)} for update user id:{user_id}')
             raise CancelHandler()
 

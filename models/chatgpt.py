@@ -2,9 +2,7 @@ import asyncio
 import aiohttp
 from json import JSONDecodeError
 from admin import exeptions as ex
-from admin.logsetting import logger
-from databases import database
-from create import GPT_API_KEY
+from create import GPT_API_KEY, db, logger
 from typing import Optional
 
 
@@ -41,7 +39,6 @@ async def get_chatgpt(prompt: str) -> Optional[dict]:
         logger.exception(f'ChatgptError: {str(e)}')
         return None
 
-
     #     response_chatgpt = requests.post(url=url, json=json, headers=headers)
     #
     #     if not response_chatgpt:
@@ -61,15 +58,15 @@ async def chatgpt_dict(user_id: int, first_name: str, prompt: str) -> dict[str, 
 
     if data_chatgpt is None:
         logger.warning(f'ChatgptError. User {first_name} (id:{user_id})')
-        await database.add_request_db(user_id=user_id, type_request='chatgpt', num_tokens=0, status_request=False)
+        await db.add_request_db(user_id=user_id, type_request='chatgpt', num_tokens=0, status_request=False)
         return 'Error. Can\'t get answer from ChatGPT API.'
 
     _chatgpt = {'answer': data_chatgpt['choices'][0]['text']}
 
-    await database.add_request_db(user_id=user_id,
-                                  type_request='chatgpt',
-                                  num_tokens=data_chatgpt['usage']['total_tokens'],
-                                  status_request=True)
+    await db.add_request_db(user_id=user_id,
+                            type_request='chatgpt',
+                            num_tokens=data_chatgpt['usage']['total_tokens'],
+                            status_request=True)
     logger.info(
         f'Exit from chatgpt model user {first_name} (id:{user_id})')
 
@@ -78,4 +75,3 @@ async def chatgpt_dict(user_id: int, first_name: str, prompt: str) -> dict[str, 
 
 if __name__ == '__main__':
     print(asyncio.run(chatgpt_dict(user_id=111, first_name='test', prompt='Hello, how are you?')))
-

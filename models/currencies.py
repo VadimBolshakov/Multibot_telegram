@@ -13,10 +13,8 @@ import urllib3
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 import admin.exeptions as ex
-from admin.logsetting import logger
-from databases import database
 from datetime import datetime as dt
-from create import TOKEN_CURRENCYLAYER
+from create import TOKEN_CURRENCYLAYER, db, logger
 import os
 
 
@@ -58,15 +56,15 @@ async def currencies_dict_ru(user_id: int, first_name: str, lang: str,
 
         except FileNotFoundError as e:
             logger.exception(f'CurrencyFileError: {str(e)}. User {first_name} (id:{user_id})')
-            await database.add_request_db(user_id=user_id, type_request='currency_ru', num_tokens=0,
-                                          status_request=False)
+            await db.add_request_db(user_id=user_id, type_request='currency_ru', num_tokens=0,
+                                    status_request=False)
             return 'Sorry, but we have not information about actual currency rate.'
     try:
         tree = ET.parse(path_file_xml)
 
     except ET.ParseError as e:
         logger.exception(f'CurrencyParseError: {str(e)}. User {first_name} (id:{user_id})')
-        await database.add_request_db(user_id=user_id, type_request='currency_ru', num_tokens=0, status_request=False)
+        await db.add_request_db(user_id=user_id, type_request='currency_ru', num_tokens=0, status_request=False)
         return 'Sorry, but we have not information about actual currency rate.'
 
     root = tree.getroot()
@@ -79,7 +77,7 @@ async def currencies_dict_ru(user_id: int, first_name: str, lang: str,
     for key, value in currencies.items():
         currencies[key].append('RUB')
 
-    await database.add_request_db(user_id=user_id, type_request='currency_ru', num_tokens=0, status_request=True)
+    await db.add_request_db(user_id=user_id, type_request='currency_ru', num_tokens=0, status_request=True)
     logger.info(
         f'Exit from currency_ru model user {first_name} (id:{user_id})')
     return currencies
@@ -131,8 +129,8 @@ async def currencies_dict_en(user_id: int, first_name: str, lang: str,
 
         except FileNotFoundError as e:
             logger.exception(f'CurrencyFileError: {str(e)}. User {first_name} (id:{user_id})')
-            await database.add_request_db(user_id=user_id, type_request='currency_en', num_tokens=0,
-                                          status_request=False)
+            await db.add_request_db(user_id=user_id, type_request='currency_en', num_tokens=0,
+                                    status_request=False)
             return 'Sorry, but we have not information about actual currency rate.'
 
     try:
@@ -141,13 +139,13 @@ async def currencies_dict_en(user_id: int, first_name: str, lang: str,
 
     except json.JSONDecodeError as e:
         logger.exception(f'CurrencyParseError: {str(e)}. User {first_name} (id:{user_id})')
-        await database.add_request_db(user_id=user_id, type_request='currency_en', num_tokens=0, status_request=False)
+        await db.add_request_db(user_id=user_id, type_request='currency_en', num_tokens=0, status_request=False)
         return 'Sorry, but we have not information about actual currency rate.'
     currencies = defaultdict(list)
     for key, value in data_currencies['quotes'].items():
         currencies[key] = ['', key[:3], '', '', value, key[3:]]  # done for compatibility with currencies_dict_ru
 
-    await database.add_request_db(user_id=user_id, type_request='currency_en', num_tokens=0, status_request=True)
+    await db.add_request_db(user_id=user_id, type_request='currency_en', num_tokens=0, status_request=True)
     logger.info(
         f'Exit from currency_en model user {first_name} (id:{user_id})')
 
@@ -156,7 +154,7 @@ async def currencies_dict_en(user_id: int, first_name: str, lang: str,
 
 async def currencies_dict(user_id: int, first_name: str,
                           date_time_now: dt) -> dict[str | None, list[float | str | None]] | str:
-    lang = await database.get_user_lang_db(user_id=user_id)
+    lang = await db.get_user_lang_db(user_id=user_id)
     if lang == 'ru':
         return await currencies_dict_ru(user_id=user_id, first_name=first_name, lang=lang, date_time_now=date_time_now)
 

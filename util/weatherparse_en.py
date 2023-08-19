@@ -52,19 +52,19 @@ def parse_weather(element: dict, timezone_offset: int, show_long: bool = True) -
     if element.get('dt'):
         daily_dt = datetime.utcfromtimestamp(element['dt'] + timezone_offset).strftime('%Y-%m-%d %H:%M')
         weather.append(f'Weather on {daily_dt}')
-    if (element.get('sunrise', False)) & show_long:
+    if element.get('sunrise') and show_long:
         sunrise = datetime.utcfromtimestamp(element['sunrise'] + timezone_offset).strftime('%H:%M')
         weather.append(f'Sunrise: {sunrise}')
-    if (element.get('sunset', False)) & show_long:
+    if element.get('sunset') and show_long:
         sunset = datetime.utcfromtimestamp(element['sunset'] + timezone_offset).strftime('%H:%M')
         weather.append(f'Sunset: {sunset}')
-    if (element.get('moonrise', False)) & show_long:
+    if element.get('moonrise') and show_long:
         moonrise = datetime.utcfromtimestamp(element['moonrise'] + timezone_offset).strftime('%H:%M')
         weather.append(f'Moonrise: {moonrise}')
-    if (element.get('moonset', False)) & show_long:
+    if element.get('moonset') and show_long:
         moonset = datetime.utcfromtimestamp(element['moonset'] + timezone_offset).strftime('%H:%M')
         weather.append(f'Moonset: {moonset}')
-    if (element.get('moon_phase', False)) & show_long:
+    if element.get('moon_phase') and show_long:
         moon_phase = element['moon_phase']
         weather.append(f'Moon phase: {_moon_phase(moon_phase)}')
     if element.get('summary'):
@@ -74,16 +74,16 @@ def parse_weather(element: dict, timezone_offset: int, show_long: bool = True) -
     if element.get('weather'):
         if 'id' in element['weather'][0]:
             weather_id = element['weather'][0]['id']
-        if ('main' in element['weather'][0]) & ('description' in element['weather'][0]) & show_long:
+        if ('main' in element['weather'][0]) and ('description' in element['weather'][0]) and show_long:
             weather_main = element['weather'][0]['main']
             weather_description = element['weather'][0]['description']
             weather.append(f'Weather : {weather_main}. {weather_description}')
-        if 'icon' in element['weather'][0]:
-            weather_icon = element['weather'][0]['icon']
-            weather.append(f'Weather_icon: {weather_icon}')
+        # if 'icon' in element['weather'][0]:
+        #     weather_icon = element['weather'][0]['icon']
+        #     weather.append(f'Weather_icon: {weather_icon}')
 
     if isinstance(element.get('temp'), dict):
-        if (element['temp'].get('morn', False)) & show_long:
+        if element['temp'].get('morn') and show_long:
             temp_morn = element['temp']['morn']
             weather.append(f'Temperature morning: {round(temp_morn)}\u2103')
         if element['temp'].get('day'):
@@ -95,7 +95,7 @@ def parse_weather(element: dict, timezone_offset: int, show_long: bool = True) -
         if element['temp'].get('max'):
             temp_max = element['temp']['max']
             weather.append(f'Temperature max: {round(temp_max)}\u2103')
-        if (element['temp'].get('eve', False)) & show_long:
+        if element['temp'].get('eve') and show_long:
             temp_eve = element['temp']['eve']
             weather.append(f'Temperature evening: {round(temp_eve)}\u2103')
         if element['temp'].get('night'):
@@ -106,13 +106,13 @@ def parse_weather(element: dict, timezone_offset: int, show_long: bool = True) -
         weather.append(f'Temperature: {round(temp)}\u2103')
 
     if isinstance(element.get('feels_like'), dict):
-        if (element['feels_like'].get('morn', False)) & show_long:
+        if element['feels_like'].get('morn') and show_long:
             feels_like_morn = element['feels_like']['morn']
             weather.append(f'Feels like morning: {round(feels_like_morn)}\u2103')
         if element['feels_like'].get('day'):
             feels_like_day = element['feels_like']['day']
             weather.append(f'Feels like day: {round(feels_like_day)}\u2103')
-        if (element['feels_like'].get('eve', False)) & show_long:
+        if element['feels_like'].get('eve') and show_long:
             feels_like_eve = element['feels_like']['eve']
             weather.append(f'Feels like evening: {round(feels_like_eve)}\u2103')
         if element['feels_like'].get('night'):
@@ -128,7 +128,7 @@ def parse_weather(element: dict, timezone_offset: int, show_long: bool = True) -
     if element.get('humidity'):
         humidity = element['humidity']
         weather.append(f'Humidity: {humidity}%')
-    if element.get('dew_point'):
+    if element.get('dew_point') and show_long:
         dew_point = element['dew_point']
         weather.append(f'Dew point: {round(dew_point)}\u2103')
     if element.get('wind_speed'):
@@ -147,21 +147,22 @@ def parse_weather(element: dict, timezone_offset: int, show_long: bool = True) -
         pop = element['pop']
         weather.append(f'Chance of precipitation: {round(pop * 100)}%')
     if element.get('rain'):
-        rain = element['rain']
-        weather.append(f'Rain: {rain} mm')
-    if element.get('rain').get('1h'):
-        rain_1h = element['rain']['1h']
-        weather.append(f'Rain: {rain_1h} mm/h')
-    if element.get('snow').get('1h'):
-        snow = element['snow']['1h']
-        weather.append(f'Snow: {snow} mm/h')
-
-    if element.get('uvi'):
+        if isinstance(element['rain'], dict):
+            rain_1h = element['rain']['1h']
+            weather.append(f'Rain: {rain_1h} mm/h')
+        else:
+            rain = element['rain']
+            weather.append(f'Rain: {rain} mm')
+    if element.get('snow'):
+        if isinstance(element['snow'], dict):
+            snow = element['snow']['1h']
+            weather.append(f'Snow: {snow} mm/h')
+        else:
+            snow = element['snow']
+            weather.append(f'Snow: {snow} mm')
+    if element.get('uvi') and show_long:
         uvi = element['uvi']
         weather.append(f'UV index: {uvi}')
-    if element.get('snow'):
-        snow = element['snow']
-        weather.append(f'Snow: {snow} mm')
     if element.get('visibility'):
         visibility = element['visibility']
         weather.append(f'Visibility: {visibility} m')

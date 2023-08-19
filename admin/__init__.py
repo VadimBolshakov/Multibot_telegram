@@ -1,10 +1,9 @@
-from admin import logsetting
 from admin import exeptions
 from admin import smtp
-from admin import checking
-
 from admin.logsetting import logger
 from admin.exeptions import ResponseStatusError
+from admin.exeptions import ResponseStatusNewsAPIError
+from admin.exeptions import ResponseTotalResultsNewsAPIError
 
-__all__ = ['logsetting', 'exeptions', 'logger', 'ResponseStatusError', 'smtp', 'checking']
+__all__ = ['logsetting', 'exeptions', 'ResponseStatusError', 'smtp', 'checking']
 

@@ -1,6 +1,5 @@
 from aiogram import Dispatcher, types
-from admin import checking
-from admin.logsetting import logger
+from create import logger, db
 from util.keyboards import main_menu
 
 
@@ -8,7 +7,13 @@ from util.keyboards import main_menu
 # @checking.check_registration
 async def command_help(message: types.Message):
     """Check user in database and send message with password or welcome message."""
-    await message.answer('Help. \n Here you can find help information\n And it will be here soon', reply_markup=main_menu)
+    await message.answer('Help. \n Here11111 you can find help information\n And it will be here soon', reply_markup=main_menu)
+    user = await db.get_user_db(user_id=message.from_user.id)
+    print(user)
+    await message.answer(f'User {user.get("firstname")} (id:{user.get("userid")}, '
+                         f'status admin: {user.get("statusadmin")}, is banned: {user.get("is_banned")})'
+                         f'language: {user.get("languageuser")}')
+    lang = await db.get_user_lang_db(user_id=message.from_user.id)
     logger.info(
         f'Entry to help handler user {message.from_user.first_name} (id:{message.from_user.id})')
 

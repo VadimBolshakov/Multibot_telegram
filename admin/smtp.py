@@ -3,14 +3,22 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email import encoders
-from create import EMAIL_SENDER, EMAIL_PASSWORD, EMAIL_RECIPIENT
-from admin.logsetting import logger
+import os
+from logging import Logger
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
+
+EMAIL_SENDER = os.getenv('EMAIL_SENDER')
+EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+EMAIL_RECIPIENT = os.getenv('EMAIL_RECIPIENT')
 
 
 def send_email(subject='TelegramBot',
                message='Message from telegrambot. ',
                file='../logconfig.log',
-               attach_file=True) -> bool:
+               attach_file=True,
+               logger: Logger = None) -> bool:
     """Send an email with the opportunity to attach a file. Return True if the email is sent"""
     status: bool = False
     msg = MIMEMultipart()

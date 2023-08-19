@@ -1,10 +1,8 @@
 """This module contains the class for admin response."""
-from admin.logsetting import logger
 from aiogram import types
 from admin import smtp
-from databases import database
 from datetime import datetime
-from create import LOG_FILE
+from create import LOG_FILE, db, logger
 from asyncpg import Record
 
 
@@ -27,14 +25,14 @@ class AdminResponse:
     async def send_email_lod(self):
         """Send log file to admin in email."""
         subject = f'Log file by {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
-        if smtp.send_email(subject=subject, file=LOG_FILE, attach_file=True):
+        if smtp.send_email(subject=subject, file=LOG_FILE, attach_file=True, logger=logger):
             await self.message.answer('Log file send to email')
         else:
             await self.message.answer('Error send log file to email')
 
     async def send_users(self):
         """Send id and users of this chat to admin."""
-        _users: list[Record] = await database.get_all_users_db()
+        _users: list[Record] = await db.get_all_users_db()
         if not _users:
             await self.message.answer('Users not found')
             return
@@ -44,7 +42,7 @@ class AdminResponse:
 
     async def send_requests(self):
         """Send number of requests to admin."""
-        _requests = await database.get_requests_count_db()
+        _requests = await db.get_requests_count_db()
         await self.message.answer(f'Number of  requests is {_requests}')
 
 

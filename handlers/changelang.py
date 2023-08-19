@@ -2,9 +2,10 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-from admin.logsetting import logger
-from databases import database
+from create import db, logger, i18n
 from util.keyboards import language_menu, main_menu
+
+_ = i18n.gettext
 
 
 class ChangeLangFSM(StatesGroup):
@@ -16,8 +17,8 @@ async def select_lang(message: types.Message):
     """Change language."""
     logger.info(
         f'Entry to select language handler user {message.from_user.first_name} (id:{message.from_user.id})')
-    await message.answer(f'Your are currently language : {await database.get_user_lang_db(message.from_user.id)} \n'
-                         f' Choose language', reply_markup=language_menu)
+    await message.answer(_('Your are currently language : {lang} \n'
+                         ' Choose language').format(lang=await db.get_user_lang_db(message.from_user.id)), reply_markup=language_menu)
     # await message.answer('Choose language', reply_markup=keyboard_lang)
     await ChangeLangFSM.language.set()
 
@@ -29,12 +30,12 @@ async def change_lang(message: types.Message, state: FSMContext):
         data['language'] = message.text
     if data['language'] == 'Русский':
         await state.update_data(language='ru')
-        await database.up_user_lang_db(message.from_user.id, 'ru')
+        await db.up_user_lang_db(message.from_user.id, 'ru')
         await message.answer('Язык изменен на русский / Language changed to Russian', reply_markup=types.ReplyKeyboardRemove())
         logger.info(f'Language changed to Russian user {message.from_user.first_name} (id:{message.from_user.id})')
     elif data['language'] == 'English':
         await state.update_data(language='en')
-        await database.up_user_lang_db(message.from_user.id, 'en')
+        await db.up_user_lang_db(message.from_user.id, 'en')
         await message.answer('Language changed to English / Язык изменен на английский', reply_markup=types.ReplyKeyboardRemove())
         logger.info(f'Language changed to English user {message.from_user.first_name} (id:{message.from_user.id})')
     else:

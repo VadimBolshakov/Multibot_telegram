@@ -7,11 +7,8 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from asyncpg import Record
 
 from admin import checking
-from admin.logsetting import logger
-from create import bot
-from databases import database
+from create import bot, db, logger
 from models.admin import AdminResponse
-from middlewares import AdminFilter
 
 
 class AdminFSM(StatesGroup):
@@ -21,7 +18,7 @@ class AdminFSM(StatesGroup):
 
 
 # @dp.message_handler(commands=['admin'])
-@checking.check_admin
+@checking.check_admin(logger, db)
 async def admin(message: types.Message):
     """Send message to admin about using commands."""
     await message.answer('Admin panel suggest using next commands:\n'
@@ -35,35 +32,35 @@ async def admin(message: types.Message):
 
 
 # @dp.message_handler(commands=['getlog'])
-@checking.check_admin
+@checking.check_admin(logger, db)
 async def send_log(message: types.Message):
     """Send log file to admin in telegram."""
     await AdminResponse(message).send_log()
 
 
 # @dp.message_handler(commands=['getemail'])
-@checking.check_admin
+@checking.check_admin(logger, db)
 async def send_email_lod(message: types.Message):
     """Send log file to admin in email."""
     await AdminResponse(message).send_email_lod()
 
 
 # @dp.message_handler(commands=['getusers'])
-@checking.check_admin
+@checking.check_admin(logger, db)
 async def send_users(message: types.Message):
     """Send id and users of this chat to admin."""
     await AdminResponse(message).send_users()
 
 
 # @dp.message_handler(commands=['getrequests'])
-# @checking.check_admin
+@checking.check_admin(logger, db)
 async def send_requests(message: types.Message):
     """Send number of requests to admin."""
     await AdminResponse(message).send_requests()
 
 
 # @dp.message_handler(commands=['sendall'], state=None)
-@checking.check_admin
+@checking.check_admin(logger, db)
 async def send_all(message: types.Message):
     """Send message to all users."""
     await message.answer('Enter message (enter "/cancel" to cancel)')
@@ -79,7 +76,7 @@ async def send_all_message(message: types.Message, state: FSMContext):
         await message.answer('Cancel')
         await state.finish()
         return
-    users: list[Record] = await database.get_all_users_db()
+    users: list[Record] = await db.get_all_users_db()
     if not users:
         await message.answer('Users not found')
         await state.finish()
@@ -98,7 +95,7 @@ async def send_all_message(message: types.Message, state: FSMContext):
 
 
 # @dp.message_handler(commands=['banneruser'], state=None)
-@checking.check_admin
+@checking.check_admin(logger, db)
 async def baning_user_id(message: types.Message):
     """Get id baning user."""
     await message.answer('Enter baning user id (enter "/cancel" to cancel)')
@@ -123,13 +120,13 @@ async def ban_user(message: types.Message, state: FSMContext):
         await state.finish()
         return
 
-    if not await database.get_user_db(user_id):
+    if not await db.get_user_db(user_id):
         await message.answer('User not found')
         await state.finish()
         return
 
-    if await database.up_user_banned_db(user_id):
-        await message.answer(f'Banned user {user_id} is {await database.get_user_banned_db(user_id)}. ')
+    if await db.up_user_banned_db(user_id):
+        await message.answer(f'Banned user {user_id} is {await db.get_user_banned_db(user_id)}. ')
     else:
         await message.answer(f'Error ban user {user_id}')
 
@@ -137,7 +134,7 @@ async def ban_user(message: types.Message, state: FSMContext):
 
 
 # @dp.message_handler(commands=['statusadmin'], state=None)
-@checking.check_admin
+@checking.check_admin(logger, db)
 async def status_admin_id(message: types.Message):
     """Get status admin."""
     await message.answer('Enter status admin user id (enter "/cancel" to cancel)')
@@ -162,14 +159,14 @@ async def status_admin(message: types.Message, state: FSMContext):
         await state.finish()
         return
 
-    if not await database.get_user_db(user_id):
+    if not await db.get_user_db(user_id):
         await message.answer('User not found')
         await state.finish()
         return
 
-    if await database.up_user_admin_db(user_id):
+    if await db.up_user_admin_db(user_id):
         await message.answer(f'User {user_id} status admin changed.\n'
-                             f'Now status admin user {user_id} is {await database.get_user_admin_db(user_id)}.')
+                             f'Now status admin user {user_id} is {await db.get_user_status_admin_db(user_id)}.')
     else:
         await message.answer(f'Error user {user_id} change status admin')
 
@@ -181,7 +178,7 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(send_log, commands=['getlog'])
     dp.register_message_handler(send_email_lod, commands=['getemail'])
     dp.register_message_handler(send_users, commands=['getusers'])
-    dp.register_message_handler(send_requests, AdminFilter(), commands=['getrequests'])
+    dp.register_message_handler(send_requests, commands=['getrequests'])
     dp.register_message_handler(send_all, commands=['sendall'], state=None)
     dp.register_message_handler(send_all_message, state=AdminFSM.broadcast)
     dp.register_message_handler(baning_user_id, commands=['banneruser'], state=None)

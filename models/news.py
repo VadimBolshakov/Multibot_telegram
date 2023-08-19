@@ -1,19 +1,17 @@
 import asyncio
 import aiohttp
 from json import JSONDecodeError
-from databases import database
-from admin.logsetting import logger
-from create import TOKEN_NEWSAPI
+from create import TOKEN_NEWSAPI, db, logger
 from typing import Optional
 from admin import exeptions as ex
 import datetime
 
 
 async def get_news(country: str = '',
-             sources: str = 'bbc-news',
-             category: str = 'general',
-             query: Optional[str] = None,
-             page: int = 1) -> Optional[dict[str, str | int | float | list[dict[str, str | None]]]]:
+                   sources: str = 'bbc-news',
+                   category: str = 'general',
+                   query: Optional[str] = None,
+                   page: int = 1) -> Optional[dict[str, str | int | float | list[dict[str, str | None]]]]:
     """Get news from NewsAPI API."""
     params_newsapi = {
         'apiKey': TOKEN_NEWSAPI,
@@ -38,7 +36,7 @@ async def get_news(country: str = '',
                 data_newsapi = await response.json()
 
                 if data_newsapi['status'] == 'error':
-                    raise ex.ResponseStatusNewsAPIError(response.json()['code'], response.json()['message'])
+                    raise ex.ResponseStatusNewsAPIError(data_newsapi['code'], data_newsapi['message'])
 
                 if data_newsapi['totalResults'] == 0:
                     raise ex.ResponseTotalResultsNewsAPIError()
@@ -51,7 +49,6 @@ async def get_news(country: str = '',
         return None
 
 
-
 async def news_dict(user_id: int,
                     first_name: str,
                     country: str = '',
@@ -61,7 +58,7 @@ async def news_dict(user_id: int,
     data_news = await get_news(country=country, category=category, query=query)
     if not data_news:
         logger.warning(f'NewsError. User {first_name} (id:{user_id})')
-        await database.add_request_db(user_id=user_id, type_request='news', num_tokens=0, status_request=False)
+        await db.add_request_db(user_id=user_id, type_request='news', num_tokens=0, status_request=False)
         return 'Error: can\'t get news'
 
     _news = {}
@@ -71,7 +68,7 @@ async def news_dict(user_id: int,
                     data_news['articles'][i]['title'],
                     data_news['articles'][i]['description'],
                     data_news['articles'][i]['url']]
-    await database.add_request_db(user_id=user_id, type_request='news', num_tokens=0, status_request=True)
+    await db.add_request_db(user_id=user_id, type_request='news', num_tokens=0, status_request=True)
     logger.info(
         f'Exit from news model user {first_name} (id:{user_id})')
 

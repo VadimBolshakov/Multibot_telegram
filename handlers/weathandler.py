@@ -2,14 +2,12 @@
 
 from aiogram import types
 
-from create import dp
+from create import dp, db, logger
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from databases import database
 from util.keyboards import main_menu, weather_period_menu, weather_volume_menu, weather_menu_local
 from view import weatherview, quoteview
 from models import openweather, quote, locbyip, citydata
-from admin.logsetting import logger
 
 
 class WeatherFSM(StatesGroup):
@@ -154,7 +152,7 @@ async def input_volume(message: types.Message, state: FSMContext):
         longitude = data['longitude']
         period = data['period'][0]
         volume = data['volume'][0]
-        land = await database.get_user_lang_db(user_id=int(message.from_user.id))
+        land = await db.get_user_lang_db(user_id=int(message.from_user.id))
         msg = await message.answer('Please, Wait a second.....', reply_markup=types.ReplyKeyboardRemove())
         answer = weatherview.weather_view(await openweather.weather_dict(message.from_user.id,
                                                                          message.from_user.first_name,

@@ -8,10 +8,8 @@ import asyncio
 import aiohttp
 from json import JSONDecodeError
 
-from create import TOKEN_GOOGLE_TRANSLATE
+from create import TOKEN_GOOGLE_TRANSLATE, db, logger
 from admin import exeptions as ex
-from admin.logsetting import logger
-from databases import database
 from typing import Optional
 
 
@@ -73,13 +71,13 @@ async def translate_dict(user_id: int, first_name: str, language_target: str, te
 
     if data_translate is None:
         logger.warning(f'TranslateError. User {first_name} (id:{user_id})')
-        await database.add_request_db(user_id=user_id, type_request='translate', num_tokens=0, status_request=False)
+        await db.add_request_db(user_id=user_id, type_request='translate', num_tokens=0, status_request=False)
         return 'Sorry, but I have not translate it. Error: translate not found'
 
     _translate_dict = {'translate_text': data_translate['data']['translations'][0]['translatedText'],
                        'language': data_translate['data']['translations'][0]['detectedSourceLanguage']}
 
-    await database.add_request_db(user_id=user_id, type_request='translate', num_tokens=0, status_request=True)
+    await db.add_request_db(user_id=user_id, type_request='translate', num_tokens=0, status_request=True)
     logger.info(
         f'Exit from translate model user {first_name} (id:{user_id})')
 

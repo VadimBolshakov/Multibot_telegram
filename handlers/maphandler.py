@@ -1,14 +1,12 @@
 """Handler for locations function."""
 
 from aiogram import types
-from create import dp
+from create import dp, db, logger
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from databases import database
 from util.keyboards import main_menu, map_menu
 from view import quoteview
 from models import quote, locbyip
-from admin.logsetting import logger
 
 
 class MapsFSM(StatesGroup):
@@ -38,8 +36,8 @@ async def select_period(message: types.Message, state: FSMContext):
                              f' longitude: {data["longitude"]}',
                              reply_markup=types.ReplyKeyboardRemove())
 
-        await database.add_request_db(user_id=message.from_user.id, type_request='location',
-                                      num_tokens=1, status_request=True)
+        await db.add_request_db(user_id=message.from_user.id, type_request='location',
+                                num_tokens=1, status_request=True)
         logger.info(
             f'Exit from location handler user {message.from_user.first_name} (id:{message.from_user.id})')
 
@@ -56,8 +54,8 @@ async def select_period(message: types.Message, state: FSMContext):
                                  f' org: {local_data["org"]}\n',
                                  reply_markup=types.ReplyKeyboardRemove())
 
-            await database.add_request_db(user_id=message.from_user.id, type_request='location',
-                                          num_tokens=0, status_request=True)
+            await db.add_request_db(user_id=message.from_user.id, type_request='location',
+                                    num_tokens=0, status_request=True)
             logger.info(
                 f'Exit from location handler user {message.from_user.first_name} (id:{message.from_user.id})')
 

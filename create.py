@@ -6,12 +6,12 @@ from dotenv import load_dotenv, find_dotenv
 from aiogram import Bot
 from aiogram.dispatcher import Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from admin.logsetting import logger as setuplogging
+from databases.database import DataBaseMain
+from middlewares import setup_middleware_i18n, setup_middlewares_filters
 
 load_dotenv(find_dotenv())
 
-EMAIL_SENDER = os.getenv('EMAIL_SENDER')
-EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
-EMAIL_RECIPIENT = os.getenv('EMAIL_RECIPIENT')
 DB_NAME = os.getenv('DB_NAME')
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
@@ -26,8 +26,8 @@ TOKEN_OPENWEATHER = os.getenv('TOKEN_OPENWEATHER')
 TOKEN_NEWSAPI = os.getenv('TOKEN_NEWSAPI')
 TOKEN_GOOGLE_TRANSLATE = os.getenv('TOKEN_GOOGLE_TRANSLATE')
 TOKEN_CURRENCYLAYER = os.getenv('TOKEN_CURRENCYLAYER')
-LOG_FILE = os.getenv('LOG_FILE')
 FOUL_FILE = os.getenv('FOUL_FILE')
+LOG_FILE = os.getenv('LOG_FILE')
 
 I18N_DOMAIN = 'base'
 
@@ -37,8 +37,14 @@ LOCALES_DIR = BASE_DIR / 'locales'
 
 loop = asyncio.new_event_loop()
 # loop = asyncio.get_event_loop()
+logger = setuplogging
+
+db = DataBaseMain(db_user=DB_USER, db_password=DB_PASSWORD, db_host=DB_HOST, db_port=DB_PORT, db_name=DB_NAME, logger=logger)
 
 bot = Bot(TOKEN_BOT)
 storage = MemoryStorage()
 dp = Dispatcher(bot, loop=loop, storage=storage)
+
+setup_middlewares_filters(dp, password=PASSWORD, foul_file=FOUL_FILE, db=db, logger=logger)
+i18n = setup_middleware_i18n(dp, domain=I18N_DOMAIN, locales_dir=LOCALES_DIR, db=db)
 

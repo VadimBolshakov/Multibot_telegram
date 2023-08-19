@@ -1,14 +1,12 @@
 """Handler for news."""
 from asyncio import sleep
 from aiogram import types
-from create import dp
+from create import dp, db, logger
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from databases import database
 from util.keyboards import main_menu, news_category_menu, news_query_menu
 from view import newsview, quoteview
 from models import news, quote
-from admin.logsetting import logger
 
 
 class NewsFSM(StatesGroup):
@@ -51,7 +49,7 @@ async def input_query(message: types.Message, state: FSMContext):
     if data['query'][0] != 'cancel':
         msg = await message.answer('Wait a second, please', reply_markup=types.ReplyKeyboardRemove())
         category = data['category'][0]
-        country = await database.get_user_lang_db(user_id=int(message.from_user.id))
+        country = await db.get_user_lang_db(user_id=int(message.from_user.id))
         if country == 'en':
             country = ''
         query = data['query'][0]
@@ -65,9 +63,9 @@ async def input_query(message: types.Message, state: FSMContext):
         await msg.delete()
         for item_news in newsview.news_view(news_dictionary):
 
-            if len(item_news) > 4096:
-                for x in range(0, len(item_news), 4096):
-                    await message.answer(item_news[x:x + 4096])
+            if len(item_news) > 4015:
+                for x in range(0, len(item_news), 4015):
+                    await message.answer(item_news[x:x + 4015])
             else:
                 await message.answer(item_news)
 
