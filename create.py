@@ -45,6 +45,7 @@ bot = Bot(TOKEN_BOT)
 storage = MemoryStorage()
 dp = Dispatcher(bot, loop=loop, storage=storage)
 
-setup_middlewares_filters(dp, password=PASSWORD, foul_file=FOUL_FILE, db=db, logger=logger)
 i18n = setup_middleware_i18n(dp, domain=I18N_DOMAIN, locales_dir=LOCALES_DIR, db=db)
+setup_middlewares_filters(dp, password=PASSWORD, foul_file=FOUL_FILE, db=db, logger=logger)
+
 

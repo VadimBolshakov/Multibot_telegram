@@ -8,7 +8,7 @@ import random
 import os
 
 
-async def jokes_dict(user_id: int, first_name: str, quantity: int = 10) -> dict[int, str] | str:
+async def jokes_dict(user_id: int, first_name: str, quantity: int = 9) -> dict[int, str] | str:
     """Get jokes from json-file and return dict of jokes."""
     lang = await db.get_user_lang_db(user_id=user_id)
 
@@ -17,8 +17,9 @@ async def jokes_dict(user_id: int, first_name: str, quantity: int = 10) -> dict[
         total_quantity = 124156
 
     else:
-        file_jokes = os.path.abspath(f'./src/jokes/jokes_en.json')
-        total_quantity = 194553
+        return 'Sorry, joke not found'
+        # file_jokes = os.path.abspath(f'./src/jokes/jokes_en.json')
+        # total_quantity = 194553
 
     try:
         with open(file_jokes, 'r') as file:
@@ -32,7 +33,10 @@ async def jokes_dict(user_id: int, first_name: str, quantity: int = 10) -> dict[
     jokes = defaultdict(str)
 
     for i in random.sample(range(1, total_quantity), quantity):
-        jokes[i] = load_jokes.get(str(i))
+        intermed_joke = load_jokes.get(str(i))
+        if len(intermed_joke) < 256:
+            jokes[i] = intermed_joke
+        # jokes[i] = load_jokes.get(str(i))
 
     await db.add_request_db(user_id=user_id, type_request='jokes', num_tokens=0, status_request=True)
     logger.info(

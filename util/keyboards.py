@@ -23,8 +23,8 @@ main_menu.add(InlineKeyboardButton(_('Weather'), callback_data='weather'),
 
 
 map_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-button_1 = KeyboardButton(_('Get location'), request_location=True)
-button_2 = KeyboardButton(_('Get by IP'))
+button_1 = KeyboardButton('Get location', request_location=True)
+button_2 = KeyboardButton('Get by IP')
 button_3 = KeyboardButton("Cancel")
 map_menu.row(button_1, button_2).add(button_3)
 
@@ -59,35 +59,35 @@ translate_menu.row(button_1, button_2)\
 
 weather_menu_local = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 button_1 = KeyboardButton('Get location', request_location=True)
-button_2 = KeyboardButton(_('Enter city'))
-button_3 = KeyboardButton(_("Get by IP"))
+button_2 = KeyboardButton('Enter city')
+button_3 = KeyboardButton("Get by IP")
 button_4 = KeyboardButton("Cancel")
 weather_menu_local.add(button_1, button_2, button_3).add(button_4)
 
 
 weather_period_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-button_1 = KeyboardButton(_('Current'))
-button_2 = KeyboardButton(_('Hourly'))
-button_3 = KeyboardButton(_("Daily"))
+button_1 = KeyboardButton('Current')
+button_2 = KeyboardButton('Hourly')
+button_3 = KeyboardButton("Daily")
 button_4 = KeyboardButton("Cancel")
 weather_period_menu.add(button_1, button_2, button_3).add(button_4)
 
 
 weather_volume_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-button_1 = KeyboardButton(_('Short'))
-button_2 = KeyboardButton(_('Long'))
+button_1 = KeyboardButton('Short')
+button_2 = KeyboardButton('Full')
 button_3 = KeyboardButton("Cancel")
 weather_volume_menu.add(button_1, button_2).add(button_3)
 
 
 news_category_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-button_1 = KeyboardButton(_('Business'))
-button_2 = KeyboardButton(_('Entertainment'))
-button_3 = KeyboardButton(_("General"))
-button_4 = KeyboardButton(_("Health"))
-button_5 = KeyboardButton(_('Science'))
-button_6 = KeyboardButton(_('Sports'))
-button_7 = KeyboardButton(_('Technology'))
+button_1 = KeyboardButton('Business')
+button_2 = KeyboardButton('Entertainment')
+button_3 = KeyboardButton("General")
+button_4 = KeyboardButton("Health")
+button_5 = KeyboardButton('Science')
+button_6 = KeyboardButton('Sports')
+button_7 = KeyboardButton('Technology')
 button_8 = KeyboardButton("Cancel")
 news_category_menu.add(button_1, button_2)\
     .row(button_3, button_4)\

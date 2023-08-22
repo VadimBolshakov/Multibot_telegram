@@ -1,10 +1,12 @@
 """Authentication new user by password, used FSM."""
 
 from aiogram import Dispatcher, types
-from create import bot, PASSWORD, ADMIN_ID, db, logger
+from create import bot, PASSWORD, ADMIN_ID, db, logger, i18n
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from util.keyboards import main_menu
+
+_ = i18n.gettext
 
 
 class RegisterFSM(StatesGroup):
@@ -17,13 +19,13 @@ async def command_start(message: types.Message):
     logger.info(
         f'Entry to start handler user {message.from_user.first_name} (id:{message.from_user.id})')
     if await db.get_user_db(message.from_user.id) is None:
-        await message.answer('Enter password')
+        await message.answer(_('Enter password'))
         """Set FSM state to password."""
         await RegisterFSM.password.set()
     else:
-        await message.answer(f'Hello {message.from_user.full_name}.\n'
-                             f'You already have registered.\n'
-                             f'Welcome to my bot \U0001F604', reply_markup=main_menu)
+        await message.answer(_('Hello {full_name}.\n'
+                               'You already have registered.\n'
+                               'Welcome to my bot \U0001F604').format(full_name=message.from_user.full_name), reply_markup=main_menu)
         logger.info(
             f'Exit from start handler user {message.from_user.first_name} (id:{message.from_user.id})')
 
@@ -42,17 +44,17 @@ async def input_password(message: types.Message, state: FSMContext):
                              status_admin=status_admin)
         logger.info(
             f'New user registrate success {message.from_user.first_name} (id:{message.from_user.id})')
-        await bot.send_message(message.chat.id, f'Hello {message.from_user.full_name}.\n'
-                                                f'You are registered successfully.\n'
-                                                f'This is a multi-function bot.\n'
-                                                f'Enter command /help to learn more.\n'
-                                                f'Welcome to my bot\U0001F604', reply_markup=main_menu)
+        await bot.send_message(message.chat.id, _('Hello {full_name}.\n'
+                                                  'You are registered successfully.\n'
+                                                  'This is a multi-function bot.\n'
+                                                  'Enter command /help to learn more.\n'
+                                                  'Welcome to my bot\U0001F604').format(full_name=message.from_user.full_name),
+                               reply_markup=main_menu)
         await state.finish()
     else:
         logger.warning(
             f'Enter password is incorrect user {message.from_user.first_name} (id:{message.from_user.id})')
-        await message.answer('The password is incorrect')
-        await message.answer('Enter password')
+        await message.answer(_('The password is incorrect'))
         await state.finish()
 
 

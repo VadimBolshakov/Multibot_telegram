@@ -1,12 +1,14 @@
 """Handler for chat_gpt."""
 
 from aiogram import types
-from create import dp, logger
+from create import dp, logger, i18n
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from util.keyboards import main_menu
 from view import chatgptview, quoteview
 from models import chatgpt, quote
+
+_ = i18n.gettext
 
 
 class NewsFSM(StatesGroup):
@@ -16,7 +18,7 @@ class NewsFSM(StatesGroup):
 # @dp.message_handler(state=None)
 async def select_question(message: types.Message):
     """Select question and set FSM state."""
-    await message.answer('Input your question or type "q" ("й") for exit')
+    await message.answer(_('Input your question or type "q" ("й") for exit'))
     """Set FSM state."""
     await NewsFSM.question.set()
 
@@ -35,7 +37,7 @@ async def input_question(message: types.Message, state: FSMContext):
         await msg.delete()
 
     else:
-        await message.answer('I don\'t understand you')
+        await message.answer(_('I don\'t understand you'))
         logger.info(
             f'Cancel chatgpt handler user {message.from_user.first_name} (id:{message.from_user.id})')
     await state.finish()

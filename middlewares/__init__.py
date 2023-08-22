@@ -3,10 +3,10 @@ from .langmiddleware import ACLMiddleware
 from .middleware import ManageMiddleware
 
 
-def setup_middlewares_filters(dp, password, foul_file, db, logger, limit=0.5, key_prefix='antiflood'):
+def setup_middlewares_filters(dp, password, foul_file, db, logger):
     """Set up the all middlewares and filters."""
     dp.filters_factory.bind(PrivateFilter)
-    dp.middleware.setup(ManageMiddleware(logger=logger, db=db, password=password, foul_file=foul_file, limit=limit, key_prefix=key_prefix))
+    dp.middleware.setup(ManageMiddleware(logger=logger, db=db, password=password, foul_file=foul_file))
 
 
 def setup_middleware_i18n(dp, domain, locales_dir, db):

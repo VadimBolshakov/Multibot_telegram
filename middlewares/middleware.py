@@ -11,6 +11,7 @@ from aiogram.dispatcher.handler import current_handler, CancelHandler
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.utils.exceptions import Throttled
 from logging import Logger
+from middlewares.getrandomstr import get_random_string
 from databases.database import DataBaseMain as DataBase
 
 
@@ -108,10 +109,11 @@ class ManageMiddleware(BaseMiddleware):
             if message.text is not None:
                 if {i.lower().translate(str.maketrans('', '', string.punctuation)) for i in message.text.split(' ')} \
                         .intersection(self.foul_set):
-                    await message.reply('foul language is prohibited')
-                    if message: await message.delete()
+                    await message.reply(get_random_string('./src/foul/quote_against_foul.json'))
+                    await message.delete()
+                    message.text = '*****'
                     self.logger.warning(f'Fail the foul language check user {user_first_name} (id:{user_id})')
-                    raise CancelHandler()
+                    # raise CancelHandler()
             await dispatcher.throttle(key, rate=limit)
 
         except Throttled as t:
@@ -182,4 +184,3 @@ class ManageMiddleware(BaseMiddleware):
         except Exception as e:
             self.logger.exception(f'Error {str(e)} for update user id:{user_id}')
             raise CancelHandler()
-

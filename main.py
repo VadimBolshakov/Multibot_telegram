@@ -10,12 +10,10 @@ from handlers import general, start, adminhandler, help, changelang, reset
 async def on_startup(_):
     """Create database, middlewares, filters and class for work with i18n (languages).
     Also format the logger."""
-
     if await db.start_db():
         logger.info('DB created')
     else:
         logger.info('DB not created')
-    print('Bot in online')
     logger.info('Bot in online')
     _ = i18n.gettext
 

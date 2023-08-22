@@ -1,0 +1,15 @@
+Welcome to my multifunction bot.
+This bot provides information about weather, location, and rates of currencies. It also does translation, shows news, and amuses you if you are bothered. You can enjoy asking your questions using ChatGPT. The bot speaks multiple languages. Choose a speech in the telegram menu of the bot "Change language" (the blue button is bottom left) or in the setting of telegram globally. Note: The submenus are in English only yet.
+To begin, you must first register for a pass. Press the button "start" (or type the command "/start" in the bot). Once you enter the password, you're all set. Next, you are looking at the main menu, where you will find
+The button "Weather", which is showing current, daily, hourly, and alarm according to your location (you might choose one of both variants by your provider's IP or your location through Telegram), or enter the name of the city. The weather forecast might show two variants: short or full.
+The button "Maps" displays a map if you have chosen the variant "Get location" or the data of the location if you have chosen the variant "Get by IP" (sure, the values of coordinates will be a little different).
+The button "Translate" allows the translation of your text into different languages, which you should choose (the original language is detected automatically).
+The " Currency " button shows the currency rate in USD for English and RUB for Russian.
+The button "News" performs news (default 15 items) of the kind such as business, entertainment, health, sports, technology, science, or general depending on the user's language, as well as keywords, which are not necessary. Note: Keywords should be used for English otherwise, will be displayed the news of the all world.
+The button "Joked" displays jokes (default 10 items) if you get bored.
+If you press the button "Chat GPT", you will get great pleasure talking with AI.
+There are commands "start", "help", reset," and "lang" (change language) in the telegram menu of the bot (the blue button is bottom left). In particular, the button "reset" is used to reset the current state of the bot.
+Enjoy
+Callback: vadimbolsh@gmail.com
+P.S. The bot is in the development stage. If you have any suggestions, please write to me. I will be glad to hear from you.
+P.P.S. The foul filter only has been working on Russian words yet.  The author doesn't know English well enough to filter the obscene English words.

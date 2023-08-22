@@ -72,7 +72,7 @@ async def weather_dict(user_id: int,
 
     exclude = get_excluded(period)
 
-    show_long = True if volume == 'long' else False
+    show_long = True if volume == 'full' else False
 
     data_weather = await get_weather(lat=lat, lon=lon, lang=lang, exclude=exclude)
 

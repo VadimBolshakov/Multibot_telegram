@@ -1,0 +1,213 @@
+# Translations template for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-08-19 12:53+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: handlers/changelang.py:20
+msgid ""
+"Your are currently language : {lang} \n"
+" Choose language"
+msgstr ""
+
+#: handlers/chatgpthandler.py:21
+msgid "Input your question or type \"q\" (\"й\") for exit"
+msgstr ""
+
+#: handlers/chatgpthandler.py:40 handlers/maphandler.py:75
+#: handlers/newshandler.py:39 handlers/newshandler.py:80
+#: handlers/transhandler.py:52 handlers/transhandler.py:75
+#: handlers/weathandler.py:72 handlers/weathandler.py:137
+#: handlers/weathandler.py:176
+msgid "I don't understand you"
+msgstr ""
+
+#: handlers/general.py:21 handlers/general.py:29 handlers/general.py:37
+#: handlers/general.py:45 handlers/general.py:58 handlers/general.py:65
+#: handlers/general.py:74
+msgid "Please, wait"
+msgstr ""
+
+#: handlers/general.py:75
+msgid "Ask me a everything you want"
+msgstr ""
+
+#: handlers/general.py:81
+msgid "Hi, you typed {text}"
+msgstr ""
+
+#: handlers/general.py:87
+msgid "I only understand text"
+msgstr ""
+
+#: handlers/help.py:12
+msgid ""
+"Help. \n"
+" Here you can find help information\n"
+" And it will be here soon"
+msgstr ""
+
+#: handlers/maphandler.py:21 handlers/weathandler.py:25
+msgid "Enter way of location or press \"Cancel\" for exit"
+msgstr ""
+
+#: handlers/maphandler.py:36 handlers/weathandler.py:78
+msgid ""
+"Your location has been received:\n"
+" latitude: {lat}\n"
+" longitude: {long}"
+msgstr ""
+
+#: handlers/maphandler.py:49
+msgid ""
+"Your location has been received:\n"
+" latitude: {lat}\n"
+" longitude: {long}\n"
+" city: {city]}\n"
+" country: {country}\n"
+" timezone: {timezone}\n"
+" ip: {ip}\n"
+" org: {org}\n"
+msgstr ""
+
+#: handlers/newshandler.py:22
+msgid "Select category or press \"Cancel\" for exit"
+msgstr ""
+
+#: handlers/newshandler.py:33
+msgid ""
+"Input text to query (ex. football) or press \"Cancel\" for exit\n"
+"If you want to see all news (without query), input \"All\"\n"
+"Note. for English is a better input query, otherwise, world news will be "
+"shown."
+msgstr ""
+
+#: handlers/newshandler.py:52
+msgid "Wait a second, please"
+msgstr ""
+
+#: handlers/reset.py:13
+msgid "Reset all state"
+msgstr ""
+
+#: handlers/reset.py:16
+msgid "The allstate reset"
+msgstr ""
+
+#: handlers/reset.py:20
+msgid "The currency state not found"
+msgstr ""
+
+#: handlers/start.py:22
+msgid "Enter password"
+msgstr ""
+
+#: handlers/start.py:26
+msgid ""
+"Hello {full_name}.\n"
+"You already have registered.\n"
+"Welcome to my bot 😄"
+msgstr ""
+
+#: handlers/start.py:47
+msgid ""
+"Hello {full_name}.\n"
+"You are registered successfully.\n"
+"This is a multi-function bot.\n"
+"Enter command /help to learn more.\n"
+"Welcome to my bot😄"
+msgstr ""
+
+#: handlers/start.py:57
+msgid "The password is incorrect"
+msgstr ""
+
+#: handlers/transhandler.py:23
+msgid "Select into language or press \"Cancel\" for exit"
+msgstr ""
+
+#: handlers/transhandler.py:49
+msgid "Enter text for translate:"
+msgstr ""
+
+#: handlers/transhandler.py:70 handlers/weathandler.py:159
+msgid "Please, Wait a second....."
+msgstr ""
+
+#: handlers/weathandler.py:57
+msgid "Enter city name or press \"Cancel\" for exit"
+msgstr ""
+
+#: handlers/weathandler.py:64 handlers/weathandler.py:93
+msgid "Cancel"
+msgstr ""
+
+#: handlers/weathandler.py:82 handlers/weathandler.py:120
+msgid "Select forecast period or press \"Cancel\" for exit"
+msgstr ""
+
+#: handlers/weathandler.py:113
+msgid ""
+"Your city has been received:\n"
+" city: {sity}\n"
+" latitude: {lat}\n"
+" longitude: {long}"
+msgstr ""
+
+#: handlers/weathandler.py:132
+msgid ""
+"Your period has been received:\n"
+" period: {per}"
+msgstr ""
+
+#: handlers/weathandler.py:134
+msgid "Enter volume forecast:"
+msgstr ""
+
+#: handlers/weathandler.py:151
+msgid ""
+"Your volume has been received:\n"
+" volume: {vol}"
+msgstr ""
+
+#: util/keyboards.py:7
+msgid "Weather"
+msgstr ""
+
+#: util/keyboards.py:8
+msgid "Maps"
+msgstr ""
+
+#: util/keyboards.py:9
+msgid "Translate"
+msgstr ""
+
+#: util/keyboards.py:10
+msgid "Currency"
+msgstr ""
+
+#: util/keyboards.py:11
+msgid "News"
+msgstr ""
+
+#: util/keyboards.py:12
+msgid "Jokes"
+msgstr ""
+
+#: venv/Lib/site-packages/isort/main.py:158
+msgid "show this help message and exit"
+msgstr ""
+
