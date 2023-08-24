@@ -28,7 +28,6 @@ async def command_help(message: types.Message):
         f'Exit from help handler user {message.from_user.first_name} (id:{message.from_user.id})')
 
 
-
 def register_handlers_help(dp: Dispatcher):
     dp.register_message_handler(command_help, commands=['help'])
 

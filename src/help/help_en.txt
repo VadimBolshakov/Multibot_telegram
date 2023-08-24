@@ -7,7 +7,7 @@ The button "Translate" allows the translation of your text into different langua
 The " Currency " button shows the currency rate in USD for English and RUB for Russian.
 The button "News" performs news (default 15 items) of the kind such as business, entertainment, health, sports, technology, science, or general depending on the user's language, as well as keywords, which are not necessary. Note: Keywords should be used for English otherwise, will be displayed the news of the all world.
 The button "Joked" displays jokes (default 10 items) if you get bored.
-If you press the button "Chat GPT", you will get great pleasure talking with AI.
+If you press the button "ChatGPT", you will get great pleasure talking with AI.
 There are commands "start", "help", reset," and "lang" (change language) in the telegram menu of the bot (the blue button is bottom left). In particular, the button "reset" is used to reset the current state of the bot.
 Enjoy
 Callback: vadimbolsh@gmail.com

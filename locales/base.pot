@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-08-19 12:53+0400\n"
+"POT-Creation-Date: 2023-08-24 06:34+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,7 +31,7 @@ msgstr ""
 #: handlers/newshandler.py:39 handlers/newshandler.py:80
 #: handlers/transhandler.py:52 handlers/transhandler.py:75
 #: handlers/weathandler.py:72 handlers/weathandler.py:137
-#: handlers/weathandler.py:176
+#: handlers/weathandler.py:177
 msgid "I don't understand you"
 msgstr ""
 
@@ -57,7 +57,7 @@ msgstr ""
 msgid ""
 "Help. \n"
 " Here you can find help information\n"
-" And it will be here soon"
+" And it already is here"
 msgstr ""
 
 #: handlers/maphandler.py:21 handlers/weathandler.py:25
@@ -68,15 +68,15 @@ msgstr ""
 msgid ""
 "Your location has been received:\n"
 " latitude: {lat}\n"
-" longitude: {long}"
+" longitude: {lon}"
 msgstr ""
 
 #: handlers/maphandler.py:49
 msgid ""
 "Your location has been received:\n"
 " latitude: {lat}\n"
-" longitude: {long}\n"
-" city: {city]}\n"
+" longitude: {lon}\n"
+" city: {city}\n"
 " country: {country}\n"
 " timezone: {timezone}\n"
 " ip: {ip}\n"
@@ -162,9 +162,9 @@ msgstr ""
 #: handlers/weathandler.py:113
 msgid ""
 "Your city has been received:\n"
-" city: {sity}\n"
+" city: {city}\n"
 " latitude: {lat}\n"
-" longitude: {long}"
+" longitude: {lon}"
 msgstr ""
 
 #: handlers/weathandler.py:132
@@ -209,5 +209,10 @@ msgstr ""
 
 #: venv/Lib/site-packages/isort/main.py:158
 msgid "show this help message and exit"
+msgstr ""
+
+#: venv/Lib/site-packages/mypy/main.py:387
+#, python-format
+msgid "%(prog)s: error: %(message)s\n"
 msgstr ""
 

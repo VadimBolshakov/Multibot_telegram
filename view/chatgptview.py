@@ -1,6 +1,7 @@
+from typing import Optional
 
 
-def chatgpt_view(chatgpt_dictionary: dict[str, str] | str) -> str:
+def chatgpt_view(chatgpt_dictionary: dict[str, str] | str) -> Optional[str]:
     """Return answer."""
     if isinstance(chatgpt_dictionary, str):
         return chatgpt_dictionary

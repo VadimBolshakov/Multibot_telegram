@@ -10,7 +10,7 @@ from asyncpg import Record, Connection
 class DataBaseMain:
     """Class project database"""
 
-    def __init__(self, db_user: str, db_password: str, db_host: str, db_port: str, db_name: str, logger: Logger = None) -> None:
+    def __init__(self, db_user: str, db_password: str, db_host: str, db_port: str, db_name: str, logger: Optional[Logger] = None) -> None:
         self.db_user = db_user
         self.db_password = db_password
         self.db_host = db_host
@@ -70,7 +70,7 @@ class DataBaseMain:
                           user_id: int,
                           first_name: str,
                           full_name: str,
-                          dt: datetime = datetime.datetime.now(),
+                          dt: datetime.datetime = datetime.datetime.now(),
                           lang: str = 'en',
                           status_admin: bool = False) -> bool:
         """Add the new user to the users table. Return True if user added, else False."""
@@ -99,7 +99,7 @@ class DataBaseMain:
                              type_request: str,
                              num_tokens: int,
                              status_request: bool,
-                             dt: datetime = datetime.datetime.now()) -> bool:
+                             dt: datetime.datetime = datetime.datetime.now()) -> bool:
         """Add the new request to the requests table. Return True if request added, else False."""
         _status: bool = False
         try:

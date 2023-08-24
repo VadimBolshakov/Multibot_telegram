@@ -1,6 +1,7 @@
+from typing import Generator
 
 
-def news_view(news_dictionary: dict[int | None, list[float | str | None]] | str) -> str:
+def news_view(news_dictionary: dict[int | None, list[float | str | None]] | str) -> Generator:
     """Return news."""
     if isinstance(news_dictionary, str):
         return news_dictionary

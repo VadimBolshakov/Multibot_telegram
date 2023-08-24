@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class ResponseStatusError(Exception):
     """Exception raised for errors in the response status get or post method.
 
@@ -6,7 +9,7 @@ class ResponseStatusError(Exception):
         msg -- explanation of the error.
     """
 
-    def __init__(self, param: int = None, msg: str = 'An unknown error occurred'):
+    def __init__(self, param: Optional[int] = None, msg: str = 'An unknown error occurred'):
         self.param: int = param
         self.message: str = msg
         super().__init__(self.message)
@@ -25,7 +28,7 @@ class ResponseStatusNewsAPIError(Exception):
         msg -- explanation of the error (get from response['message']).
     """
 
-    def __init__(self, param: str = None, msg: str = 'An unknown error occurred'):
+    def __init__(self, param: Optional[str] = None, msg: str = 'An unknown error occurred'):
         self.param: str = param
         self.message: str = msg
         super().__init__(self.message)

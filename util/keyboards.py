@@ -19,7 +19,7 @@ main_menu.add(InlineKeyboardButton(_('Weather'), callback_data='weather'),
 #               InlineKeyboardButton('Валюты', callback_data='currency_ru'),
 #               InlineKeyboardButton('Новости', callback_data='news'),
 #               InlineKeyboardButton('Анекдоты', callback_data='jokes')
-#               ).add(InlineKeyboardButton('Chat GPT', callback_data='chat_gpt'))
+#               ).add(InlineKeyboardButton('ChatGPT', callback_data='chat_gpt'))
 
 
 map_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)

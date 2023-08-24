@@ -112,7 +112,7 @@ def parse_weather(element: dict, timezone_offset: int, show_long: bool = True) -
         if element['feels_like'].get('day'):
             feels_like_day = element['feels_like']['day']
             weather.append(f'Ощущается как днём: {round(feels_like_day)}\u2103')
-        if element['feels_like'].get('eve') and  show_long:
+        if element['feels_like'].get('eve') and show_long:
             feels_like_eve = element['feels_like']['eve']
             weather.append(f'Ощущается как вечером: {round(feels_like_eve)}\u2103')
         if element['feels_like'].get('night'):
