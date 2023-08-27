@@ -1,8 +1,16 @@
+"""News view module."""
 from typing import Generator
 
 
 def news_view(news_dictionary: dict[int | None, list[float | str | None]] | str) -> Generator:
-    """Return news."""
+    """Return news as generator.
+
+    :param news_dictionary: Dictionary with news or error.
+    :type news_dictionary: dict[int | None, list[float | str | None]] | str
+
+    :return: News or error.
+    :rtype: Generator
+    """
     if isinstance(news_dictionary, str):
         return news_dictionary
     else:

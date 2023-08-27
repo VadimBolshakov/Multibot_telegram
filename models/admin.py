@@ -1,12 +1,19 @@
 """This module contains the class for admin response."""
-from aiogram import types
-from admin import smtp
 from datetime import datetime
-from create import LOG_FILE, db, logger
+
+from aiogram import types
 from asyncpg import Record
+
+from admin import smtp
+from create import LOG_FILE, db, logger
 
 
 class AdminResponse:
+    """Class for admin response.
+
+    Args:
+        message (types.Message): Message from user.
+    """
     def __init__(self, message: types.Message):
         self.message = message
 

@@ -1,9 +1,9 @@
 """Configuring logging for the project and add class TelegramHandler for sending messages to the telegram channel"""
 import logging.config
 import os
-from dotenv import load_dotenv, find_dotenv
 
 import requests
+from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
 
@@ -16,7 +16,15 @@ CHAT_ID = os.getenv('CHAT_ID')
 
 
 class TelegramHandler(logging.Handler):
-    """Class for sending messages to the telegram channel"""
+    """Class for sending messages to the telegram channel
+
+    :param token: Token bot
+    :type token: str
+    :param chat_id: Chat id
+    :type chat_id: str
+
+    :return: None
+    """
     def __init__(self, token, chat_id):
         self.token = token
         self.chat_id = chat_id
@@ -95,4 +103,3 @@ if __name__ == '__main__':
     logger.error('ZeroDivisionError it is logger', exc_info=True)
     logger.exception('exception it is logger', exc_info=True)
     logger.critical('critical it is logger')
-

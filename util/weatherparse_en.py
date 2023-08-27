@@ -1,8 +1,10 @@
+"""Weather parser for OpenWeatherMap API. English version."""
 from datetime import datetime
 
 
 def _moon_phase(moon_phase: float) -> str:
     """Return moon phase."""
+
     if moon_phase == 0:
         return 'New Moon'
     elif 0 < moon_phase < 0.25:
@@ -47,7 +49,18 @@ wind_direction = {
 
 
 def parse_weather(element: dict, timezone_offset: int, show_long: bool = True) -> list[str]:
-    """Parse daily weather from JSON-file and return list."""
+    """Parse daily weather from JSON-file and return list.
+
+    :param element: Element from JSON-file.
+    :type element: dict
+    :param timezone_offset: Timezone offset.
+    :type timezone_offset: int
+    :param show_long: Show long weather. Defaults to True.
+    :type show_long: bool, optional
+
+    :return: List with weather.
+    :rtype: list[str]
+    """
     weather = []
     if element.get('dt'):
         daily_dt = datetime.utcfromtimestamp(element['dt'] + timezone_offset).strftime('%Y-%m-%d %H:%M')

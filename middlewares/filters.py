@@ -1,5 +1,6 @@
-from aiogram.dispatcher.filters import BoundFilter
+""" Filters for handlers. """
 from aiogram import types
+from aiogram.dispatcher.filters import BoundFilter
 
 
 class PrivateFilter(BoundFilter):

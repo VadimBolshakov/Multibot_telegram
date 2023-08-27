@@ -54,3 +54,7 @@ Now, if you make changes to the base.po file you must update the files using upd
     > pybabel update -d locales -D base -i locales/base.pot
 see more https://docs.aiogram.dev/en/latest/examples/i18n_example.html
  """
+
+Создание многоязычного меню очень просто. надо создать файл в формате menu_{language}.py в папке scr/menu.
+В этом файле ввести перевод меню на нужный язык в формате:'text': 'перевод'(см. пример в menu_ru.py).
+Всё. Файл json создастся автоматически при запуске бота.

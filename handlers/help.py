@@ -1,6 +1,7 @@
 from aiogram import Dispatcher, types
+
 from create import logger, i18n, db
-from util.keyboards import main_menu
+from util.keyboards import create_menu_inline
 
 _ = i18n.gettext
 
@@ -9,7 +10,6 @@ _ = i18n.gettext
 # @checking.check_registration
 async def command_help(message: types.Message):
     """Check user in database and send message with password or welcome message."""
-    await message.answer(_('Help. \n Here you can find help information\n And it already is here'), reply_markup=main_menu)
     lang = await db.get_user_lang_db(user_id=message.from_user.id)
     file_name = './src/help/help_' + lang + '.txt'
     try:
@@ -22,7 +22,7 @@ async def command_help(message: types.Message):
     logger.info(
         f'Entry to help handler user {message.from_user.first_name} (id:{message.from_user.id})')
 
-    await message.answer(text, reply_markup=main_menu)
+    await message.answer(text, reply_markup=await create_menu_inline('main_menu', language=lang))
 
     logger.info(
         f'Exit from help handler user {message.from_user.first_name} (id:{message.from_user.id})')

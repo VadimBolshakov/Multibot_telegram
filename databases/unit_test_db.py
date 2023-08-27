@@ -1,8 +1,10 @@
-import create
+"""Test database"""
 import asyncio
 
+import create
 from create import logger
 from databases.database import DataBaseMain
+
 DB_NAME = create.DB_NAME
 DB_USER = create.DB_USER
 DB_PASSWORD = create.DB_PASSWORD

@@ -1,10 +1,22 @@
-from aiogram import types
+"""Checking the user's registration and admin rights"""
 from logging import Logger
+
+from aiogram import types
+
 from databases.database import DataBaseMain
 
 
 def check_registration(logger: Logger, database: DataBaseMain):
-    """Checking the registration user"""
+    """Decorator checking the registration user
+
+    :param logger: logging
+    :type logger: Logger
+    :param database: Database
+    :type database: DataBaseMain
+
+    :return: Decorator
+    :rtype: function
+    """
     def decorator(fn):
         async def wrapper(message: types.Message):
             user_first_name = message.from_user.first_name
@@ -22,6 +34,16 @@ def check_registration(logger: Logger, database: DataBaseMain):
 
 
 def check_admin(logger: Logger, database: DataBaseMain):
+    """Decorator checking the admin rights user
+
+    :param logger: logging
+    :type logger: Logger
+    :param database: Database
+    :type database: DataBaseMain
+
+    :return: Decorator
+    :rtype: function
+    """
     def decorator(fn):
         async def wrapper(message: types.Message):
             user_first_name = message.from_user.first_name

@@ -1,18 +1,19 @@
 """Middleware module for aiogram
 
-This module contains the manage middleware and the admin filter."""
+This module contains the manage middleware"""
 import asyncio
 import json
 import string
+from logging import Logger
 
 from aiogram import types
 from aiogram.dispatcher import DEFAULT_RATE_LIMIT, Dispatcher
 from aiogram.dispatcher.handler import current_handler, CancelHandler
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.utils.exceptions import Throttled
-from logging import Logger
-from middlewares.getrandomstr import get_random_string
+
 from databases.database import DataBaseMain as DataBase
+from middlewares.getrandomstr import get_random_string
 
 
 # Default rate limit set in DEFAULT_RATE_LIMIT = 0.1 seconds
@@ -22,7 +23,22 @@ class ManageMiddleware(BaseMiddleware):
     """Manage middleware.
 
     This middleware checks user ban, registration, and flood.
-    Anti-flood middleware is used from https://docs.aiogram.dev/en/latest/examples/middleware_and_antiflood.html."""
+    Anti-flood middleware is used from https://docs.aiogram.dev/en/latest/examples/middleware_and_antiflood.html.
+
+    :param logger: Logger instance.
+    :type logger: class: `Logger`
+    :param db: Instance of DataBase class.
+    :type db: class: `DataBase`
+    :param password: Password for registration.
+    :type password: str
+    :param foul_file: Path to file with foul language.
+    :type foul_file: str
+    :param limit: Rate limit for throttling.
+    :type limit: float, optional
+    :param key_prefix: Prefix for throttling key.
+    :type key_prefix: str, optional
+
+    """
 
     def __init__(self, *, logger: Logger, db: DataBase, password: str, foul_file: str, limit=DEFAULT_RATE_LIMIT, key_prefix='antiflood_'):
         """Initialize the middleware."""

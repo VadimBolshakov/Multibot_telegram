@@ -1,10 +1,11 @@
 """Authentication new user by password, used FSM."""
 
 from aiogram import Dispatcher, types
-from create import bot, PASSWORD, ADMIN_ID, db, logger, i18n
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from util.keyboards import main_menu
+
+from create import bot, PASSWORD, ADMIN_ID, db, logger, i18n
+from util.keyboards import create_menu_inline
 
 _ = i18n.gettext
 
@@ -25,7 +26,8 @@ async def command_start(message: types.Message):
     else:
         await message.answer(_('Hello {full_name}.\n'
                                'You already have registered.\n'
-                               'Welcome to my bot \U0001F604').format(full_name=message.from_user.full_name), reply_markup=main_menu)
+                               'Welcome to my bot \U0001F604').format(full_name=message.from_user.full_name),
+                             reply_markup=await create_menu_inline('main_menu', language=message.from_user.language_code))
         logger.info(
             f'Exit from start handler user {message.from_user.first_name} (id:{message.from_user.id})')
 
@@ -49,7 +51,7 @@ async def input_password(message: types.Message, state: FSMContext):
                                                   'This is a multi-function bot.\n'
                                                   'Enter command /help to learn more.\n'
                                                   'Welcome to my bot\U0001F604').format(full_name=message.from_user.full_name),
-                               reply_markup=main_menu)
+                               reply_markup=await create_menu_inline('main_menu', language=message.from_user.language_code))
         await state.finish()
     else:
         logger.warning(

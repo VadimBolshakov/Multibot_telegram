@@ -1,0 +1,69 @@
+{
+    "main_menu": {
+        "weather": "Погода",
+        "maps": "Локация",
+        "translate": "Переводчик",
+        "currency_ru": "Валюты",
+        "news": "Новости",
+        "jokes": "Анекдоты",
+        "chat_gpt": "Спросить ChatGPT"
+    },
+    "map_menu": {
+        "get_location": "Получить локацию",
+        "get_by_ip": "Получить по IP",
+        "cancel": "Отмена"
+    },
+    "translate_menu": {
+        "en": "Английский",
+        "ru": "Русский",
+        "uk": "Украинский",
+        "de": "Немецкий",
+        "fr": "Французский",
+        "it": "Итальянский",
+        "es": "Испанский",
+        "el": "Греческий",
+        "pl": "Польский",
+        "pt": "Португальский",
+        "tr": "Турецкий",
+        "ar": "Арабский",
+        "ja": "Японский",
+        "zh": "Китайский",
+        "cancel": "Отмена"
+    },
+    "weather_menu_local": {
+        "get_location": "Получить локацию",
+        "enter_city": "Введите город",
+        "get_by_ip": "Получить по IP",
+        "cancel": "Отмена"
+    },
+    "weather_period_menu": {
+        "current": "Текущая",
+        "hourly": "Почасовая",
+        "daily": "По дням",
+        "cancel": "Отмена"
+    },
+    "weather_volume_menu": {
+        "short": "Краткий",
+        "full": "Полный",
+        "cancel": "Отмена"
+    },
+    "news_category_menu": {
+        "business": "Бизнес",
+        "entertainment": "Развлечения",
+        "general": "Общие",
+        "health": "Здоровье",
+        "science": "Наука",
+        "sports": "Спорт",
+        "technology": "Технологии",
+        "cancel": "Отмена"
+    },
+    "news_query_menu": {
+        "all": "Все",
+        "cancel": "Отмена"
+    },
+    "language_menu": {
+        "en": "English",
+        "ru": "Русский",
+        "cancel": "Отмена"
+    }
+}

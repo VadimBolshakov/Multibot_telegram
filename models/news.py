@@ -1,10 +1,15 @@
+"""Get news via API https://newsapi.org/v2/top-headlines
+    Return dist news values.
+"""
 import asyncio
-import aiohttp
-from json import JSONDecodeError
-from create import TOKEN_NEWSAPI, db, logger
-from typing import Optional
-from admin import exeptions as ex
 import datetime
+from json import JSONDecodeError
+from typing import Optional
+
+import aiohttp
+
+from admin import exeptions as ex
+from create import TOKEN_NEWSAPI, db, logger
 
 
 async def get_news(country: str = '',
@@ -12,13 +17,35 @@ async def get_news(country: str = '',
                    category: str = 'general',
                    query: Optional[str] = None,
                    page: int = 1) -> Optional[dict[str, str | int | float | list[dict[str, str | None]]]]:
-    """Get news from NewsAPI API."""
+    """Get news from NewsAPI API.
+
+    :param country: country code, defaults to ''
+    :type country: str, optional
+    :param sources: sources, can't use with country and category, defaults to 'bbc-news'
+    :type sources: str, optional
+    :param category: category such as business, entertainment, general, health, science, sports and technology,
+            defaults to 'general'
+    :type category: str, optional
+    :param query: query, defaults to None
+    :type query: Optional[str], optional
+    :param page: page, 20 is the default, 100 is the maximum, defaults to 1
+    :type page: int, optional
+
+    :raises aiohttp.ClientConnectorError: if connection error
+    :raises ex.ResponseStatusError: is response status not 200
+    :raises JSONDecodeError: if response not json
+    :raises ex.ResponseStatusNewsAPIError: if response status error from NewsAPI
+    :raises ex.ResponseTotalResultsNewsAPIError: if totalResults == 0
+
+    :return: news
+    :rtype: Optional[dict[str, str | int | float | list[dict[str, str | None]]]]
+    """
     params_newsapi = {
         'apiKey': TOKEN_NEWSAPI,
         'country': country,
-        # 'sources': 'bbc-news', # can't use with country and category
-        'category': category,  # business entertainment general health science sports technology
-        'pageSize': 15,  # 20 is the default, 100 is the maximum.
+        # 'sources': 'bbc-news',
+        'category': category,
+        'pageSize': 15,
         'page': page
     }
     if query:
@@ -54,7 +81,23 @@ async def news_dict(user_id: int,
                     country: str = '',
                     category: str = 'general',
                     query: Optional[str] = None) -> dict[int | None, list[float | str | None]] | str:
-    """Return dictionary of news."""
+    """Return dictionary of news or error str if news data is None.
+
+    :param user_id: user id
+    :type user_id: int
+    :param first_name: user first name
+    :type first_name: str
+    :param country: country code, defaults to ''
+    :type country: str, optional
+    :param category: category such as business, entertainment, general, health, science, sports and technology,
+            defaults to 'general'
+    :type category: str, optional
+    :param query: query, defaults to None
+    :type query: Optional[str], optional
+
+    :return: dictionary of news
+    :rtype: dict[int | None, list[float | str | None]] | str
+    """
     data_news = await get_news(country=country, category=category, query=query)
     if not data_news:
         logger.warning(f'NewsError. User {first_name} (id:{user_id})')

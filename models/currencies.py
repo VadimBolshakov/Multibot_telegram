@@ -4,22 +4,36 @@ If the current language is "ru", get the current exchange rate from the XML file
     If the file does not exist, create a new one and get the exchange rate from cbr.ru.
 Otherwise, get the current exchange rate from the JSON file in the src folder.
     If the file does not exist, create a new file and get the exchange rate from the http://apilayer.net/api/live API.
-Therefore, we have two functions for getting the currency_ru rate, and we can get the currency_ru rate from two files.
+Therefore, we have two functions for getting the currency rate (get_currencies_ru and get_currencies_en),
+    and we can get the currency rate from two files depend on language of user.
 """
 import asyncio
 import json
-
-import urllib3
+import os
 import xml.etree.ElementTree as ET
 from collections import defaultdict
-import admin.exeptions as ex
 from datetime import datetime as dt
+
+import urllib3
+
+import admin.exeptions as ex
 from create import TOKEN_CURRENCYLAYER, db, logger
-import os
 
 
 def get_currencies_ru(date_now_str: str, path_file_xml: str) -> bool:
-    """Get the actually current exchange cbr.ru and create the XML file."""
+    """Get the actually current exchange cbr.ru and create the XML file.
+
+    :param date_now_str: date in format dd-mm-yyyy
+    :type date_now_str: str
+    :param path_file_xml: path to XML file
+    :type path_file_xml: str
+
+    :raises ex.ResponseStatusError: if response status not 200
+    :raises urllib3.exceptions.HTTPError: if connection error
+
+    :return: True if file created, False otherwise
+    :rtype: bool
+    """
     http = urllib3.PoolManager(num_pools=3)
     try:
         response = http.request('GET', 'https://www.cbr.ru/scripts/XML_daily.asp', fields={'date_req': date_now_str})
@@ -41,7 +55,23 @@ def get_currencies_ru(date_now_str: str, path_file_xml: str) -> bool:
 
 async def currencies_dict_ru(user_id: int, first_name: str, lang: str,
                              date_time_now: dt) -> dict[str | None, list[float | str | None]] | str:
-    """Get currencies from XML-file and return dict."""
+    """Get currencies from XML-file and return dict currencies rate or str if data is None.
+
+    :param user_id: user id
+    :type user_id: int
+    :param first_name: user first name
+    :type first_name: str
+    :param lang: user language
+    :type lang: str
+    :param date_time_now: date and time now
+    :type date_time_now: dt
+
+    :raises FileNotFoundError: if file not found
+    :raises ET.ParseError: if file not XML
+
+    :return: dict with currencies
+    :rtype: dict[str | None, list[float | str | None]] | str
+    """
     date_time_now_str = date_time_now.strftime("%d-%m-%Y_%H")
     path_file_xml = os.path.normpath(os.path.abspath(f'./src/currency_ru/currencies_{lang}_{date_time_now_str}.xml'))
     if not os.path.isfile(path_file_xml):
@@ -84,7 +114,17 @@ async def currencies_dict_ru(user_id: int, first_name: str, lang: str,
 
 
 def get_currencies_en(path_file_json: str) -> bool:
-    """Get the actually current exchange cbr.ru and create the XML file."""
+    """Get the actually current exchange cbr.ru and create the XML file.
+
+    :param path_file_json: path to JSON file
+    :type path_file_json: str
+
+    :raises ex.ResponseStatusError: if response status not 200
+    :raises urllib3.exceptions.HTTPError: if connection error
+
+    :return: True if file created, False otherwise
+    :rtype: bool
+    """
     http = urllib3.PoolManager(num_pools=3)
     try:
         fields = {
@@ -114,7 +154,23 @@ def get_currencies_en(path_file_json: str) -> bool:
 
 async def currencies_dict_en(user_id: int, first_name: str, lang: str,
                              date_time_now: dt) -> dict[str | None, list[float | str | None]] | str:
-    """Get currencies from JSON file and return dict."""
+    """Get currencies from JSON file and return dict currencies rate or str if data is None.
+
+    :param user_id: user id
+    :type user_id: int
+    :param first_name: user first name
+    :type first_name: str
+    :param lang: user language
+    :type lang: str
+    :param date_time_now: date and time now
+    :type date_time_now: dt
+
+    :raises FileNotFoundError: if file not found
+    :raises json.JSONDecodeError: if file not JSON
+
+    :return: dict with currencies
+    :rtype: dict[str | None, list[float | str | None]] | str
+    """
     date_time_now_str = date_time_now.strftime("%d-%m-%Y_%H")
     path_file_json = os.path.normpath(os.path.abspath(f'./src/currency_en/currencies_{lang}_{date_time_now_str}.json'))
     if not os.path.isfile(path_file_json):
@@ -154,6 +210,18 @@ async def currencies_dict_en(user_id: int, first_name: str, lang: str,
 
 async def currencies_dict(user_id: int, first_name: str,
                           date_time_now: dt) -> dict[str | None, list[float | str | None]] | str:
+    """Return a dict with currencies depend on language of user or str if data is None.
+
+    :param user_id: user id
+    :type user_id: int
+    :param first_name: user first name
+    :type first_name: str
+    :param date_time_now: date and time now
+    :type date_time_now: dt
+
+    :return: dict with currencies
+    :rtype: dict[str | None, list[float | str | None]] | str
+    """
     lang = await db.get_user_lang_db(user_id=user_id)
     if lang == 'ru':
         return await currencies_dict_ru(user_id=user_id, first_name=first_name, lang=lang, date_time_now=date_time_now)

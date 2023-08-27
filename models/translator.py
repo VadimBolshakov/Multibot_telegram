@@ -5,16 +5,28 @@ Target must be an ISO 639-1 language code.
 See https://g.co/cloud/translate/v2/translate-reference#supported_languages
 """
 import asyncio
-import aiohttp
 from json import JSONDecodeError
-
-from create import TOKEN_GOOGLE_TRANSLATE, db, logger
-from admin import exeptions as ex
 from typing import Optional
+
+import aiohttp
+
+from admin import exeptions as ex
+from create import TOKEN_GOOGLE_TRANSLATE, db, logger
 
 
 async def get_language(text_to_translate: str) -> Optional[dict[str]]:
-    """Detects the text's language using the Google Translate API."""
+    """Detects the text's language using the Google Translate API.
+
+    :param text_to_translate: text to detect language
+    :type text_to_translate: str
+
+    :raises ex.ResponseStatusError: if response status not 200
+    :raises JSONDecodeError: if response not json
+    :raises aiohttp.ClientConnectorError: if connection error
+
+    :return: language
+    :rtype: Optional[dict[str]]
+    """
 
     url = "https://translation.googleapis.com/language/translate/v2/detect"
     params = {
@@ -38,7 +50,20 @@ async def get_language(text_to_translate: str) -> Optional[dict[str]]:
 
 
 async def get_translate(language_target: str, text_to_translate: str) -> Optional[dict[str]]:
-    """Translates text from one language to another using the Google Translate API."""
+    """Translates text from one language to another using the Google Translate API.
+
+    :param language_target: target language
+    :type language_target: str
+    :param text_to_translate: text to translate
+    :type text_to_translate: str
+
+    :raises ex.ResponseStatusError: if response status not 200
+    :raises JSONDecodeError: if response not json
+    :raises aiohttp.ClientConnectorError: if connection error
+
+    :return: translate
+    :rtype: Optional[dict[str]]
+    """
 
     if isinstance(text_to_translate, bytes):
         text_to_translate = text_to_translate.decode("utf-8")
@@ -66,7 +91,20 @@ async def get_translate(language_target: str, text_to_translate: str) -> Optiona
 
 
 async def translate_dict(user_id: int, first_name: str, language_target: str, text_to_translate: str) -> dict[str, str] | str:
-    """Get translate from Google Translate API and return dict."""
+    """Get translate from Google Translate API and return dict or error str if translate is not response.
+
+    :param user_id: user id
+    :type user_id: int
+    :param first_name: user first name
+    :type first_name: str
+    :param language_target: target language
+    :type language_target: str
+    :param text_to_translate: text to translate
+    :type text_to_translate: str
+
+    :return: translate
+    :rtype: dict[str, str] | str
+    """
     data_translate = await get_translate(language_target, text_to_translate)
 
     if data_translate is None:

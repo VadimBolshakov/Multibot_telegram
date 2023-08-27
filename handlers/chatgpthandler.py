@@ -1,12 +1,13 @@
 """Handler for chat_gpt."""
 
 from aiogram import types
-from create import dp, logger, i18n
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from util.keyboards import main_menu
-from view import chatgptview, quoteview
+
+from create import dp, logger, i18n
 from models import chatgpt, quote
+from util.keyboards import create_menu_inline
+from view import chatgptview, quoteview
 
 _ = i18n.gettext
 
@@ -41,7 +42,8 @@ async def input_question(message: types.Message, state: FSMContext):
         logger.info(
             f'Cancel chatgpt handler user {message.from_user.first_name} (id:{message.from_user.id})')
     await state.finish()
-    await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
+    await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)),
+                         reply_markup=await create_menu_inline('main_menu', user_id=message.from_user.id))
 
 
 if __name__ == '__main__':

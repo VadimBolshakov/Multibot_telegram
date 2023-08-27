@@ -1,0 +1,69 @@
+{
+    "main_menu": {
+        "weather": "Weather",
+        "maps": "Location",
+        "translate": "Translater",
+        "currency_ru": "Currency",
+        "news": "News",
+        "jokes": "Jokes",
+        "chat_gpt": "Ask ChatGPT"
+    },
+    "map_menu": {
+        "get_location": "Get location",
+        "get_by_ip": "Get by IP",
+        "cancel": "Cancel"
+    },
+    "translate_menu": {
+        "en": "English",
+        "ru": "Russian",
+        "uk": "Ukrainian",
+        "de": "German",
+        "fr": "French",
+        "it": "Italian",
+        "es": "Spanish",
+        "el": "Greek",
+        "pl": "Polish",
+        "pt": "Portuguese",
+        "tr": "Turkish",
+        "ar": "Arabic",
+        "ja": "Japanese",
+        "zh": "Chinese",
+        "cancel": "Cancel"
+    },
+    "weather_menu_local": {
+        "get_location": "Get location",
+        "enter_city": "Enter city",
+        "get_by_ip": "Get by IP",
+        "cancel": "Cancel"
+    },
+    "weather_period_menu": {
+        "current": "Current",
+        "hourly": "Hourly",
+        "daily": "Daily",
+        "cancel": "Cancel"
+    },
+    "weather_volume_menu": {
+        "short": "Short",
+        "full": "Full",
+        "cancel": "Cancel"
+    },
+    "news_category_menu": {
+        "business": "Business",
+        "entertainment": "Entertainment",
+        "general": "General",
+        "health": "Health",
+        "science": "Science",
+        "sports": "Sports",
+        "technology": "Technology",
+        "cancel": "Cancel"
+    },
+    "news_query_menu": {
+        "all": "All",
+        "cancel": "Cancel"
+    },
+    "language_menu": {
+        "en": "English",
+        "ru": "Русский",
+        "cancel": "Cancel"
+    }
+}

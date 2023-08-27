@@ -1,13 +1,24 @@
+"""This module is designed to get weather from OpenWeatherMap API via https://api.openweathermap.org/data/3.0/onecall?.
+"""
 import asyncio
-import aiohttp
-import admin.exeptions as ex
-from create import TOKEN_OPENWEATHER, db, logger
 from json import JSONDecodeError
 from typing import Optional, Any
 
+import aiohttp
 
-def get_excluded(period: str) -> str:
-    """Return string of excluded data."""
+import admin.exeptions as ex
+from create import TOKEN_OPENWEATHER, db, logger
+
+
+def get_excluded(period: str = '') -> str:
+    """Return string of excluded data.
+
+    :param period: period of weather, defaults to ''
+    :type period: str, optional
+
+    :return: string of excluded data
+    :rtype: str
+    """
     exclude = ''
     if period == 'current':
         exclude = 'hourly,daily'
@@ -26,7 +37,28 @@ async def get_weather(lat: float,
                       lang: str = 'en',
                       exclude: str = '',
                       appid: str = TOKEN_OPENWEATHER) -> Optional[dict[str, Any]]:
-    """Get weather from OpenWeatherMap API."""
+    """Get weather from OpenWeatherMap API.
+
+    :param lat: latitude
+    :type lat: float
+    :param lon: longitude
+    :type lon: float
+    :param units: units of measurement, defaults to 'metric'
+    :type units: str, optional
+    :param lang: language, defaults to 'en'
+    :type lang: str, optional
+    :param exclude: exclude data, defaults to ''
+    :type exclude: str, optional
+    :param appid: token for openweathermap, defaults to TOKEN_OPENWEATHER
+    :type appid: str, optional
+
+    :raises ex.ResponseStatusError: if response status not 200
+    :raises JSONDecodeError: if response not json
+    :raises aiohttp.ClientConnectorError: if connection error
+
+    :return: weather
+    :rtype: Optional[dict[str, Any]]
+    """
     params_weather = {
         'lat': lat,
         'lon': lon,
@@ -63,7 +95,26 @@ async def weather_dict(user_id: int,
                        lang: str = 'en',
                        period: str = '',
                        volume: str = 'short') -> dict[str, list] | str:
-    """Parse weather from JSON-file and return dict."""
+    """Parse weather from JSON-file and return dict of the weather data or str if weather dataa is None.
+
+    :param user_id: user id
+    :type user_id: int
+    :param first_name: user first name
+    :type first_name: str
+    :param lat: latitude, defaults to 55.7522
+    :type lat: float, optional
+    :param lon: longitude, defaults to 37.6156
+    :type lon: float, optional
+    :param lang: language, defaults to 'en'
+    :type lang: str, optional
+    :param period: period of weather, defaults to ''
+    :type period: str, optional
+    :param volume: volume of weather, defaults to 'short'
+    :type volume: str, optional
+
+    :return: weather
+    :rtype: dict[str, list] | str
+    """
     # Import necessary modules for parsing weather
     if lang == 'ru':
         from util.weatherparse_ru import parse_weather, parse_minutely, parse_alerts

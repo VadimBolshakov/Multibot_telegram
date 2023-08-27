@@ -1,3 +1,4 @@
+"""Custom exceptions for the admin module."""
 from typing import Optional
 
 

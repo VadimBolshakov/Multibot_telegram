@@ -1,6 +1,7 @@
 from .filters import PrivateFilter
 from .langmiddleware import ACLMiddleware
 from .middleware import ManageMiddleware
+from .getrandomstr import get_random_string
 
 
 def setup_middlewares_filters(dp, password, foul_file, db, logger):

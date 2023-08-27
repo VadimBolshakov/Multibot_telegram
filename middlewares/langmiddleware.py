@@ -1,11 +1,21 @@
+"""This module contains the class for work with i18n (languages)."""
 from typing import Any, Tuple
+
 from aiogram import types
 from aiogram.contrib.middlewares.i18n import I18nMiddleware
+
 from databases.database import DataBaseMain as DataBase
 
 
 class ACLMiddleware(I18nMiddleware):
-    """Class for work with i18n (languages)."""
+    """Class for work with i18n (languages).
+
+    Args:
+        domain (str): Domain name.
+        path (str): Path to locales directory.
+        db (DataBase): Instance of DataBase class.
+
+    """
     def __init__(self, domain: str, path: str, db: DataBase):
         self.db = db
         super(ACLMiddleware, self).__init__(domain, path)

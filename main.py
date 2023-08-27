@@ -2,9 +2,11 @@
 
 VadimBolshM1 bot is a Telegram Bot that can send jokes, weather, news, currency_ru, and other information.
 username = @VadimBolshM1bot"""
-from create import dp, loop, db, i18n, logger
 from aiogram.utils import executor
+
+from create import dp, loop, db, i18n, logger
 from handlers import general, start, adminhandler, help, changelang, reset
+from util.texttojson import convert_text_files_to_json
 
 
 async def on_startup(_):
@@ -14,15 +16,17 @@ async def on_startup(_):
         logger.info('DB created')
     else:
         logger.info('DB not created')
+    if convert_text_files_to_json('./src/menu/', logger=logger):
+        logger.info('Menu created')
     logger.info('Bot in online')
     _ = i18n.gettext
 
 # try:
 start.register_handlers_start(dp)
 help.register_handlers_help(dp)
-reset.register_handlers_reset(dp)
+reset.register_handlers_reset()
 adminhandler.register_handlers_admin(dp)
-changelang.register_handlers_change_lang(dp)
+changelang.register_handlers_change_lang()
 general.register_handlers_general(dp)
 # except Exception as e:
 

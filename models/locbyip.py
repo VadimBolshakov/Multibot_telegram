@@ -1,11 +1,27 @@
+"""Get location by IP via http://ipinfo.io/json.
+    Return dist location values.
+"""
+from json import JSONDecodeError
+
 import aiohttp
+
 import admin.exeptions as ex
 from create import logger
-from json import JSONDecodeError
 
 
 async def get_location_by_ip(ip: str = '') -> dict[str, str] | None:
-    """Get location by IP."""
+    """Get location by IP.
+
+    :param ip: ip address, defaults to ''
+    :type ip: str, optional
+
+    :raises ex.ResponseStatusError: if response status not 200
+    :raises JSONDecodeError: if response not json
+    :raises aiohttp.ClientConnectorError: if connection error
+
+    :return: location
+    :rtype: dict[str, str] | None
+    """
     # try:
     #     response_location = requests.get(f'http://ip-api.com/json/{ip}?fields=lat,lon')
     #     if not response_location:
@@ -37,7 +53,14 @@ async def get_location_by_ip(ip: str = '') -> dict[str, str] | None:
 
 
 async def location_dict(ip: str = '') -> dict[str, float | str] | str:
-    """Parse location from JSON-file and return dict."""
+    """Parse location from JSON-file and return dict or str if location is None.
+
+    :param ip: ip address, defaults to ''
+    :type ip: str, optional
+
+    :return: location
+    :rtype: dict[str, float | str] | str
+    """
     data_location = await get_location_by_ip(ip)
     if not data_location:
         return 'Sorry, but we have not information about your location.'

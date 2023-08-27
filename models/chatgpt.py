@@ -1,13 +1,32 @@
+"""ChatGPT model.
+    Response request from chatgpthandler.py.
+    Forms a request to the ChatGPT API.
+    Get answer from ChatGPT API via https://api.openai.com/v1/completions.
+    Send answer to chatgptview as dict or string.
+"""
 import asyncio
-import aiohttp
 from json import JSONDecodeError
+from typing import Optional
+
+import aiohttp
+
 from admin import exeptions as ex
 from create import GPT_API_KEY, db, logger
-from typing import Optional
 
 
 async def get_chatgpt(prompt: str) -> Optional[dict]:
-    """Get answer from ChatGPT API."""
+    """Get answer from ChatGPT API.
+
+    :param prompt: request from user
+    :type prompt: str
+
+    :raises ex.ResponseStatusError: if response status not 200
+    :raises JSONDecodeError: if response not json
+    :raises aiohttp.ClientConnectorError: if connection error
+
+    :return: answer from ChatGPT API
+    :rtype: Optional[dict]
+    """
     json = {
         'model': 'text-davinci-003',  # 'davinci' is the default
         'prompt': prompt,
@@ -53,7 +72,18 @@ async def get_chatgpt(prompt: str) -> Optional[dict]:
 
 
 async def chatgpt_dict(user_id: int, first_name: str, prompt: str) -> dict[str, str] | str:
-    """Return dict with answer from ChatGPT API."""
+    """Return dict with answer from ChatGPT API or error str if answer is not response.
+
+    :param user_id: user id
+    :type user_id: int
+    :param first_name: user first name
+    :type first_name: str
+    :param prompt: request from user
+    :type prompt: str
+
+    :return: dict with answer from ChatGPT API
+    :rtype: dict[str, str] | str
+    """
     data_chatgpt = await get_chatgpt(prompt)
 
     if data_chatgpt is None:

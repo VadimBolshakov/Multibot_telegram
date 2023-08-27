@@ -1,10 +1,13 @@
+"""Function send an email with the opportunity to attach a file. Return True if the email is sent"""
+import os
 import smtplib
-from email.mime.text import MIMEText
+from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
-from email import encoders
-import os
+from email.mime.text import MIMEText
 from logging import Logger
+from typing import Optional
+
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
@@ -14,12 +17,27 @@ EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
 EMAIL_RECIPIENT = os.getenv('EMAIL_RECIPIENT')
 
 
-def send_email(subject='TelegramBot',
-               message='Message from telegrambot. ',
-               file='../logconfig.log',
-               attach_file=True,
-               logger: Logger = None) -> bool:
-    """Send an email with the opportunity to attach a file. Return True if the email is sent"""
+def send_email(subject: str = 'TelegramBot',
+               message: str = 'Message from telegrambot. ',
+               file: str = '../logconfig.log',
+               attach_file: bool = True,
+               logger: Optional[Logger] = None) -> bool:
+    """Send an email with the opportunity to attach a file. Return True if the email is sent
+
+    :param subject: Subject of email. Defaults to 'TelegramBot'.
+    :type subject: str, optional
+    :param message: Message of email. Defaults to 'Message from telegrambot. '.
+    :type message: str, optional
+    :param file: Path to attach file if existed. Defaults to '../logconfig.log'.
+    :type file: str, optional
+    :param attach_file: True if attach file to email exist. Defaults to True.
+    :type attach_file: bool, optional
+    :param logger: Logger. Defaults to None.
+    :type logger: Logger, optional
+
+    :return: True if the email is sent, False if not.
+    :rtype: bool
+    """
     status: bool = False
     msg = MIMEMultipart()
 

@@ -6,4 +6,3 @@ from admin.exeptions import ResponseStatusNewsAPIError
 from admin.exeptions import ResponseTotalResultsNewsAPIError
 
 __all__ = ['logsetting', 'exeptions', 'ResponseStatusError', 'smtp', 'checking']
-

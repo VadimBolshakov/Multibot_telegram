@@ -1,6 +1,15 @@
+"""View for weather data."""
 
 
 def weather_view(weather_dict: dict[str, list] | str) -> str:
+    """Return weather data.
+
+    :param weather_dict: Dictionary with weather data or error.
+    :type weather_dict: dict[str, list] | str
+
+    :return: Weather data or error.
+    :rtype: str
+    """
     if isinstance(weather_dict, str):
         return weather_dict
     result: str = ''

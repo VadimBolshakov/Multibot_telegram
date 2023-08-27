@@ -1,3 +1,4 @@
+"""Weather parser for ru language."""
 from datetime import datetime
 
 
@@ -47,7 +48,18 @@ wind_direction = {
 
 
 def parse_weather(element: dict, timezone_offset: int, show_long: bool = True) -> list[str]:
-    """Parse daily weather from JSON-file and return list."""
+    """Parse daily weather from JSON-file and return list.
+
+    :param element: Element from JSON-file.
+    :type element: dict
+    :param timezone_offset: Timezone offset.
+    :type timezone_offset: int
+    :param show_long: Show long weather. Defaults to True.
+    :type show_long: bool, optional
+
+    :return: List with weather.
+    :rtype: list[str]
+    """
     weather = []
     if element.get('dt'):
         daily_dt = datetime.utcfromtimestamp(element['dt'] + timezone_offset).strftime('%Y-%m-%d %H:%M')

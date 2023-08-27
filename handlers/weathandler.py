@@ -1,13 +1,14 @@
 """Handler for forecast weather function."""
 from asyncio import sleep
-from aiogram import types
 
-from create import dp, db, logger, i18n
+from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from util.keyboards import main_menu, weather_period_menu, weather_volume_menu, weather_menu_local
-from view import weatherview, quoteview
+
+from create import dp, db, logger, i18n
 from models import openweather, quote, locbyip, citydata
+from util.keyboards import create_menu_inline
+from view import weatherview, quoteview
 
 _ = i18n.gettext
 
@@ -15,73 +16,100 @@ _ = i18n.gettext
 class WeatherFSM(StatesGroup):
     location = State()
     city = State()
+    local_telegram = State()
     period = State()
     volume = State()
 
 
 # @dp.message_handler(state=None)
-async def select_location(message: types.Message):
+async def select_location(message: types.Message, user_id: int) -> None:
     """Input location and set FSM state."""
-    await message.answer(_('Enter way of location or press "Cancel" for exit'), reply_markup=weather_menu_local)
+    await message.answer(_('Enter way of location or press "Cancel" for exit'),
+                         reply_markup=await create_menu_inline('weather_menu_local', user_id=user_id))
     """Set FSM state."""
     await WeatherFSM.location.set()
 
 
-@dp.message_handler(content_types=[types.ContentType.TEXT, types.ContentType.LOCATION], state=WeatherFSM.location)
-async def select_period(message: types.Message, state: FSMContext):
-    """Get location and suggest select of forecast period."""
-    if message.location is not None:
-        # location = message.location.to_dict()
-        # lat = location['latitude']
-        # lon = location['longitude']
-        async with state.proxy() as data:
-            data['latitude'] = float(message.location.latitude)
-            data['longitude'] = float(message.location.longitude)
-        await message.delete()
+@dp.callback_query_handler(text='get_location', state=WeatherFSM.location)
+async def get_location(callback_query: types.CallbackQuery) -> None:
+    """Create menu for get telegram location."""
+    await callback_query.answer(_('Please, wait'))
+    await callback_query.message.answer(_('Please, Press this button to get your location'), reply_markup=types.ReplyKeyboardMarkup(
+        keyboard=[[types.KeyboardButton('Local', request_location=True)]], resize_keyboard=True))
+    """Set FSM state."""
+    await WeatherFSM.local_telegram.set()
 
-    elif message.text == 'Get by IP':
-        local_data = await locbyip.location_dict()
-        if isinstance(local_data, dict):
-            async with state.proxy() as data:
-                data['latitude'] = local_data['latitude']
-                data['longitude'] = local_data['longitude']
-        else:
-            await message.answer(local_data, reply_markup=types.ReplyKeyboardRemove())
-            await state.finish()
-            logger.warning(f'Location by IP error. '
-                           f'Exit weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
-            await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
-            return
 
-    elif message.text == 'Enter city':
-        await message.answer(_('Enter city name or press "Cancel" for exit'), reply_markup=types.ReplyKeyboardMarkup(
-            keyboard=[[types.KeyboardButton('Cancel')]], resize_keyboard=True))
-        """Set FSM state."""
-        await WeatherFSM.city.set()
-        return
-
-    elif message.text == 'Cancel':
-        await message.answer(_('Cancel'), reply_markup=types.ReplyKeyboardRemove())
-        await state.finish()
-        logger.info(
-            f'Cancel weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
-        await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
-        return
-
-    else:
-        await message.answer(_('I don\'t understand you'), reply_markup=types.ReplyKeyboardRemove())
-        await state.finish()
-        logger.info(
-            f'Cancel weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
-        await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
-        return
+@dp.message_handler(content_types=types.ContentType.LOCATION, state=WeatherFSM.local_telegram)
+async def get_location_telegram(message: types.Message, state: FSMContext) -> None:
+    """Get location by telegram and suggest select of forecast period."""
+    async with state.proxy() as data:
+        data['latitude'] = float(message.location.latitude)
+        data['longitude'] = float(message.location.longitude)
+    await message.delete()
     await message.answer(_('Your location has been received:\n '
                            'latitude: {lat}\n '
-                           'longitude: {lon}').format(lat=str(data['latitude']), lon=str(data['longitude'])),
+                           'longitude: {lon}').format(lat=data['latitude'], lon=data['longitude']),
                          reply_markup=types.ReplyKeyboardRemove())
-    await message.answer(_('Select forecast period or press "Cancel" for exit'), reply_markup=weather_period_menu)
+
+    await message.answer(_('Select forecast period or press "Cancel" for exit'),
+                         reply_markup=await create_menu_inline('weather_period_menu',
+                                                               user_id=message.from_user.id))
     """Set FSM state."""
     await WeatherFSM.period.set()
+
+
+@dp.callback_query_handler(text='get_by_ip', state=WeatherFSM.location)
+async def get_by_ip(callback_query: types.CallbackQuery, state: FSMContext) -> None:
+    """Get location by ip and suggest select of forecast period."""
+    await callback_query.answer(_('Please, wait'))
+    local_data = await locbyip.location_dict()
+    if isinstance(local_data, dict):
+        async with state.proxy() as data:
+            data['latitude'] = local_data['latitude']
+            data['longitude'] = local_data['longitude']
+    else:
+        await callback_query.message.answer(local_data, reply_markup=types.ReplyKeyboardRemove())
+        await state.finish()
+        logger.warning(f'Location by IP error. '
+                       f'Exit weather handler user {callback_query.from_user.first_name} (id:{callback_query.from_user.id})')
+        await callback_query.message.answer(_('Your location was not received.\n '
+                                              'Try another method'),
+                                            reply_markup=await create_menu_inline('main_menu', user_id=callback_query.from_user.id))
+        return
+
+    await callback_query.message.answer(_('Your location has been received:\n'
+                                          ' latitude: {lat}\n'
+                                          ' longitude: {lon}\n'
+                                          ' city: {city}\n'
+                                          ' country: {country}\n'
+                                          ' timezone: {timezone}\n'
+                                          ' ip: {ip}\n'
+                                          ' org: {org}\n').format(lat=local_data['latitude'],
+                                                                  lon=local_data['longitude'],
+                                                                  city=local_data['city'],
+                                                                  country=local_data['country'],
+                                                                  timezone=local_data['timezone'],
+                                                                  ip=local_data['ip'],
+                                                                  org=local_data['org']
+                                                                  ),
+                                        reply_markup=types.ReplyKeyboardRemove())
+
+    await callback_query.message.answer(_('Select forecast period or press "Cancel" for exit'),
+                                        reply_markup=await create_menu_inline('weather_period_menu',
+                                                                              user_id=callback_query.from_user.id))
+    """Set FSM state."""
+    await WeatherFSM.period.set()
+
+
+@dp.callback_query_handler(text='enter_city', state=WeatherFSM.location)
+async def get_by_city(callback_query: types.CallbackQuery) -> None:
+    """Input city and set FSM state."""
+    await callback_query.answer(_('Please, wait'))
+    await callback_query.message.answer(_('Enter city name or press "Cancel" for exit'), reply_markup=types.ReplyKeyboardMarkup(
+        keyboard=[[types.KeyboardButton('Cancel')]], resize_keyboard=True))
+    """Set FSM state."""
+    await WeatherFSM.city.set()
 
 
 @dp.message_handler(content_types=types.ContentType.TEXT, state=WeatherFSM.city)
@@ -94,7 +122,8 @@ async def input_city(message: types.Message, state: FSMContext):
         await state.finish()
         logger.info(
             f'Cancel weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
-        await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
+        await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)),
+                             reply_markup=await create_menu_inline('main_menu', user_id=message.from_user.id))
         return
     else:
         city_data = await citydata.location_dict(city=data['city'][0])
@@ -107,7 +136,9 @@ async def input_city(message: types.Message, state: FSMContext):
             await state.finish()
             logger.warning(f'Location by city error. '
                            f'Exit weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
-            await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
+            await message.answer(_('Your city not found.\n '
+                                   'Try another method'),
+                                 reply_markup=await create_menu_inline('main_menu', user_id=message.from_user.id))
             return
 
         await message.answer(_('Your city has been received:\n '
@@ -117,69 +148,60 @@ async def input_city(message: types.Message, state: FSMContext):
                                                           lon=str(data['longitude'])),
                              reply_markup=types.ReplyKeyboardRemove())
 
-        await message.answer(_('Select forecast period or press "Cancel" for exit'), reply_markup=weather_period_menu)
+        await message.answer(_('Select forecast period or press "Cancel" for exit'),
+                             reply_markup=await create_menu_inline('weather_period_menu',
+                                                                   user_id=message.from_user.id))
         """Set FSM state."""
         await WeatherFSM.period.set()
 
 
-@dp.message_handler(content_types=types.ContentType.TEXT, state=WeatherFSM.period)
-async def input_period(message: types.Message, state: FSMContext):
+@dp.callback_query_handler(text=['current', 'hourly', 'daily'], state=WeatherFSM.period)
+async def input_period(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     """Set forecast period and suggest volume input its."""
-    period_tuple = ('current', 'hourly', 'daily')
+    await callback_query.answer(_('Please, wait'))
     async with state.proxy() as data:
-        data['period'] = message.text.lower().split()
-    if data['period'][0] in period_tuple:
-        await message.answer(_('Your period has been received:\n '
-                               'period: {per}').format(per=str(data['period'][0])), reply_markup=types.ReplyKeyboardRemove())
-        await message.answer(_('Enter volume forecast:'), reply_markup=weather_volume_menu)
-        await WeatherFSM.volume.set()
-    else:
-        await message.answer(_('I don\'t understand you'), reply_markup=types.ReplyKeyboardRemove())
-        await state.finish()
-        logger.info(
-            f'Cancel weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
-        await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
+        data['period'] = callback_query.data
+    await callback_query.answer(_('Your period has been received:\n '
+                                  'period: {per}').format(per=str(data['period'])))
+    await callback_query.message.answer(_('Enter volume forecast:'),
+                                        reply_markup=await create_menu_inline('weather_volume_menu',
+                                                                              user_id=callback_query.from_user.id))
+    await WeatherFSM.volume.set()
 
 
-@dp.message_handler(content_types=types.ContentType.TEXT, state=WeatherFSM.volume)
-async def input_volume(message: types.Message, state: FSMContext):
+@dp.callback_query_handler(text=['short', 'full'], state=WeatherFSM.volume)
+async def input_volume(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     """Set volume of forecast of the weather."""
-    volume_tuple = ('short', 'full')
+    await callback_query.answer(_('Please, wait'))
     async with state.proxy() as data:
-        data['volume'] = message.text.lower().split()
-    if data['volume'][0] in volume_tuple:
-        await message.answer(_('Your volume has been received:\n '
-                               'volume: {vol}').format(vol=str(data['volume'][0])), reply_markup=types.ReplyKeyboardRemove())
-        data = await state.get_data()
-        latitude = data['latitude']
-        longitude = data['longitude']
-        period = data['period'][0]
-        volume = data['volume'][0]
-        land = await db.get_user_lang_db(user_id=int(message.from_user.id))
-        msg = await message.answer(_('Please, Wait a second.....'), reply_markup=types.ReplyKeyboardRemove())
-        answer = weatherview.weather_view(await openweather.weather_dict(message.from_user.id,
-                                                                         message.from_user.first_name,
-                                                                         lat=latitude,
-                                                                         lon=longitude,
-                                                                         lang=land,
-                                                                         period=period,
-                                                                         volume=volume))
-        if len(answer) > 4095:
-            for x in range(0, len(answer), 4095):
-                await message.answer(answer[x:x + 4095])
-                await sleep(0.2)
-        else:
-            await message.answer(answer)
-
-        await msg.delete()
-
+        data['volume'] = callback_query.data
+    await callback_query.answer(_('Your volume has been received:\n '
+                                  'volume: {vol}').format(vol=str(data['volume'])))
+    data = await state.get_data()
+    latitude = data['latitude']
+    longitude = data['longitude']
+    period = data['period']
+    volume = data['volume']
+    land = await db.get_user_lang_db(user_id=int(callback_query.from_user.id))
+    msg = await callback_query.message.answer(_('Please, Wait a second.....'), reply_markup=types.ReplyKeyboardRemove())
+    answer = weatherview.weather_view(await openweather.weather_dict(callback_query.from_user.id,
+                                                                     callback_query.from_user.first_name,
+                                                                     lat=latitude,
+                                                                     lon=longitude,
+                                                                     lang=land,
+                                                                     period=period,
+                                                                     volume=volume))
+    if len(answer) > 4095:
+        for x in range(0, len(answer), 4095):
+            await callback_query.message.answer(answer[x:x + 4095])
+            await sleep(0.1)
     else:
-        await message.answer(_('I don\'t understand you'), reply_markup=types.ReplyKeyboardRemove())
-        logger.info(
-            f'Cancel weather handler user {message.from_user.first_name} (id:{message.from_user.id})')
-    # await state.reset_state(with_data=False)
+        await callback_query.message.answer(answer)
+
+    await msg.delete()
     await state.finish()
-    await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
+    await callback_query.message.answer(quoteview.quote_view(await quote.quote_dict(callback_query.from_user.id)),
+                                        reply_markup=await create_menu_inline('main_menu', user_id=callback_query.from_user.id))
 
 
 if __name__ == '__main__':

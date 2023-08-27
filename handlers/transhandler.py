@@ -1,13 +1,14 @@
 """Handler for translate function."""
 
 from aiogram import types
-from create import dp, logger, i18n
-from aiogram.types import ReplyKeyboardRemove
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from util.keyboards import main_menu, translate_menu
-from view import translateview, quoteview
+from aiogram.types import ReplyKeyboardRemove
+
+from create import dp, logger, i18n
 from models import translator, quote
+from util.keyboards import create_menu_inline
+from view import translateview, quoteview
 
 _ = i18n.gettext
 
@@ -18,47 +19,27 @@ class TranslateFSM(StatesGroup):
 
 
 # @dp.message_handler(state=None)
-async def select_language(message: types.Message):
+async def select_language(message: types.Message, user_id: int) -> None:
     """Select into language and set FSM state."""
-    await message.answer(_('Select into language or press "Cancel" for exit'), reply_markup=translate_menu)
+    await message.answer(_('Select into language or press "Cancel" for exit'),
+                         reply_markup=await create_menu_inline('translate_menu', user_id=user_id))
     """Set FSM state."""
     await TranslateFSM.target.set()
 
 
-@dp.message_handler(content_types=types.ContentType.TEXT, state=TranslateFSM.target)
-async def input_target(message: types.Message, state: FSMContext):
+@dp.callback_query_handler(text=['en', 'ru', 'uk', 'de', 'fr', 'it', 'es', 'el', 'pl', 'pt', 'tr', 'ar', 'ja', 'ch'],
+                           state=TranslateFSM.target)
+async def select_target(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     """Set target and suggest input text to translate."""
-    language_code: dict = {'English': 'en',
-                           'Russian': 'ru',
-                           'Ukrainian': 'uk',
-                           'German': 'de',
-                           'French': 'fr',
-                           'Italian': 'it',
-                           'Spanish': 'es',
-                           'Greek': 'el',
-                           'Polish': 'pl',
-                           'Portuguese': 'pt',
-                           'Turkish': 'tr',
-                           'Arabic': 'ar',
-                           'Japanese': 'ja',
-                           'Chinese': 'zh'}
-
+    await callback_query.answer(_('Please, wait'))
     async with state.proxy() as data:
-        data['target'] = language_code.get(message.text.split()[0])
-    if data['target'] is not None:
-        await message.answer(_('Enter text for translate:'), reply_markup=ReplyKeyboardRemove())
-        await TranslateFSM.translator.set()
-    else:
-        await message.answer(_('I don\'t understand you'), reply_markup=ReplyKeyboardRemove())
-        await state.finish()
-        logger.info(
-            f'Cancel translate handler user {message.from_user.first_name} (id:{message.from_user.id})')
-
-        await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
+        data['target'] = callback_query.data
+    await callback_query.message.answer(_('Enter text for translate:'), reply_markup=ReplyKeyboardRemove())
+    await TranslateFSM.translator.set()
 
 
 @dp.message_handler(content_types=types.ContentType.TEXT, state=TranslateFSM.translator)
-async def input_translator(message: types.Message, state: FSMContext):
+async def input_translator(message: types.Message, state: FSMContext) -> None:
     """Translate text and send message with translate text."""
     async with state.proxy() as data:
         data['text'] = message.text
@@ -77,7 +58,8 @@ async def input_translator(message: types.Message, state: FSMContext):
             f'Cancel translate handler user {message.from_user.first_name} (id:{message.from_user.id})')
     # await state.reset_state(with_data=False)
     await state.finish()
-    await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)), reply_markup=main_menu)
+    await message.answer(quoteview.quote_view(await quote.quote_dict(message.from_user.id)),
+                         reply_markup=await create_menu_inline('main_menu', user_id=message.from_user.id))
 
 
 if __name__ == '__main__':

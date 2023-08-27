@@ -1,15 +1,28 @@
-"""Create dict of jokes from json-file, according to the user's language."""
+"""Create dict of jokes from json-file, according to the user's language.
+    Return dict of jokes.
+"""
 import asyncio
+import os
+import random
 from collections import defaultdict
+from json import load
 
 from create import db, logger
-from json import load
-import random
-import os
 
 
 async def jokes_dict(user_id: int, first_name: str, quantity: int = 9) -> dict[int, str] | str:
-    """Get jokes from json-file and return dict of jokes."""
+    """Get jokes from json-file and return dict of jokes or error str if jokes is None.
+
+    :param user_id: user id
+    :type user_id: int
+    :param first_name: user first name
+    :type first_name: str
+    :param quantity: quantity of jokes, defaults to 9
+    :type quantity: int, optional
+
+    :return: dict of jokes
+    :rtype: dict[int, str] | str
+    """
     lang = await db.get_user_lang_db(user_id=user_id)
 
     if lang == 'ru':

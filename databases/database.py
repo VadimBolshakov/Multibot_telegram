@@ -8,7 +8,23 @@ from asyncpg import Record, Connection
 
 
 class DataBaseMain:
-    """Class project database"""
+    """Class project database
+
+    :param db_user: Database user
+    :type db_user: str
+    :param db_password: Database password
+    :type db_password: str
+    :param db_host: Database host
+    :type db_host: str
+    :param db_port: Database port
+    :type db_port: str
+    :param db_name: Database name
+    :type db_name: str
+    :param logger: logging as class Logger if existed, defaults to None
+    :type logger:
+
+    :return: None
+    """
 
     def __init__(self, db_user: str, db_password: str, db_host: str, db_port: str, db_name: str, logger: Optional[Logger] = None) -> None:
         self.db_user = db_user
@@ -23,6 +39,7 @@ class DataBaseMain:
         self.dsn: str = f'postgresql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}'
 
     async def close(self) -> None:
+        """Close the connection to the database."""
         if self.conn is not None:
             await self.conn.close()
 

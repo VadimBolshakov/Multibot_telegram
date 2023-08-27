@@ -34,52 +34,52 @@ msgstr ""
 #: handlers/weathandler.py:108 handlers/weathandler.py:161
 #: handlers/weathandler.py:175
 msgid "Please, wait"
-msgstr "Пожалуйста, подождите"
+msgstr ""
 
 #: handlers/changelang.py:35
 msgid "Language changed to {lang}"
-msgstr "Язык изменён на {lang}"
+msgstr ""
 
 #: handlers/changelang.py:39
 msgid "Language not changed"
-msgstr "Язык не изменён"
+msgstr ""
 
 #: handlers/changelang.py:43
-msgid "Welcome to Main menu"
-msgstr "Добро пожаловать в Главное меню"
+msgid "Main menu"
+msgstr ""
 
 #: handlers/chatgpthandler.py:22
 msgid "Input your question or type \"q\" (\"й\") for exit"
-msgstr "Введите ваш вопрос или наберите \"q\" (\"й\") для выхода"
+msgstr ""
 
 #: handlers/chatgpthandler.py:41 handlers/newshandler.py:80
 #: handlers/transhandler.py:56
 msgid "I don't understand you"
-msgstr "Я не понял вас"
+msgstr ""
 
 #: handlers/general.py:78
 msgid "Ask me a everything you want"
-msgstr "Спроси меня все, что ты хочешь"
+msgstr ""
 
 #: handlers/general.py:86 handlers/weathandler.py:121
 msgid "Cancel"
-msgstr "Отмена"
+msgstr ""
 
 #: handlers/general.py:96
 msgid "Hi, you typed {text}"
-msgstr "Привет, вы набрали {text}"
+msgstr ""
 
 #: handlers/general.py:103
 msgid "I only understand text"
-msgstr "Я понимаю только текст"
+msgstr ""
 
 #: handlers/maphandler.py:24 handlers/weathandler.py:27
 msgid "Enter way of location or press \"Cancel\" for exit"
-msgstr "Введите способ получения локации или нажмите Отмена для выхода"
+msgstr ""
 
 #: handlers/maphandler.py:34 handlers/weathandler.py:37
 msgid "Please, Press this button to get your location"
-msgstr "Пожалуйста, нажмите эту кнопку, чтобы получить локацию"
+msgstr ""
 
 #: handlers/maphandler.py:47 handlers/weathandler.py:50
 msgid ""
@@ -87,17 +87,12 @@ msgid ""
 " latitude: {lat}\n"
 " longitude: {lon}"
 msgstr ""
-"Ваша локация была получена:\n"
-" Широта: {lat}\n"
-" Долгота: {lon}"
 
 #: handlers/maphandler.py:75 handlers/weathandler.py:76
 msgid ""
 "Your location was not received.\n"
 " Try another method"
 msgstr ""
-"Ваша локация не получена.\n"
-" Попробуйте другой метод"
 
 #: handlers/maphandler.py:80 handlers/weathandler.py:81
 msgid ""
@@ -110,18 +105,10 @@ msgid ""
 " ip: {ip}\n"
 " org: {org}\n"
 msgstr ""
-"Ваша локация получена:\n"
-" Широта: {lat}\n"
-" Долгота: {lon}\n"
-" Город: {city}\n"
-" Страна: {country}\n"
-" Временной пояс: {timezone}\n"
-" ip: {ip}\n"
-" Провайдер: {org}\n"
 
 #: handlers/newshandler.py:24
 msgid "Select category or press \"Cancel\" for exit"
-msgstr "Выберите категорию или нажмите Отмена для выхода"
+msgstr ""
 
 #: handlers/newshandler.py:38
 msgid ""
@@ -130,30 +117,26 @@ msgid ""
 "Note. for English is a better input query, otherwise, world news will be "
 "shown."
 msgstr ""
-"Введите текст запроса (например: футбол) или нажмите Отмена для выхода\n"
-"Если вы хотите получить все новости нажмите \"All\"\n"
-"Внимание, для английского языка лучше ввести текст запроса, иначе будут все новости будут "
-"показаны."
 
 #: handlers/newshandler.py:52
 msgid "Wait a second, please"
-msgstr "Подождите несколько секунд, пожалуйста "
+msgstr ""
 
 #: handlers/reset.py:14
 msgid "Reset all state"
-msgstr "Сброс всех состояний"
+msgstr ""
 
 #: handlers/reset.py:17
 msgid "The allstate reset"
-msgstr "Все состояния сброшены"
+msgstr ""
 
 #: handlers/reset.py:22
 msgid "The currency state not found"
-msgstr "Текущий статус не найден"
+msgstr ""
 
 #: handlers/start.py:23
 msgid "Enter password"
-msgstr "Введите пароль"
+msgstr ""
 
 #: handlers/start.py:27
 msgid ""
@@ -161,9 +144,6 @@ msgid ""
 "You already have registered.\n"
 "Welcome to my bot 😄"
 msgstr ""
-"Привет {full_name}.\n"
-"Вы уже зарегестрированы.\n"
-"Добро пожаловать в мой бот 😄"
 
 #: handlers/start.py:49
 msgid ""
@@ -173,44 +153,37 @@ msgid ""
 "Enter command /help to learn more.\n"
 "Welcome to my bot😄"
 msgstr ""
-"Привет {full_name}.\n"
-"Вы успешно зарегистрированы.\n"
-"Это много функциональный бот.\n"
-"Введите команду /help чтобы узнать больше.\n"
-"Добро пожаловать в мой бот😄"
 
 #: handlers/start.py:59
 msgid "The password is incorrect"
-msgstr "Пароль не верный"
+msgstr ""
 
 #: handlers/transhandler.py:24
 msgid "Select into language or press \"Cancel\" for exit"
-msgstr "Выберите язык на который переводить или нажмите Отмена для выхода"
+msgstr ""
 
 #: handlers/transhandler.py:37
 msgid "Enter text for translate:"
-msgstr "Введите текст для перевода"
+msgstr ""
 
 #: handlers/transhandler.py:51 handlers/weathandler.py:186
 msgid "Please, Wait a second....."
-msgstr "Пожалуйста, подождите"
+msgstr ""
 
 #: handlers/weathandler.py:55 handlers/weathandler.py:98
 #: handlers/weathandler.py:151
 msgid "Select forecast period or press \"Cancel\" for exit"
-msgstr "Выберите период прогноза или нажмите Отмена для выхода"
+msgstr ""
 
 #: handlers/weathandler.py:109
 msgid "Enter city name or press \"Cancel\" for exit"
-msgstr "Введите город или нажмите Отмена для выхода"
+msgstr ""
 
 #: handlers/weathandler.py:139
 msgid ""
 "Your city not found.\n"
 " Try another method"
 msgstr ""
-"Ваш город не найден.\n"
-" Попробуйте выбрать другой метод"
 
 #: handlers/weathandler.py:144
 msgid ""
@@ -219,37 +192,29 @@ msgid ""
 " latitude: {lat}\n"
 " longitude: {lon}"
 msgstr ""
-"Ваш город получен:\n"
-" город: {city}\n"
-" широта: {lat}\n"
-" долгота: {lon}"
 
 #: handlers/weathandler.py:164
 msgid ""
 "Your period has been received:\n"
 " period: {per}"
 msgstr ""
-"Ваш период получен:\n"
-" период: {per}"
 
 #: handlers/weathandler.py:166
 msgid "Enter volume forecast:"
-msgstr "Введите объем прогноза"
+msgstr ""
 
 #: handlers/weathandler.py:178
 msgid ""
 "Your volume has been received:\n"
 " volume: {vol}"
 msgstr ""
-"Ваш объем получен:\n"
-" объем: {vol}"
 
 #: venv/Lib/site-packages/isort/main.py:158
 msgid "show this help message and exit"
-msgstr "показать помощь этого сообщения и выйти"
+msgstr ""
 
 #: venv/Lib/site-packages/mypy/main.py:387
 #, python-format
 msgid "%(prog)s: error: %(message)s\n"
-msgstr "%(prog)s: error: %(message)s\n"
+msgstr ""
 

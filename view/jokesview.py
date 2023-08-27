@@ -1,7 +1,15 @@
+"""View for jokes."""
 
 
 def jokes_view(jokes_dict: dict[int, str] | str) -> str:
-    """Return joke."""
+    """Return joke.
+
+    :param jokes_dict: Dictionary with joke or error.
+    :type jokes_dict: dict[int, str] | str
+
+    :return: Joke or error.
+    :rtype: str
+    """
     if isinstance(jokes_dict, str):
         return jokes_dict
 

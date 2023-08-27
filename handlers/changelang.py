@@ -1,9 +1,9 @@
-from aiogram import types, Dispatcher
+from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-from create import db, logger, i18n
-from util.keyboards import language_menu, main_menu
+from create import dp, db, logger, i18n
+from util.keyboards import create_menu_inline
 
 _ = i18n.gettext
 
@@ -18,36 +18,36 @@ async def select_lang(message: types.Message):
     logger.info(
         f'Entry to select language handler user {message.from_user.first_name} (id:{message.from_user.id})')
     await message.answer(_('Your are currently language : {lang} \n'
-                         ' Choose language').format(lang=await db.get_user_lang_db(message.from_user.id)), reply_markup=language_menu)
-    # await message.answer('Choose language', reply_markup=keyboard_lang)
+                         ' Choose language').format(lang=await db.get_user_lang_db(message.from_user.id)),
+                         reply_markup=await create_menu_inline('language_menu',
+                                                               language=await db.get_user_lang_db(message.from_user.id)))
     await ChangeLangFSM.language.set()
 
 
-# @dp.message_handler(state=ChangeLangFSM.language)
-async def change_lang(message: types.Message, state: FSMContext):
+@dp.callback_query_handler(text=['en', 'ru'], state=ChangeLangFSM.language)
+async def change_lang(callback_query: types.CallbackQuery, state: FSMContext):
     """Change language."""
+    await callback_query.answer(_('Please, wait'))
     async with state.proxy() as data:
-        data['language'] = message.text
-    if data['language'] == 'Русский':
-        await state.update_data(language='ru')
-        await db.up_user_lang_db(message.from_user.id, 'ru')
-        await message.answer('Язык изменен на русский / Language changed to Russian', reply_markup=types.ReplyKeyboardRemove())
-        logger.info(f'Language changed to Russian user {message.from_user.first_name} (id:{message.from_user.id})')
-    elif data['language'] == 'English':
-        await state.update_data(language='en')
-        await db.up_user_lang_db(message.from_user.id, 'en')
-        await message.answer('Language changed to English / Язык изменен на английский', reply_markup=types.ReplyKeyboardRemove())
-        logger.info(f'Language changed to English user {message.from_user.first_name} (id:{message.from_user.id})')
+        data['language'] = callback_query.data
+    chan_lang = await db.up_user_lang_db(callback_query.from_user.id, data['language'])
+    if chan_lang:
+        await callback_query.message.answer(_('Language changed to {lang}').format(lang=data['language']),
+                                            reply_markup=types.ReplyKeyboardRemove())
+        logger.info(f'Language changed to {data["language"]} user {callback_query.from_user.first_name} (id:{callback_query.from_user.id})')
     else:
-        await message.answer('Язык не изменен / Language not changed')
+        await callback_query.message.answer(_('Language not changed'))
     await state.finish()
-    await message.answer('Главное меню / Main menu', reply_markup=main_menu)
+    logger.info(
+        f'Exit from select language handler user {callback_query.from_user.first_name} (id:{callback_query.from_user.id})')
+    await callback_query.message.answer(_('Welcome to Main menu'),
+                                        reply_markup=await create_menu_inline('main_menu', language=data['language']))
 
 
-def register_handlers_change_lang(_dp: Dispatcher):
+def register_handlers_change_lang():
     """Register handlers for change language."""
-    _dp.register_message_handler(select_lang, commands=['lang'])
-    _dp.register_message_handler(change_lang, state=ChangeLangFSM.language)
+    dp.register_message_handler(select_lang, commands=['lang'])
+    dp.register_callback_query_handler(change_lang, text=['en', 'ru'], state=ChangeLangFSM.language)
 
 
 if __name__ == '__main__':

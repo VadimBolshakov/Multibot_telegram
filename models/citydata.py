@@ -1,16 +1,37 @@
-"""This module provides functions for getting location by city."""
+"""This module provides functions for getting location by city.
+
+    Get location by city via http://api.openweathermap.org/geo/1.0/direct
+    and return dict or string.
+"""
+
+from json import JSONDecodeError
+from typing import Optional
 
 import aiohttp
-from typing import Optional
+
 import admin.exeptions as ex
-from json import JSONDecodeError
 from create import TOKEN_OPENWEATHER, logger
 
 
 async def get_location_by_city(city: str, limit: int = 1, appid: str = TOKEN_OPENWEATHER) -> Optional[list[dict[str, str | int | float]]]:
     """Get location by city.
 
-    Data from http://api.openweathermap.org/geo/1.0/direct"""
+    Data from http://api.openweathermap.org/geo/1.0/direct
+
+    :param city: city name
+    :type city: str
+    :param limit: limit of results, defaults to 1
+    :type limit: int, optional
+    :param appid: token for openweathermap, defaults to TOKEN_OPENWEATHER
+    :type appid: str, optional
+
+    :raises ex.ResponseStatusError: if response status not 200
+    :raises JSONDecodeError: if response not json
+    :raises aiohttp.ClientConnectorError: if connection error
+
+    :return: location
+    :rtype: Optional[list[dict[str, str | int | float]]]
+    """
 
     url = f'http://api.openweathermap.org/geo/1.0/direct?q={city}&limit={limit}&appid={appid}'
 
@@ -30,7 +51,14 @@ async def get_location_by_city(city: str, limit: int = 1, appid: str = TOKEN_OPE
 
 
 async def location_dict(city: str = '') -> dict[str, float | str] | str:
-    """Parse location from JSON-file and return dict."""
+    """Parse location from JSON-file and return dict.
+
+    :param city: city name, defaults to ''
+    :type city: str, optional
+
+    :return: location
+    :rtype: dict[str, float | str] | str
+    """
     data_location = await get_location_by_city(city)
     if not data_location:
         return 'Sorry, but we have not information about your city.'
