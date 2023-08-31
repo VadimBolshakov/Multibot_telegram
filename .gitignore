@@ -4,4 +4,21 @@
 /.idea
 *.db
 setup.cfg
-Deploy_info.txt
+/.mypy_cache
+Dockerfile
+docker-compose.yml
+
+[coverage:run]
+omit =
+    */migrations/*
+    */tests/*
+    */venv/*
+    */.venv/*
+    */.mypy_cache/*
+    */.pytest_cache/*
+    */.git/*
+    */.idea/*
+    */.vscode/*
+    */.vs/*
+
+

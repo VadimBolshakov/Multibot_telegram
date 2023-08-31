@@ -74,7 +74,7 @@ class DataBaseMain:
             """)
             _status = True
 
-        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError) as e:
+        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError, OSError) as e:
             if self.logger is not None:
                 self.logger.exception(f'DatabaseError: {str(e)}')
 
@@ -101,7 +101,7 @@ class DataBaseMain:
                                         user_id, first_name, full_name, dt, lang, status_admin)
             _status = True
 
-        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError) as e:
+        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError, OSError) as e:
             if self.logger is not None:
                 self.logger.exception(f'DatabaseError: {str(e)}')
 
@@ -128,7 +128,7 @@ class DataBaseMain:
                                         user_id, type_request, dt, num_tokens, status_request)
             _status = True
 
-        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError) as e:
+        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError, OSError) as e:
             if self.logger is not None:
                 self.logger.exception(f'DatabaseError: {str(e)}')
 
@@ -146,7 +146,7 @@ class DataBaseMain:
             _query = """SELECT * FROM users WHERE UserId=$1"""
             _user = await self.conn.fetchrow(_query, user_id)
 
-        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError) as e:
+        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError, OSError) as e:
             if self.logger is not None:
                 self.logger.exception(f'DatabaseError: {str(e)}')
 
@@ -164,7 +164,7 @@ class DataBaseMain:
             _query = """ SELECT * FROM users """
             _users = await self.conn.fetch(_query)
 
-        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError) as e:
+        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError, OSError) as e:
             if self.logger is not None:
                 self.logger.exception(f'DatabaseError: {str(e)}')
 
@@ -182,7 +182,7 @@ class DataBaseMain:
             _query = """ SELECT COUNT(*) FROM requests """
             _count = await self.conn.fetchval(_query)
 
-        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError) as e:
+        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError, OSError) as e:
             if self.logger is not None:
                 self.logger.exception(f'DatabaseError: {str(e)}')
 
@@ -200,7 +200,7 @@ class DataBaseMain:
             _query = """ SELECT * FROM users JOIN requests ON users.UserId=requests.UserId """
             _requests = await self.conn.fetch(_query)
 
-        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError) as e:
+        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError, OSError) as e:
             if self.logger is not None:
                 self.logger.exception(f'DatabaseError: {str(e)}')
 
@@ -259,7 +259,7 @@ class DataBaseMain:
                                         not _user.get('StatusAdmin'), user_id)
             _status = True
 
-        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError) as e:
+        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError, OSError) as e:
             if self.logger is not None:
                 self.logger.exception(f'DatabaseError: {str(e)}')
 
@@ -284,7 +284,7 @@ class DataBaseMain:
                                         lang, user_id)
             _status = True
 
-        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError) as e:
+        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError, OSError) as e:
             if self.logger is not None:
                 self.logger.exception(f'DatabaseError: {str(e)}')
 
@@ -309,7 +309,7 @@ class DataBaseMain:
                                         True, dt, user_id)
             _status = True
 
-        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError) as e:
+        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError, OSError) as e:
             if self.logger is not None:
                 self.logger.exception(f'DatabaseError: {str(e)}')
 
@@ -330,7 +330,7 @@ class DataBaseMain:
                                         user_id)
             _status = True
 
-        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError) as e:
+        except (asyncpg.PostgresConnectionError, asyncpg.DataError, asyncpg.PostgresError, OSError) as e:
             if self.logger is not None:
                 self.logger.exception(f'DatabaseError: {str(e)}')
 

@@ -1,0 +1,11 @@
+/venv
+.env
+*.log
+/.idea
+/.mypy_cache
+
+# PyCharm files
+.idea/
+*.iml
+*.iws
+*.ipr
