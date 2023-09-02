@@ -24,14 +24,14 @@ services:
           limits:
             cpus: '1'
             memory: 4G
-    container_name: db
+    container_name: db-cont
 
   bot:
     build: .
     image: bot
     restart: always
     volumes:
-      - C:\Users\Vadim\Documents\Python_projects\test_docker/logs:/usr/src/app/logs
+      - C:\Users\Vadim\Documents\Python_projects\Tel_Bot_Rel_1/logs:/usr/src/app/logs
     ports:
       - 5000:5000
     environment:
@@ -45,7 +45,7 @@ services:
           limits:
             cpus: '1'
             memory: 4G
-    container_name: bot
+    container_name: bot-cont
 
 
 volumes:

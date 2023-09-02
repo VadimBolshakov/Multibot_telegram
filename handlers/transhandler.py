@@ -14,13 +14,32 @@ _ = i18n.gettext
 
 
 class TranslateFSM(StatesGroup):
+    """Class for translate FSM.
+
+    Args:
+        StatesGroup (StatesGroup):Basis class for translate FSM.
+
+    Attributes:
+        target (State): State for select target language.
+        translator (State): State for input text for translate.
+    """
+
     target = State()
     translator = State()
 
 
 # @dp.message_handler(state=None)
 async def select_language(message: types.Message, user_id: int) -> None:
-    """Select into language and set FSM state."""
+    """Select into language and set FSM state.
+
+    :param message: Message object from user.
+    :type message: Message
+    :param user_id: User id.
+    :type user_id: int
+
+    :return: None
+    :rtype: None
+    """
     await message.answer(_('Select into language or press "Cancel" for exit'),
                          reply_markup=await create_menu_inline('translate_menu', user_id=user_id))
     """Set FSM state."""
@@ -30,7 +49,16 @@ async def select_language(message: types.Message, user_id: int) -> None:
 @dp.callback_query_handler(text=['en', 'ru', 'uk', 'de', 'fr', 'it', 'es', 'el', 'pl', 'pt', 'tr', 'ar', 'ja', 'ch'],
                            state=TranslateFSM.target)
 async def select_target(callback_query: types.CallbackQuery, state: FSMContext) -> None:
-    """Set target and suggest input text to translate."""
+    """Set target and suggest input text to translate.
+
+    :param callback_query: CallbackQuery object from inline button click (callback_data equal name of target language)
+    :type callback_query: CallbackQuery
+    :param state: FSM state.
+    :type state: FSMContext
+
+    :return: None
+    :rtype: None
+    """
     await callback_query.answer(_('Please, wait'))
     async with state.proxy() as data:
         data['target'] = callback_query.data
@@ -40,7 +68,16 @@ async def select_target(callback_query: types.CallbackQuery, state: FSMContext) 
 
 @dp.message_handler(content_types=types.ContentType.TEXT, state=TranslateFSM.translator)
 async def input_translator(message: types.Message, state: FSMContext) -> None:
-    """Translate text and send message with translate text."""
+    """Translate text and send message with translate text.
+
+    :param message: Message object from user.
+    :type message: Message
+    :param state: FSM state.
+    :type state: FSMContext
+
+    :return: None
+    :rtype: None
+    """
     async with state.proxy() as data:
         data['text'] = message.text
     data = await state.get_data()

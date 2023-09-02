@@ -11,12 +11,28 @@ _ = i18n.gettext
 
 
 class RegisterFSM(StatesGroup):
+    """Class for register FSM.
+
+    Args:
+        StatesGroup (StatesGroup):Basis class for register FSM.
+
+    Attributes:
+        password (State): State for input password.
+    """
+
     password = State()
 
 
 # @dp.message_handler(commands=['start'], state=None)
-async def command_start(message: types.Message):
-    """Check user in database and send message with password or welcome message."""
+async def command_start(message: types.Message) -> None:
+    """Check user in database and send message with password or welcome message.
+
+    :param message: Message object from user.
+    :type message: Message
+
+    :return: None
+    :rtype: None
+    """
     logger.info(
         f'Entry to start handler user {message.from_user.first_name} (id:{message.from_user.id})')
     if await db.get_user_db(message.from_user.id) is None:
@@ -33,8 +49,17 @@ async def command_start(message: types.Message):
 
 
 # @dp.message_handler(state=RegisterFSM.password)
-async def input_password(message: types.Message, state: FSMContext):
-    """Check password and add user to database."""
+async def input_password(message: types.Message, state: FSMContext) -> None:
+    """Check password and add user to database.
+
+    :param message: Message object from user.
+    :type message: Message
+    :param state: FSM state.
+    :type state: FSMContext
+
+    :return: None
+    :rtype: None
+    """
     async with state.proxy() as data:
         data['password'] = message.text.split()
     if data['password'][0] == PASSWORD:
@@ -60,7 +85,15 @@ async def input_password(message: types.Message, state: FSMContext):
         await state.finish()
 
 
-def register_handlers_start(dp: Dispatcher):
+def register_handlers_start(dp: Dispatcher) -> None:
+    """Register handlers for /start command.
+
+    :param dp: Dispatcher object
+    :type dp: Dispatcher
+
+    :return: None
+    :rtype: None
+    """
     dp.register_message_handler(command_start, commands=['start'], state=None)
     dp.register_message_handler(input_password, state=RegisterFSM.password)
 

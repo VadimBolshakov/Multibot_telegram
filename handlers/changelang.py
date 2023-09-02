@@ -1,3 +1,4 @@
+"""Change language handler."""
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
@@ -9,11 +10,20 @@ _ = i18n.gettext
 
 
 class ChangeLangFSM(StatesGroup):
+    """Class for change language FSM.
+
+    Args:
+        StatesGroup (StatesGroup):Basis class for change language FSM.
+
+    Attributes:
+        language (State): State for change language.
+    """
+
     language = State()
 
 
 # @dp.message_handler(commands=['lang'])
-async def select_lang(message: types.Message):
+async def select_lang(message: types.Message) -> None:
     """Change language."""
     logger.info(
         f'Entry to select language handler user {message.from_user.first_name} (id:{message.from_user.id})')
@@ -25,7 +35,7 @@ async def select_lang(message: types.Message):
 
 
 @dp.callback_query_handler(text=['en', 'ru'], state=ChangeLangFSM.language)
-async def change_lang(callback_query: types.CallbackQuery, state: FSMContext):
+async def change_lang(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     """Change language."""
     await callback_query.answer(_('Please, wait'))
     async with state.proxy() as data:
@@ -44,7 +54,7 @@ async def change_lang(callback_query: types.CallbackQuery, state: FSMContext):
                                         reply_markup=await create_menu_inline('main_menu', language=data['language']))
 
 
-def register_handlers_change_lang():
+def register_handlers_change_lang() -> None:
     """Register handlers for change language."""
     dp.register_message_handler(select_lang, commands=['lang'])
     dp.register_callback_query_handler(change_lang, text=['en', 'ru'], state=ChangeLangFSM.language)

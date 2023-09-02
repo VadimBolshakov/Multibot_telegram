@@ -14,6 +14,19 @@ _ = i18n.gettext
 
 
 class WeatherFSM(StatesGroup):
+    """Class for weather FSM.
+
+    Args:
+        StatesGroup (StatesGroup):Basis class for translate FSM.
+
+    Attributes:
+        location (State): State for select way of location.
+        city (State): State for input city name.
+        local_telegram (State): State for get location by telegram.
+        period (State): State for select forecast period.
+        volume (State): State for select volume of forecast.
+    """
+
     location = State()
     city = State()
     local_telegram = State()
@@ -23,7 +36,16 @@ class WeatherFSM(StatesGroup):
 
 # @dp.message_handler(state=None)
 async def select_location(message: types.Message, user_id: int) -> None:
-    """Input location and set FSM state."""
+    """Input location and set FSM state.
+
+    :param message: Message object from user.
+    :type message: Message
+    :param user_id: User id.
+    :type user_id: int
+
+    :return: None
+    :rtype: None
+    """
     await message.answer(_('Enter way of location or press "Cancel" for exit'),
                          reply_markup=await create_menu_inline('weather_menu_local', user_id=user_id))
     """Set FSM state."""
@@ -32,7 +54,14 @@ async def select_location(message: types.Message, user_id: int) -> None:
 
 @dp.callback_query_handler(text='get_location', state=WeatherFSM.location)
 async def get_location(callback_query: types.CallbackQuery) -> None:
-    """Create menu for get telegram location."""
+    """Create menu for get telegram location.
+
+    :param callback_query: CallbackQuery object from inline button click (callback_data equal 'get_location')
+    :type callback_query: CallbackQuery
+
+    :return: None
+    :rtype: None
+    """
     await callback_query.answer(_('Please, wait'))
     await callback_query.message.answer(_('Please, Press this button to get your location'), reply_markup=types.ReplyKeyboardMarkup(
         keyboard=[[types.KeyboardButton('Local', request_location=True)]], resize_keyboard=True))
@@ -42,7 +71,16 @@ async def get_location(callback_query: types.CallbackQuery) -> None:
 
 @dp.message_handler(content_types=types.ContentType.LOCATION, state=WeatherFSM.local_telegram)
 async def get_location_telegram(message: types.Message, state: FSMContext) -> None:
-    """Get location by telegram and suggest select of forecast period."""
+    """Get location by telegram and suggest select of forecast period.
+
+    :param message: Message object from user.
+    :type message: Message
+    :param state: FSM state.
+    :type state: FSMContext
+
+    :return: None
+    :rtype: None
+    """
     async with state.proxy() as data:
         data['latitude'] = float(message.location.latitude)
         data['longitude'] = float(message.location.longitude)
@@ -59,9 +97,19 @@ async def get_location_telegram(message: types.Message, state: FSMContext) -> No
     await WeatherFSM.period.set()
 
 
+# this callback query handler is not used
 @dp.callback_query_handler(text='get_by_ip', state=WeatherFSM.location)
 async def get_by_ip(callback_query: types.CallbackQuery, state: FSMContext) -> None:
-    """Get location by ip and suggest select of forecast period."""
+    """Get location by ip and suggest select of forecast period.
+
+    :param callback_query: CallbackQuery object from inline button click (callback_data equal 'get_by_ip')
+    :type callback_query: CallbackQuery
+    :param state: FSM state.
+    :type state: FSMContext
+
+    :return: None
+    :rtype: None
+    """
     await callback_query.answer(_('Please, wait'))
     local_data = await locbyip.location_dict()
     if isinstance(local_data, dict):
@@ -104,7 +152,14 @@ async def get_by_ip(callback_query: types.CallbackQuery, state: FSMContext) -> N
 
 @dp.callback_query_handler(text='enter_city', state=WeatherFSM.location)
 async def get_by_city(callback_query: types.CallbackQuery) -> None:
-    """Input city and set FSM state."""
+    """Input city and set FSM state.
+
+    :param callback_query: CallbackQuery object from inline button click (callback_data equal 'enter_city')
+    :type callback_query: CallbackQuery
+
+    :return: None
+    :rtype: None
+    """
     await callback_query.answer(_('Please, wait'))
     await callback_query.message.answer(_('Enter city name or press "Cancel" for exit'), reply_markup=types.ReplyKeyboardMarkup(
         keyboard=[[types.KeyboardButton('Cancel')]], resize_keyboard=True))
@@ -113,8 +168,17 @@ async def get_by_city(callback_query: types.CallbackQuery) -> None:
 
 
 @dp.message_handler(content_types=types.ContentType.TEXT, state=WeatherFSM.city)
-async def input_city(message: types.Message, state: FSMContext):
-    """Set city and suggest select of forecast period."""
+async def input_city(message: types.Message, state: FSMContext) -> None:
+    """Set city and suggest select of forecast period.
+
+    :param message: Message object from user.
+    :type message: Message
+    :param state: FSM state.
+    :type state: FSMContext
+
+    :return: None
+    :rtype: None
+    """
     async with state.proxy() as data:
         data['city'] = message.text.lower().split()
     if data['city'][0] == 'cancel':
@@ -157,7 +221,16 @@ async def input_city(message: types.Message, state: FSMContext):
 
 @dp.callback_query_handler(text=['current', 'hourly', 'daily'], state=WeatherFSM.period)
 async def input_period(callback_query: types.CallbackQuery, state: FSMContext) -> None:
-    """Set forecast period and suggest volume input its."""
+    """Set forecast period and suggest volume input its.
+
+    :param callback_query: CallbackQuery object from inline button click (callback_data equal name of period)
+    :type callback_query: CallbackQuery
+    :param state: FSM state.
+    :type state: FSMContext
+
+    :return: None
+    :rtype: None
+    """
     await callback_query.answer(_('Please, wait'))
     async with state.proxy() as data:
         data['period'] = callback_query.data
@@ -171,7 +244,16 @@ async def input_period(callback_query: types.CallbackQuery, state: FSMContext) -
 
 @dp.callback_query_handler(text=['short', 'full'], state=WeatherFSM.volume)
 async def input_volume(callback_query: types.CallbackQuery, state: FSMContext) -> None:
-    """Set volume of forecast of the weather."""
+    """Set volume of forecast of the weather.
+
+    :param callback_query: CallbackQuery object from inline button click (callback_data equal name of volume)
+    :type callback_query: CallbackQuery
+    :param state: FSM state.
+    :type state: FSMContext
+
+    :return: None
+    :rtype: None
+    """
     await callback_query.answer(_('Please, wait'))
     async with state.proxy() as data:
         data['volume'] = callback_query.data

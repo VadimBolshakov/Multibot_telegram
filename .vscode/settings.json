@@ -1,0 +1,33 @@
+{
+    "cSpell.words": [
+        "aiogram",
+        "asyncpg",
+        "banneruser",
+        "banninguser",
+        "Bolsh",
+        "changelang",
+        "chatgpthandler",
+        "chatgptview",
+        "citydata",
+        "currencyview",
+        "getemail",
+        "getlog",
+        "getrequests",
+        "getusers",
+        "jokesview",
+        "maphandler",
+        "middlewares",
+        "NEWSAPI",
+        "newshandler",
+        "quoteview",
+        "rtype",
+        "setuplogging",
+        "statusadmin",
+        "texttojson",
+        "transhandler",
+        "weathandler"
+    ],
+    "editor.codeActionsOnSave": {
+        
+    }
+}

@@ -1,4 +1,4 @@
-"""Handler for /reset command"""
+"""Handler for /reset command."""
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
@@ -9,8 +9,17 @@ _ = i18n.gettext
 
 
 # @dp.message_handler(commands=['reset'], state='*')
-async def command_reset(message: types.Message, state: FSMContext):
-    """Check the user in the database and reset the allstate him."""
+async def command_reset(message: types.Message, state: FSMContext) -> None:
+    """Reset the user allstate.
+
+    :param message: Message object from user.
+    :type message: Message
+    :param state: FSM any state.
+    :type state: FSMContext
+
+    :return: None
+    :rtype: None
+    """
     await message.answer(_('Reset all state'), reply_markup=types.ReplyKeyboardRemove())
     if dp.current_state(user=message.from_user.id):
         await state.finish()
@@ -23,7 +32,8 @@ async def command_reset(message: types.Message, state: FSMContext):
                              reply_markup=await create_menu_inline('main_menu', language=message.from_user.language_code))
 
 
-def register_handlers_reset():
+def register_handlers_reset() -> None:
+    """Register handlers for /reset command."""
     dp.register_message_handler(command_reset, commands=['reset'], state='*')
 
 

@@ -14,13 +14,32 @@ _ = i18n.gettext
 
 
 class NewsFSM(StatesGroup):
+    """Class for news FSM.
+
+    Args:
+        StatesGroup (StatesGroup):Basis class for news FSM.
+
+    Attributes:
+        category (State): State for select category.
+        query (State): State for input query.
+    """
+
     category = State()
     query = State()
 
 
 # @dp.message_handler(state=None)
 async def select_category(message: types.Message, user_id: int) -> None:
-    """Select category and set FSM state."""
+    """Select category and set FSM state.
+
+    :param message: Message object from user.
+    :type message: Message
+    :param user_id: User id.
+    :type user_id: int
+
+    :return: None
+    :rtype: None
+    """
     await message.answer(_('Select category or press "Cancel" for exit'),
                          reply_markup=await create_menu_inline('news_category_menu',
                                                                user_id=user_id))
@@ -30,8 +49,17 @@ async def select_category(message: types.Message, user_id: int) -> None:
 
 @dp.callback_query_handler(text=['business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology'],
                            state=NewsFSM.category)
-async def input_category(callback_query: types.CallbackQuery, state: FSMContext):
-    """Set category and suggest input text to query."""
+async def input_category(callback_query: types.CallbackQuery, state: FSMContext) -> None:
+    """Set category and suggest input text to query.
+
+    :param callback_query: CallbackQuery object from inline button click (callback_data equal name of category)
+    :type callback_query: CallbackQuery
+    :param state: FSM state.
+    :type state: FSMContext
+
+    :return: None
+    :rtype: None
+    """
     await callback_query.answer(_('Please, wait'))
     async with state.proxy() as data:
         data['category'] = callback_query.data
@@ -44,8 +72,17 @@ async def input_category(callback_query: types.CallbackQuery, state: FSMContext)
 
 
 @dp.message_handler(state=NewsFSM.query)
-async def input_query(message: types.Message, state: FSMContext):
-    """Set query and send news."""
+async def input_query(message: types.Message, state: FSMContext) -> None:
+    """Set query and send news.
+
+    :param message: Message object from user.
+    :type message: Message
+    :param state: FSM state.
+    :type state: FSMContext
+
+    :return: None
+    :rtype: None
+    """
     async with state.proxy() as data:
         data['query'] = message.text.lower().split()
     if data['query'][0] != 'cancel':

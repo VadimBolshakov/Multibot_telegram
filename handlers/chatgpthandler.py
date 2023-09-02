@@ -13,11 +13,20 @@ _ = i18n.gettext
 
 
 class NewsFSM(StatesGroup):
+    """Class for chat_gpt FSM.
+
+    Args:
+        StatesGroup (StatesGroup):Basis class for chat_gpt FSM.
+
+    Attributes:
+        question (State): State for input question.
+    """
+
     question = State()
 
 
 # @dp.message_handler(state=None)
-async def select_question(message: types.Message):
+async def select_question(message: types.Message) -> None:
     """Select question and set FSM state."""
     await message.answer(_('Input your question or type "q" ("й") for exit'))
     """Set FSM state."""
@@ -25,7 +34,7 @@ async def select_question(message: types.Message):
 
 
 @dp.message_handler(state=NewsFSM.question)
-async def input_question(message: types.Message, state: FSMContext):
+async def input_question(message: types.Message, state: FSMContext) -> None:
     """Get some question and request an answer by ChatGPT."""
     async with state.proxy() as data:
         data['question'] = message.text

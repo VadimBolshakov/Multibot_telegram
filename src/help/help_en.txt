@@ -2,7 +2,7 @@ Welcome to my multifunction bot.
 This bot provides information about weather, location, and rates of currencies. It also does translation, shows news, and amuses you if you are bothered. You can enjoy asking your questions using ChatGPT. The bot speaks multiple languages. Choose a speech in the telegram menu of the bot "Change language" (the blue button is bottom left) or in the setting of telegram globally.
 To begin, you must first register for a pass. Press the button "start" (or type the command "/start" in the bot). Once you enter the password, you're all set. Next, you are looking at the main menu, where you will find
 The button "Weather", which is showing current, daily, hourly, and alarm according to your location (you might choose one of both variants by your provider's IP or your location through Telegram), or enter the name of the city. The weather forecast might show two variants: short or full.
-The button "Maps" displays a map if you have chosen the variant "Get location" or the data of the location if you have chosen the variant "Get by IP" (sure, the values of coordinates will be a little different).
+The button "Maps" displays a map and the current location.
 The button "Translate" allows the translation of your text into different languages, which you should choose (the original language is detected automatically).
 The " Currency " button shows the currency rate in USD for English and RUB for Russian.
 The button "News" performs news (default 15 items) of the kind such as business, entertainment, health, sports, technology, science, or general depending on the user's language, as well as keywords, which are not necessary. Note: Keywords should be used for English otherwise, will be displayed the news of the all world.

@@ -1,3 +1,4 @@
+"""Init file for handlers."""
 from handlers import general
 from handlers import start
 from handlers import maphandler
