@@ -1,7 +1,7 @@
 """View for translate text."""
 
 
-def translate_view(translate_text: dict[str: str] | str) -> str:
+def translate_view(translate_text: dict[str, str] | str) -> str:
     """Return text translated into target language.
 
     :param translate_text: Dictionary with text translated into target language or error.

@@ -10,7 +10,7 @@ _ = i18n.gettext
 # @dp.message_handler(commands=['help'], state=None)
 # @checking.check_registration
 async def command_help(message: types.Message) -> None:
-    """Check user in database and send message with password or welcome message.
+    """Show help.
 
     :param message: Message object from user
     :type message: Message

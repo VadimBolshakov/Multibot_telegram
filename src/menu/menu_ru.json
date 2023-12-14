@@ -3,14 +3,13 @@
         "weather": "Погода",
         "maps": "Локация",
         "translate": "Переводчик",
-        "currency_ru": "Валюты",
+        "currency": "Валюты",
         "news": "Новости",
         "jokes": "Анекдоты",
         "chat_gpt": "Спросить ChatGPT"
     },
     "map_menu": {
         "get_location": "Получить локацию",
-        "get_by_ip": "Получить по IP",
         "cancel": "Отмена"
     },
     "translate_menu": {
@@ -33,7 +32,6 @@
     "weather_menu_local": {
         "get_location": "Получить локацию",
         "enter_city": "Введите город",
-        "get_by_ip": "Получить по IP",
         "cancel": "Отмена"
     },
     "weather_period_menu": {

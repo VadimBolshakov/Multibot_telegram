@@ -1,4 +1,4 @@
-"""Get an actual rate currency_ru.
+"""Get an actual rate currency.
 
 If the current language is "ru", get the current exchange rate from the XML file in the src folder.
     If the file does not exist, create a new one and get the exchange rate from cbr.ru.
@@ -36,7 +36,7 @@ def get_currencies_ru(date_now_str: str, path_file_xml: str) -> bool:
     """
     http = urllib3.PoolManager(num_pools=3)
     try:
-        response = http.request('GET', 'https://www.cbr.ru/scripts/XML_daily.asp', fields={'date_req': date_now_str})
+        response = http.request('GET', 'https://www.cbr-xml-daily.ru/daily_utf8.xml')
         if not response:
             raise ex.ResponseStatusError(response.status)
 
@@ -114,7 +114,7 @@ async def currencies_dict_ru(user_id: int, first_name: str, lang: str,
 
 
 def get_currencies_en(path_file_json: str) -> bool:
-    """Get the actually current exchange cbr.ru and create the XML file.
+    """Get the actually current exchange and create the XML file.
 
     :param path_file_json: path to JSON file
     :type path_file_json: str

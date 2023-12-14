@@ -178,7 +178,7 @@ if __name__ == '__main__':
             if key not in ('minutely', 'alerts'):
                 [item.append('') for item in value]
             print(f'{key}:')
-            print(f'\n'.join([f' {item}' for sublist in value for item in sublist if item is not None]))
+            print('\n'.join([f' {item}' for sublist in value for item in sublist if item is not None]))
         else:
             print(f'{key}:')
-            print(f'\n'.join([f' {item}' for item in value if item is not None]))
+            print('\n'.join([f' {item}' for item in value if item is not None]))

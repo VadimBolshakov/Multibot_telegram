@@ -7,11 +7,11 @@ username = @VadimBolshM1bot
 from aiogram.utils import executor
 
 from create import dp, loop, db, i18n, logger
-from handlers import general, start, adminhandler, help, changelang, reset
+from handlers import general, start, adminhandler, help, changelang, reset, writetoadmin
 from util.texttojson import convert_text_files_to_json
 
 
-async def on_startup(_):
+async def on_startup(_) -> None:
     """Create database, class for work with i18n (languages), also format the logger."""
     if await db.start_db():
         logger.info('DB created')
@@ -28,11 +28,12 @@ help.register_handlers_help(dp)
 reset.register_handlers_reset()
 adminhandler.register_handlers_admin(dp)
 changelang.register_handlers_change_lang()
+writetoadmin.register_handlers_toadmin()
 general.register_handlers_general(dp)
 # except Exception as e:
 
 
-async def on_shutdown(_):
+async def on_shutdown(_) -> None:
     """Close memory."""
     await dp.storage.close()
 

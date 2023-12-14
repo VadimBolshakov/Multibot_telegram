@@ -20,10 +20,10 @@ async def command_reset(message: types.Message, state: FSMContext) -> None:
     :return: None
     :rtype: None
     """
-    await message.answer(_('Reset all state'), reply_markup=types.ReplyKeyboardRemove())
+    await message.answer(_('Reset all states'), reply_markup=types.ReplyKeyboardRemove())
     if dp.current_state(user=message.from_user.id):
         await state.finish()
-        await message.answer(_('The allstate reset'),
+        await message.answer(_('All states were reset'),
                              reply_markup=await create_menu_inline('main_menu', language=message.from_user.language_code))
         logger.info(
             f'Reset the allstate user {message.from_user.first_name} (id:{message.from_user.id})')

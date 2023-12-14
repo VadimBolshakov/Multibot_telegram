@@ -2,15 +2,14 @@
     "main_menu": {
         "weather": "Weather",
         "maps": "Location",
-        "translate": "Translater",
-        "currency_ru": "Currency",
+        "translate": "Translator",
+        "currency": "Currency",
         "news": "News",
         "jokes": "Jokes",
         "chat_gpt": "Ask ChatGPT"
     },
     "map_menu": {
         "get_location": "Get location",
-        "get_by_ip": "Get by IP",
         "cancel": "Cancel"
     },
     "translate_menu": {
@@ -33,7 +32,6 @@
     "weather_menu_local": {
         "get_location": "Get location",
         "enter_city": "Enter city",
-        "get_by_ip": "Get by IP",
         "cancel": "Cancel"
     },
     "weather_period_menu": {

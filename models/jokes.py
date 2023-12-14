@@ -26,13 +26,12 @@ async def jokes_dict(user_id: int, first_name: str, quantity: int = 9) -> dict[i
     lang = await db.get_user_lang_db(user_id=user_id)
 
     if lang == 'ru':
-        file_jokes = os.path.abspath(f'./src/jokes/jokes_ru.json')
+        file_jokes = os.path.abspath('./src/jokes/jokes_ru.json')
         total_quantity = 124156
 
     else:
-        return 'Sorry, joke not found'
-        # file_jokes = os.path.abspath(f'./src/jokes/jokes_en.json')
-        # total_quantity = 194553
+        file_jokes = os.path.abspath('./src/jokes/jokes_en.json')
+        total_quantity = 194553
 
     try:
         with open(file_jokes, 'r') as file:

@@ -17,4 +17,3 @@ def currency_view(date_now: str, currencies_data: dict[Optional[str], list[Optio
         return currencies_data
     return f'Currency on {date_now}:\n' + '\n'.join([f'{value[2]} {value[1]} = {value[4]} {value[5]}'
                                                      for key, value in currencies_data.items()])
-

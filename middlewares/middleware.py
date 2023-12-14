@@ -83,9 +83,9 @@ class ManageMiddleware(BaseMiddleware):
             if await self.db.get_user_db(user_id) is None:
                 if message_text != '/start' and message_text != self.password:
                     if update.message:
-                        await update.message.answer(f"You are not registered. Enter the command /start")
+                        await update.message.answer('You are not registered. Enter the command /start')
                     elif update.callback_query:
-                        await update.callback_query.answer(f"You are not registered. Enter the command /start")
+                        await update.callback_query.answer('You are not registered. Enter the command /start')
                     self.logger.warning(f'Fail the registration check user id:{user_id}')
                     raise CancelHandler()
                 # # if registration is without password then add user to db

@@ -28,12 +28,12 @@ def convert_text_files_to_json(path: str, logger: Logger, encoding: str = 'utf-8
         for file in os.listdir(path):
             if file.endswith('.txt'):
                 if not text_to_json(path + file, path + file.replace('.txt', '.json'), encoding=encoding):
-                    raise json.JSONDecodeError
+                    raise json.JSONDecodeError('JSONDecodeError', path + file, 0)
         return True
     except json.JSONDecodeError as e:
         logger.exception(f'ConvertError: {str(e)}')
         return False
-    except [FileNotFoundError, PermissionError, OSError] as e:
+    except OSError as e:
         logger.exception(f'ConvertError: {str(e)}')
         return False
 

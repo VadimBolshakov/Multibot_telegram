@@ -1,6 +1,6 @@
 {
 "main_menu": {"weather": "Погода", "maps": "Локация", "translate": "Переводчик", "currency": "Валюты", "news": "Новости", "jokes": "Анекдоты", "chat_gpt": "Спросить ChatGPT"},
-"map_menu": {"get_location": "Получить локацию", "get_by_ip": "Получить по IP", "cancel": "Отмена"},
+"map_menu": {"get_location": "Получить локацию", "cancel": "Отмена"},
 "translate_menu": {"en": "Английский", "ru": "Русский", "uk": "Украинский", "de": "Немецкий", "fr": "Французский", "it": "Итальянский", "es": "Испанский", "el": "Греческий", "pl": "Польский", "pt": "Португальский", "tr": "Турецкий", "ar": "Арабский", "ja": "Японский", "zh": "Китайский", "cancel": "Отмена"},
 "weather_menu_local": {"get_location": "Получить локацию", "enter_city": "Введите город", "cancel": "Отмена"},
 "weather_period_menu": {"current": "Текущая", "hourly": "Почасовая", "daily": "По дням", "cancel": "Отмена"},

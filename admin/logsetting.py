@@ -25,6 +25,7 @@ class TelegramHandler(logging.Handler):
 
     :return: None
     """
+
     def __init__(self, token, chat_id):
         self.token = token
         self.chat_id = chat_id
@@ -85,7 +86,6 @@ LOGGING_CONFIG = {
     },
 }
 
-
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger('my_logger')
 logger.setLevel(logging.DEBUG)
@@ -94,9 +94,7 @@ telegram_handler.setLevel(logging.ERROR)
 telegram_handler.setFormatter(logging.Formatter('%(message)s'))
 logger.addHandler(telegram_handler)
 
-
 if __name__ == '__main__':
-
     logger.debug('debug log it is logger')
     logger.info('logger info it is logger')
     logger.warning('warning it is logger')

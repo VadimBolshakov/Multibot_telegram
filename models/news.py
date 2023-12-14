@@ -124,4 +124,4 @@ if __name__ == '__main__':
         print(news_dict_test)
     else:
         for key, value in news_dict_test.items():
-            print(f'\n'.join([f'    {i}' for i in value if i is not None]) + '\n')
+            print('\n'.join([f'    {i}' for i in value if i is not None]) + '\n')

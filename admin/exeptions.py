@@ -11,7 +11,7 @@ class ResponseStatusError(Exception):
     """
 
     def __init__(self, param: Optional[int] = None, msg: str = 'An unknown error occurred'):
-        self.param: int = param
+        self.param: Optional[int] = param
         self.message: str = msg
         super().__init__(self.message)
 
@@ -30,7 +30,7 @@ class ResponseStatusNewsAPIError(Exception):
     """
 
     def __init__(self, param: Optional[str] = None, msg: str = 'An unknown error occurred'):
-        self.param: str = param
+        self.param: Optional[str] = param
         self.message: str = msg
         super().__init__(self.message)
 
