@@ -114,7 +114,7 @@ async def currencies_dict_ru(user_id: int, first_name: str, lang: str,
 
 
 def get_currencies_en(path_file_json: str) -> bool:
-    """Get the actually current exchange and create the XML file.
+    """Get the actually current exchange and create the JSON file.
 
     :param path_file_json: path to JSON file
     :type path_file_json: str

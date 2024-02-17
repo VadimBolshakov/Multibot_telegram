@@ -1,0 +1,31 @@
+{
+  "success":true,
+  "terms":"https:\/\/currencylayer.com\/terms",
+  "privacy":"https:\/\/currencylayer.com\/privacy",
+  "timestamp":1708143304,
+  "source":"USD",
+  "quotes":{
+    "USDRUB":92.495038,
+    "USDEUR":0.92785,
+    "USDGBP":0.793525,
+    "USDJPY":150.22504,
+    "USDCHF":0.880733,
+    "USDCNY":7.119604,
+    "USDUAH":38.079549,
+    "USDPLN":4.026765,
+    "USDTRY":30.841604,
+    "USDCAD":1.349295,
+    "USDSEK":10.45981,
+    "USDDKK":6.917185,
+    "USDNOK":10.448405,
+    "USDAUD":1.533872,
+    "USDSGD":1.34996,
+    "USDBYN":3.273733,
+    "USDKZT":450.039909,
+    "USDAMD":405.903374,
+    "USDIRR":42030.000352,
+    "USDINR":83.01625,
+    "USDGEL":2.63504,
+    "USDNZD":1.631854
+  }
+}

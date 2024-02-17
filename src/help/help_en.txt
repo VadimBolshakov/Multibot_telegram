@@ -8,8 +8,9 @@ The " Currency " button shows the currency rate in USD for English and RUB for R
 The button "News" performs news (default 15 items) of the kind such as business, entertainment, health, sports, technology, science, or general depending on the user's language, as well as keywords, which are not necessary. Note: Keywords should be used for English otherwise, will be displayed the news of the all world.
 The button "Joked" displays jokes (default 10 items) if you get bored. (Data is taken from this source https://github.com/taivop/joke-dataset).
 If you press the button "ChatGPT", you will get great pleasure talking with AI.
+The quote of famous people is from source https://forismatic.com/en/api/
 There are commands "start", "help", reset," and "lang" (change language) in the telegram menu of the bot (the blue button is bottom left). In particular, the button "reset" is used to reset the current state of the bot.
 Enjoy
 Callback: vadimbolsh@gmail.com
-P.S. The bot is in the development stage. If you have any suggestions, please write to me. I will be glad to hear from you.
+P.S. The bot is in the development stage. If you have any suggestions, please write to me vadimbolsh@gmail.com. I will be glad to hear from you.
 P.P.S. The foul filter only has been working on Russian words yet.  The author doesn't know English well enough to filter the obscene English words.
