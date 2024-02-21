@@ -46,7 +46,8 @@ the standard-setting Postgresql database
 
 Weather:  [https://openweathermap.org](https://openweathermap.org/)  
 Location by IP:  [https://ipinfo.io/json](https://ipinfo.io/json)   
-Currency:  [https://currencylayer.com](https://currencylayer.com/)  for the English version,  [https://www.cbr-xml-daily.ru/daily_utf8.xml](https://www.cbr-xml-daily.ru/daily_utf8.xml) for the Russian version.  Translate:  [https://translation.googleapis.com/language/translate/v2](https://translation.googleapis.com/language/translate/v2) 
+Currency:  [https://currencylayer.com](https://currencylayer.com/)  for the English version,  [https://www.cbr-xml-daily.ru/daily_utf8.xml](https://www.cbr-xml-daily.ru/daily_utf8.xml) for the Russian version.  
+Translate:  [https://translation.googleapis.com/language/translate/v2](https://translation.googleapis.com/language/translate/v2)
 News:  [https://newsapi.org](https://newsapi.org/)   
 Jokes:  [https://github.com/taivop/joke-dataset](https://github.com/taivop/joke-dataset) (./src/jokes/jokes_en.json)  for the English version,  [https://github.com/Vl-Leschinskii/jokes_topics/blob/main/anek_utf8.zip](https://github.com/Vl-Leschinskii/jokes_topics/blob/main/anek_utf8.zip) (./src/jokes/jokes_ru.json)  for the Russian version.   
 Quotes:  [https://forismatic.com](https://forismatic.com/)  ([https://forismatic.com/en/api/](https://forismatic.com/en/api/)  for the English version,  [https://forismatic.com/ru/api/](https://forismatic.com/ru/api/)  for the Russian version)
