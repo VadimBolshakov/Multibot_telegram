@@ -33,10 +33,10 @@ class AdminFSM(StatesGroup):
 async def admin(message: types.Message) -> None:
     """Send message to admin about using commands."""
     await message.answer('Admin panel suggest using next commands:\n'
-                         '/getlog - send log file to telegram\n'
-                         '/getemail - send log file to email\n'
-                         '/getusers - send id and users of this chat to admin\n'
-                         '/getrequests - send number of requests to admin\n'
+                         '/getlog - send the log file to the telegram\n'
+                         '/getemail - send the log file to email\n'
+                         '/getusers - send the id and users of this chat to the admin\n'
+                         '/getrequests - send the number of requests to admin\n'
                          '/sendall - send message to all users\n'
                          '/banneruser - ban user\n'
                          '/statusadmin - change status admin user\n')
