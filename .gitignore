@@ -3,7 +3,7 @@
 /venv
 /.idea
 /.vscode
-/__pycache__
+__pycache__/create.cpython-311.pyc
 *.db
 setup.cfg
 /.mypy_cache
