@@ -13,7 +13,8 @@ import admin.exeptions as ex
 from create import TOKEN_OPENWEATHER, logger
 
 
-async def get_location_by_city(city: str, limit: int = 1, appid: str = TOKEN_OPENWEATHER) -> Optional[list[dict[str, str | int | float]]]:
+async def get_location_by_city(city: str, limit: int = 1, appid: str | None = TOKEN_OPENWEATHER) -> (
+        Optional)[list[dict[str, str | int | float]]]:
     """Get location by city.
 
     Data from http://api.openweathermap.org/geo/1.0/direct
@@ -59,11 +60,11 @@ async def location_dict(city: str = '') -> dict[str, float | str] | str:
     :return: location
     :rtype: dict[str, float | str] | str
     """
-    data_location = await get_location_by_city(city)
-    if not data_location:
+    data_locations = await get_location_by_city(city)
+    if not data_locations:
         return 'Sorry, but we have not information about your city.'
 
-    data_location = data_location[0]
+    data_location = data_locations[0]
 
     location = {'name': data_location.get('name'),
                 'latitude': data_location.get('lat'),

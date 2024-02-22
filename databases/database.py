@@ -32,7 +32,7 @@ class DataBaseMain:
         self.db_host = db_host
         self.db_port = db_port
         self.db_name = db_name
-        self.logger: Logger = logger
+        self.logger: Optional[Logger] = logger
         # Create a pool of connections to the database
         self.conn: Optional[Connection] = None
         # Data source name
@@ -156,7 +156,7 @@ class DataBaseMain:
 
         return _user
 
-    async def get_all_users_db(self) -> list[Record]:
+    async def get_all_users_db(self) -> list[Record] | None:
         """Get all users from the users' table."""
         _users: list[Record] | None = None
         try:
@@ -174,7 +174,7 @@ class DataBaseMain:
 
         return _users
 
-    async def get_requests_count_db(self) -> int:
+    async def get_requests_count_db(self) -> int | None:
         """Get the total number of requests from the requests' table."""
         _count: int | None = None
         try:
@@ -192,7 +192,7 @@ class DataBaseMain:
 
         return _count
 
-    async def get_all_requests_db(self) -> list[Record]:
+    async def get_all_requests_db(self) -> list[Record] | None:
         """Get all user requests from the requests' table by user id."""
         _requests: list[Record] | None = None
         try:
@@ -294,7 +294,7 @@ class DataBaseMain:
 
         return _status
 
-    async def up_user_banned_db(self, user_id: int, dt: datetime = datetime.datetime.now()) -> bool:
+    async def up_user_banned_db(self, user_id: int, dt=datetime.datetime.now()) -> bool:
         """Update the user status to banned in the users' table by id. Return True if the user is banned, False otherwise."""
         _status: bool = False
 

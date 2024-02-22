@@ -16,7 +16,7 @@ async def get_news(country: str = '',
                    sources: str = 'bbc-news',
                    category: str = 'general',
                    query: Optional[str] = None,
-                   page: int = 1) -> Optional[dict[str, str | int | float | list[dict[str, str | None]]]]:
+                   page: int = 1) -> Optional[list[dict[str, str | int | float | None]]]:
     """Get news from NewsAPI API.
 
     :param country: country code, defaults to ''

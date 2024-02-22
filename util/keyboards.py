@@ -11,7 +11,7 @@ from create import db, logger
 
 async def create_menu_inline(name_menu: str,
                              language: Optional[str] = None,
-                             user_id: Optional[int] = None) -> Optional[InlineKeyboardMarkup]:
+                             user_id: int = None) -> Optional[InlineKeyboardMarkup]:
     """
     Create menu inline from json file.
 

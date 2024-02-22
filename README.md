@@ -31,8 +31,10 @@ PASSWORD=  password to enter to the bot
 [admin]  
 CHAT_ID=Id chat bot's  
 EMAIL_SENDER=  email of the sender for sending exceptions 
-EMAIL_PASSWORD=password email sender  EMAIL_RECIPIENT=email for receiving exceptions  
-ADMIN_ID=  Id admin chat bot's  (usually same as CHAT_ID)  LOG_FILE=  path and the name log file  (for example  ./logs/logconfig.log)  
+EMAIL_PASSWORD=password email sender  
+EMAIL_RECIPIENT=email for receiving exceptions  
+ADMIN_ID=  Id admin chat bot's  (usually same as CHAT_ID)  
+LOG_FILE=  path and the name log file  (for example  ./logs/logconfig.log)  
 FOUL_FILE=  path and the name obscene words file  (for example  ./src/foul/foul.json)
 
 [postgresql]  
@@ -47,7 +49,7 @@ the standard-setting Postgresql database
 Weather:  [https://openweathermap.org](https://openweathermap.org/)  
 Location by IP:  [https://ipinfo.io/json](https://ipinfo.io/json)   
 Currency:  [https://currencylayer.com](https://currencylayer.com/)  for the English version,  [https://www.cbr-xml-daily.ru/daily_utf8.xml](https://www.cbr-xml-daily.ru/daily_utf8.xml) for the Russian version.  
-Translate:  [https://translation.googleapis.com/language/translate/v2](https://translation.googleapis.com/language/translate/v2)
+Translate:  [https://translation.googleapis.com/language/translate/v2](https://translation.googleapis.com/language/translate/v2)  
 News:  [https://newsapi.org](https://newsapi.org/)   
 Jokes:  [https://github.com/taivop/joke-dataset](https://github.com/taivop/joke-dataset) (./src/jokes/jokes_en.json)  for the English version,  [https://github.com/Vl-Leschinskii/jokes_topics/blob/main/anek_utf8.zip](https://github.com/Vl-Leschinskii/jokes_topics/blob/main/anek_utf8.zip) (./src/jokes/jokes_ru.json)  for the Russian version.   
 Quotes:  [https://forismatic.com](https://forismatic.com/)  ([https://forismatic.com/en/api/](https://forismatic.com/en/api/)  for the English version,  [https://forismatic.com/ru/api/](https://forismatic.com/ru/api/)  for the Russian version)
@@ -88,7 +90,7 @@ The language will be set from the bot settings,  or the language code according 
 
 ## Additionally
 
-The foul filter has only been working on Russian words yet.  The author doesn't know English well enough to filter the obscene English words.  file:  quote_against_foul with source  [https://aforisimo.ru/pro-mat/](https://aforisimo.ru/pro-mat/)
+The foul filter has only been working on Russian words yet.  The author doesn't know English well enough to filter the obscene English words.  file:  quote_against_foul from source  [https://aforisimo.ru/pro-mat/](https://aforisimo.ru/pro-mat/)
 
 ## Conclusion
 

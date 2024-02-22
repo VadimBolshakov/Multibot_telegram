@@ -36,7 +36,7 @@ async def get_weather(lat: float,
                       units: str = 'metric',
                       lang: str = 'en',
                       exclude: str = '',
-                      appid: str = TOKEN_OPENWEATHER) -> Optional[dict[str, Any]]:
+                      appid: str | None = TOKEN_OPENWEATHER) -> Optional[dict[str, Any]]:
     """Get weather from OpenWeatherMap API.
 
     :param lat: latitude

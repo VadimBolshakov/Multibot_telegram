@@ -17,7 +17,7 @@ class AdminResponse:
     def __init__(self, message: types.Message):
         self.message = message
 
-    async def send_log(self):
+    async def send_log(self) -> None:
         """Send log file to admin in telegram."""
         try:
             with open(LOG_FILE, 'rb') as file:
@@ -29,7 +29,7 @@ class AdminResponse:
             logger.exception(f'Error: {str(e)}')
             await self.message.answer('Error send log file')
 
-    async def send_email_lod(self):
+    async def send_email_lod(self) -> None:
         """Send log file to admin in email."""
         subject = f'Log file by {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
         if smtp.send_email(subject=subject, file=LOG_FILE, attach_file=True, logger=logger):
@@ -37,7 +37,7 @@ class AdminResponse:
         else:
             await self.message.answer('Error send log file to email')
 
-    async def send_users(self):
+    async def send_users(self) -> None:
         """Send id and users of this chat to admin."""
         _users: list[Record] = await db.get_all_users_db()
         if not _users:
@@ -47,7 +47,7 @@ class AdminResponse:
             await self.message.answer(f'id= {user.get("userid")} name: {user.get("firstname")}')
         await self.message.answer('It is done')
 
-    async def send_requests(self):
+    async def send_requests(self) -> None:
         """Send number of requests to admin."""
         _requests = await db.get_requests_count_db()
         await self.message.answer(f'Number of  requests is {_requests}')

@@ -1,12 +1,12 @@
 """Checking the user's registration and admin rights"""
 from logging import Logger
-
+from typing import Any
 from aiogram import types
 
 from databases.database import DataBaseMain
 
 
-def check_registration(logger: Logger, database: DataBaseMain):
+def check_registration(logger: Logger, database: DataBaseMain) -> Any:
     """Decorator checking the registration user
 
     :param logger: logging
@@ -17,8 +17,8 @@ def check_registration(logger: Logger, database: DataBaseMain):
     :return: Decorator
     :rtype: function
     """
-    def decorator(fn):
-        async def wrapper(message: types.Message):
+    def decorator(fn) -> Any:
+        async def wrapper(message: types.Message) -> Any:
             user_first_name = message.from_user.first_name
             user_id = message.from_user.id
             if await database.get_user_db(user_id) is None:
@@ -33,7 +33,7 @@ def check_registration(logger: Logger, database: DataBaseMain):
     return decorator
 
 
-def check_admin(logger: Logger, database: DataBaseMain):
+def check_admin(logger: Logger, database: DataBaseMain) -> Any:
     """Decorator checking the admin rights user
 
     :param logger: logging
@@ -44,8 +44,8 @@ def check_admin(logger: Logger, database: DataBaseMain):
     :return: Decorator
     :rtype: function
     """
-    def decorator(fn):
-        async def wrapper(message: types.Message):
+    def decorator(fn) -> Any:
+        async def wrapper(message: types.Message) -> Any:
             user_first_name = message.from_user.first_name
             user_id = message.from_user.id
             try:

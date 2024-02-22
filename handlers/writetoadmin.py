@@ -56,8 +56,9 @@ async def write_messages(message: types.Message, state: FSMContext) -> None:
         data['message'] = message.text
     await message.answer(_('Your message: {message}').format(message=data['message']))
     await message.answer(_('Your message sent to admin'))
-    await bot.send_message(chat_id=ADMIN_ID, text=data['message'] +
-                                                                    '\n' + message.from_user.first_name + '\n' + str(message.from_user.id))
+    await bot.send_message(chat_id=ADMIN_ID, text=data['message'] + '\n'
+                           + message.from_user.first_name + '\n'
+                           + str(message.from_user.id))
     await state.finish()
     logger.info(
         f'Exit from writetoadmin handler user {message.from_user.first_name} (id:{message.from_user.id})')

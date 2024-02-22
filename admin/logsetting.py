@@ -26,12 +26,12 @@ class TelegramHandler(logging.Handler):
     :return: None
     """
 
-    def __init__(self, token, chat_id):
+    def __init__(self, token, chat_id) -> None:
         self.token = token
         self.chat_id = chat_id
         super().__init__()
 
-    def emit(self, record):
+    def emit(self, record) -> None:
         log_entry = self.format(record)
         requests.get(f'https://api.telegram.org/bot{self.token}/sendMessage?chat_id={self.chat_id}&text={log_entry}')
 
