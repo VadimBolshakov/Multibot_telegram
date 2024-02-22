@@ -2,6 +2,8 @@
 *.log
 /venv
 /.idea
+/.vscode
+/__pycache__
 *.db
 setup.cfg
 /.mypy_cache
