@@ -30,4 +30,4 @@ jobs:
       - name: Run flake8
         uses: py-actions/flake8@v2
         with:
-          ignore: C901, F541,
+          ignore: C901,F541
