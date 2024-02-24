@@ -1,4 +1,4 @@
-﻿[![Built status](.github/workflows/check_flake8.yml/badge.svg?branch=main)](.github/workflows/check_flake8.yml)  
+﻿[![Built status](https://github.com/VadimBolshakov/Multibot_telegram/actions/workflows/check_flake8.yml/badge.svg?branch=main)](https://github.com/VadimBolshakov/Multibot_telegram/actions/workflows/check_flake8.yml)  
   
 # Welcome to my multi-function bot!
 
