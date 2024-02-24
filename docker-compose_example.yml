@@ -1,0 +1,53 @@
+version: '2.1'
+
+services:
+  db:
+    image: postgres:15.4
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d telbotrel" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    deploy:
+        resources:
+          limits:
+            cpus: '1'
+            memory: 4G
+    container_name: db
+
+  bot:
+    build: .
+    image: bot
+    restart: always
+    volumes:
+      - C:\Users\Vadim\Documents\Python_projects\Tel_Bot_Rel_1/logs:/usr/src/app/logs
+    ports:
+      - 5000:5000
+    environment:
+      - DB_HOST=db
+    env_file:
+      - .env
+    depends_on:
+      - db
+    deploy:
+        resources:
+          limits:
+            cpus: '1'
+            memory: 4G
+    container_name: bot
+
+
+volumes:
+    data:
+    logs:
