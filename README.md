@@ -97,5 +97,5 @@ The foul filter has only been working on Russian words yet.  The author doesn't 
 ## Conclusion
 
 The bot has an MIT license.  
-If you want to support the project,  you can do it here:  [https://www.patreon.com/vadimbolshakov](https://www.patreon.com/vadimbolshakov)  
+If you want to support the project,  you can do it here: [https://www.patreon.com/VadimBolshakov](https://www.patreon.com/VadimBolshakov)  
 Contact vadimbolsh@gmail.com
