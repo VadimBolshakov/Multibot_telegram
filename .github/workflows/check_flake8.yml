@@ -29,6 +29,3 @@ jobs:
           pip install -r requirements.txt
       - name: Run flake8
         uses: py-actions/flake8@v2
-        with:
-          ignore: E721, C901, F541
-          max-line-length: 140
