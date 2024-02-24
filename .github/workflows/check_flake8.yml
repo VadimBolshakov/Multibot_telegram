@@ -28,4 +28,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run flake8
-        run: flake8
+        uses: py-actions/flake8@v2
+        with:
+          ignore:
+            # do not compare types, use 'isinstance()
+            .\middlewares\filters.py: E721
+            # is too complex (16)
+            .\middlewares\middleware.py: C901
+            # is too complex (12)
+            .\models\openweather.py: C901
+            # is too complex (37)
+            .\util\weatherparse_en.py: C901
+            # is too complex (36)
+            .\util\weatherparse_ru.py: C901
+            # f-string is missing placeholders
+            .\view\jokesview.py: F541
+            .\view\newsview.py: F541
+          exclude: .git,__pycache__,env,venv
+          max-line-length: "140"
+          max-complexity: 10
+          extend-ignore: F401, F841
