@@ -7,7 +7,6 @@
 *.db
 setup.cfg
 /.mypy_cache
-Dockerfile
 docker-compose.yml
 
 [coverage:run]
