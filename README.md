@@ -1,4 +1,6 @@
-﻿# Welcome to my multi-function bot!
+﻿[![Built status](.github/workflows/check_flake8.yml/badge.svg?branch=main)](.github/workflows/check_flake8.yml)  
+  
+# Welcome to my multi-function bot!
 
 ## Description
 
