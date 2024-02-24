@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9, 3.11]
+        python-version: [`3.10`, `3.11`]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -29,6 +29,8 @@ jobs:
           pip install -r requirements.txt
       - name: Run flake8
         uses: py-actions/flake8@v2
+        ## run: flake8 .
         with:
           ignore: C901,F541,W503
           max-line-length: 140
+          ## args: "--max-line-length=100 --exclude .ipython --ignore E266,W503,E203,E722 ."
