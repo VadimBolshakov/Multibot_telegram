@@ -16,7 +16,6 @@ jobs:
     strategy:
       matrix:
         python-version: [3.11, 3.12]
-        ignore-err: [C901, F541]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -31,4 +30,4 @@ jobs:
       - name: Run flake8
         uses: py-actions/flake8@v2
         with:
-          ignore: ${{ matrix.ignore-err}}
+          ignore: "C901", "F541"
